@@ -910,11 +910,96 @@
         <section id="ch01" class="section">
             <div class="section-header">
                 <h2>📖 第一章：Introduction (簡介)</h2>
-                <p>網路概論基礎介紹</p>
+                <p>網路概論基礎介紹 — 網路的定義、類型與拓撲</p>
             </div>
-            <div class="card" style="text-align: center; padding: 3rem;">
-                <p style="font-size: 1.125rem; margin-bottom: 1rem;">請下載投影片檢閱完整內容</p>
-                <a href="114期末考/Net7_01Introduction.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none; font-size: 1rem; padding: 0.75rem 1.5rem;" download>📥 下載第一章投影片</a>
+
+            <div class="card">
+                <h3>網路的定義</h3>
+                <p>網路（Network）是將多台電腦與設備透過傳輸媒介連接起來，使彼此能夠交換資料與共享資源的系統。</p>
+                <div class="highlight-box">
+                    <p><strong>網路三要素：</strong>至少兩台設備、傳輸媒介（纜線或無線）、通訊協定（共同語言規則）。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>網路的分類 (依規模)</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>類型</th>
+                                <th>全名</th>
+                                <th>涵蓋範圍</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>PAN</strong></td><td>Personal Area Network</td><td>個人範圍（藍芽、USB）</td></tr>
+                            <tr><td><strong>LAN</strong></td><td>Local Area Network</td><td>建築物內（校園、辦公室）</td></tr>
+                            <tr><td><strong>MAN</strong></td><td>Metropolitan Area Network</td><td>城市範圍</td></tr>
+                            <tr><td><strong>WAN</strong></td><td>Wide Area Network</td><td>國家/全球（網際網路）</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>網路拓撲 (Topology)</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>拓撲</th>
+                                <th>說明</th>
+                                <th>優點</th>
+                                <th>缺點</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>匯流排 (Bus)</strong></td>
+                                <td>所有設備共享一條主幹線</td>
+                                <td>佈線簡單、成本低</td>
+                                <td>主幹故障全網中斷、碰撞問題</td>
+                            </tr>
+                            <tr>
+                                <td><strong>星狀 (Star)</strong></td>
+                                <td>所有設備連接到中央節點</td>
+                                <td>易管理、單點故障不影響全網</td>
+                                <td>中央節點故障全網中斷</td>
+                            </tr>
+                            <tr>
+                                <td><strong>環狀 (Ring)</strong></td>
+                                <td>設備首尾相連成環</td>
+                                <td>傳輸穩定、無碰撞</td>
+                                <td>單點故障影響全網</td>
+                            </tr>
+                            <tr>
+                                <td><strong>網狀 (Mesh)</strong></td>
+                                <td>每個設備互相連接</td>
+                                <td>高冗餘、高可靠性</td>
+                                <td>佈線成本高</td>
+                            </tr>
+                            <tr>
+                                <td><strong>樹狀 (Tree)</strong></td>
+                                <td>星狀的層級延伸</td>
+                                <td>易擴充</td>
+                                <td>根節點故障影響大</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>傳輸模式</h3>
+                <ul>
+                    <li><strong>單工 (Simplex)</strong>：單向傳輸，如廣播、電視</li>
+                    <li><strong>半雙工 (Half-Duplex)</strong>：雙向但不能同時，如對講機</li>
+                    <li><strong>全雙工 (Full-Duplex)</strong>：雙向可同時，如電話、網路交換器</li>
+                </ul>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+                    <a href="114期末考/Net7_01Introduction.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第一章投影片</a>
+                </div>
             </div>
         </section>
 
@@ -922,11 +1007,78 @@
         <section id="ch02" class="section">
             <div class="section-header">
                 <h2>📡 第二章：Communication (通訊)</h2>
-                <p>網路通訊基礎概念</p>
+                <p>網路通訊基礎概念 — 訊號、傳輸媒介與多工技術</p>
             </div>
-            <div class="card" style="text-align: center; padding: 3rem;">
-                <p style="font-size: 1.125rem; margin-bottom: 1rem;">請下載投影片檢閱完整內容</p>
-                <a href="114期末考/Net7_02Communication.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none; font-size: 1rem; padding: 0.75rem 1.5rem;" download>📥 下載第二章投影片</a>
+
+            <div class="card">
+                <h3>資料通訊系統五大元件</h3>
+                <ol>
+                    <li><strong>訊息 (Message)</strong>：要傳送的資料（文字、圖像、聲音）</li>
+                    <li><strong>傳送端 (Sender)</strong>：發出訊息的設備</li>
+                    <li><strong>接收端 (Receiver)</strong>：接收訊息的設備</li>
+                    <li><strong>傳輸媒介 (Medium)</strong>：訊號傳遞的通道</li>
+                    <li><strong>協定 (Protocol)</strong>：通訊規則的集合</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3>類比 vs 數位訊號</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>特性</th>
+                                <th>類比訊號 (Analog)</th>
+                                <th>數位訊號 (Digital)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>波形</td><td>連續平滑波形</td><td>離散階梯狀（0/1）</td></tr>
+                            <tr><td>衰減</td><td>會衰減，需放大器</td><td>會衰減，需中繼器</td></tr>
+                            <tr><td>雜訊</td><td>放大時同時放大雜訊</td><td>可還原，抗干擾性強</td></tr>
+                            <tr><td>頻寬使用</td><td>較高</td><td>較低</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>傳輸媒介</h3>
+                <div class="grid-2">
+                    <div class="comparison-card">
+                        <div class="comparison-card-header blue">有線傳輸</div>
+                        <div class="comparison-card-body">
+                            <ul>
+                                <li><strong>雙絞線 (UTP/STP)</strong>：成本低、易安裝，常用於乙太網路</li>
+                                <li><strong>同軸纜線 (Coaxial)</strong>：抗干擾佳，早期用於有線電視</li>
+                                <li><strong>光纖 (Fiber Optic)</strong>：高頻寬、長距離、抗電磁干擾</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <div class="comparison-card-header amber">無線傳輸</div>
+                        <div class="comparison-card-body">
+                            <ul>
+                                <li><strong>無線電波</strong>：Wi-Fi、行動通訊</li>
+                                <li><strong>微波</strong>：衛星通訊、點對點</li>
+                                <li><strong>紅外線</strong>：短距離遙控</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>多工技術 (Multiplexing)</h3>
+                <ul>
+                    <li><strong>FDM (頻分工)</strong>：不同訊號使用不同頻率，如廣播電台</li>
+                    <li><strong>TDM (時分工)</strong>：不同訊號輪流使用時間槽，如T1/E1線路</li>
+                    <li><strong>WDM (波分工)</strong>：光纖中使用不同波長的光</li>
+                    <li><strong>CDMA (碼分工)</strong>：使用不同編碼同時傳輸，如3G</li>
+                </ul>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+                    <a href="114期末考/Net7_02Communication.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第二章投影片</a>
+                </div>
             </div>
         </section>
 
@@ -934,11 +1086,60 @@
         <section id="ch03" class="section">
             <div class="section-header">
                 <h2>🔧 第三章：Equipment (設備)</h2>
-                <p>網路設備介紹</p>
+                <p>網路設備 — 從實體層到網路層的設備功能與應用</p>
             </div>
-            <div class="card" style="text-align: center; padding: 3rem;">
-                <p style="font-size: 1.125rem; margin-bottom: 1rem;">請下載投影片檢閱完整內容</p>
-                <a href="114期末考/Net7_03Equipment.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none; font-size: 1rem; padding: 0.75rem 1.5rem;" download>📥 下載第三章投影片</a>
+
+            <div class="card">
+                <h3>網路設備層級分類</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>設備</th>
+                                <th>OSI層級</th>
+                                <th>功能</th>
+                                <th>定址方式</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>中繼器 (Repeater)</strong></td><td>Layer 1</td><td>訊號放大延伸距離</td><td>無</td></tr>
+                            <tr><td><strong>集線器 (Hub)</strong></td><td>Layer 1</td><td>多埠中繼器，廣播到所有埠</td><td>無</td></tr>
+                            <tr><td><strong>橋接器 (Bridge)</strong></td><td>Layer 2</td><td>分割碰撞域，過濾幀</td><td>MAC位址</td></tr>
+                            <tr><td><strong>交換器 (Switch)</strong></td><td>Layer 2</td><td>多埠橋接器，MAC表轉送</td><td>MAC位址</td></tr>
+                            <tr><td><strong>路由器 (Router)</strong></td><td>Layer 3</td><td>路由選擇，分割廣播域</td><td>IP位址</td></tr>
+                            <tr><td><strong>閘道器 (Gateway)</strong></td><td>Layer 4-7</td><td>協定轉換，連接不同網路</td><td>依協定而定</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>碰撞域 vs 廣播域：</strong>Hub不分割碰撞域，Switch每個埠獨立碰撞域，Router每個埠獨立廣播域。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>交換器 (Switch) 進階功能</h3>
+                <ul>
+                    <li><strong>MAC位址學習</strong>：記錄來源MAC與對應埠號</li>
+                    <li><strong>Store-and-Forward</strong>：完整接收幀後檢查錯誤再轉送</li>
+                    <li><strong>Cut-Through</strong>：讀取目的MAC後立即轉送，低延遲</li>
+                    <li><strong>VLAN</strong>：將單一交換器分割為多個邏輯網路</li>
+                    <li><strong>STP (生成樹協定)</strong>：防止網路迴路</li>
+                    <li><strong>Link Aggregation</strong>：多條鏈路合併增加頻寬</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>路由器 (Router)</h3>
+                <ul>
+                    <li><strong>路由表</strong>：記錄目的地網路與下一跳位址</li>
+                    <li><strong>靜態路由</strong>：管理員手動設定</li>
+                    <li><strong>動態路由</strong>：透過路由協定自動學習（RIP、OSPF、BGP）</li>
+                    <li><strong>NAT</strong>：私有IP轉換為公有IP</li>
+                    <li><strong>ACL</strong>：存取控制清單，過濾封包</li>
+                </ul>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+                    <a href="114期末考/Net7_03Equipment.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第三章投影片</a>
+                </div>
             </div>
         </section>
 
@@ -946,11 +1147,112 @@
         <section id="ch04" class="section">
             <div class="section-header">
                 <h2>📜 第四章：Protocol (協定)</h2>
-                <p>網路通訊協定</p>
+                <p>網路通訊協定 — OSI模型、TCP/IP與重要協定</p>
             </div>
-            <div class="card" style="text-align: center; padding: 3rem;">
-                <p style="font-size: 1.125rem; margin-bottom: 1rem;">請下載投影片檢閱完整內容</p>
-                <a href="114期末考/Net7_04Protocol.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none; font-size: 1rem; padding: 0.75rem 1.5rem;" download>📥 下載第四章投影片</a>
+
+            <div class="card">
+                <h3>通訊協定三要素</h3>
+                <ul>
+                    <li><strong>語法 (Syntax)</strong>：資料格式與結構</li>
+                    <li><strong>語意 (Semantics)</strong>：欄位意義與控制資訊</li>
+                    <li><strong>時序 (Timing)</strong>：傳送時機與速度匹配</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>OSI 七層模型</h3>
+                <p>由ISO制定的標準網路架構模型：</p>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>層級</th><th>名稱</th><th>功能</th><th>協定/技術</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>L7</td><td>應用層</td><td>使用者應用服務</td><td>HTTP, FTP, SMTP, DNS</td></tr>
+                            <tr><td>L6</td><td>表達層</td><td>資料格式轉換、加密</td><td>SSL/TLS, JPEG</td></tr>
+                            <tr><td>L5</td><td>會議層</td><td>會話管理</td><td>NetBIOS, RPC</td></tr>
+                            <tr><td>L4</td><td>傳輸層</td><td>端對端傳輸、流量控制</td><td>TCP, UDP</td></tr>
+                            <tr><td>L3</td><td>網路層</td><td>路由、邏輯定址</td><td>IP, ICMP, ARP</td></tr>
+                            <tr><td>L2</td><td>資料連結層</td><td>幀傳輸、MAC定址</td><td>Ethernet, PPP</td></tr>
+                            <tr><td>L1</td><td>實體層</td><td>位元傳輸、電氣訊號</td><td>RS-232, RJ-45</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="highlight-box success">
+                    <p><strong>口訣：</strong>由上到下 — 應表會傳網資實</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>TCP/IP 模型</h3>
+                <p>網際網路實際使用的四層架構：</p>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>TCP/IP層</th><th>對應OSI</th><th>主要協定</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>應用層</strong></td><td>L5+L6+L7</td><td>HTTP, FTP, SMTP, DNS, SSH</td></tr>
+                            <tr><td><strong>傳輸層</strong></td><td>L4</td><td>TCP（可靠）、UDP（不可靠）</td></tr>
+                            <tr><td><strong>網際網路層</strong></td><td>L3</td><td>IP, ICMP, ARP</td></tr>
+                            <tr><td><strong>網路存取層</strong></td><td>L1+L2</td><td>Ethernet, Wi-Fi, PPP</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>TCP vs UDP</h3>
+                <div class="grid-2">
+                    <div class="comparison-card">
+                        <div class="comparison-card-header blue">TCP</div>
+                        <div class="comparison-card-body">
+                            <ul>
+                                <li>面向連線（三次握手）</li>
+                                <li>可靠傳輸、流量控制</li>
+                                <li>擁塞控制（慢啟動）</li>
+                                <li>資料按序送達</li>
+                                <li>適用：HTTP, FTP, Email</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <div class="comparison-card-header amber">UDP</div>
+                        <div class="comparison-card-body">
+                            <ul>
+                                <li>無連線</li>
+                                <li>不可靠、盡力傳送</li>
+                                <li>低延遲、高效率</li>
+                                <li>無流量/擁塞控制</li>
+                                <li>適用：DNS, VoIP, 串流</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>重要協定彙整</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>協定</th><th>全名</th><th>功能</th><th>埠號</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>HTTP</code></td><td>Hypertext Transfer Protocol</td><td>網頁傳輸</td><td>80</td></tr>
+                            <tr><td><code>HTTPS</code></td><td>HTTP Secure</td><td>加密網頁傳輸</td><td>443</td></tr>
+                            <tr><td><code>FTP</code></td><td>File Transfer Protocol</td><td>檔案傳輸</td><td>21</td></tr>
+                            <tr><td><code>SMTP</code></td><td>Simple Mail Transfer Protocol</td><td>郵件傳送</td><td>25</td></tr>
+                            <tr><td><code>DNS</code></td><td>Domain Name System</td><td>域名解析</td><td>53</td></tr>
+                            <tr><td><code>DHCP</code></td><td>Dynamic Host Configuration Protocol</td><td>自動配發IP</td><td>67/68</td></tr>
+                            <tr><td><code>ARP</code></td><td>Address Resolution Protocol</td><td>IP→MAC轉換</td><td>N/A</td></tr>
+                            <tr><td><code>ICMP</code></td><td>Internet Control Message Protocol</td><td>錯誤報告（ping）</td><td>N/A</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+                    <a href="114期末考/Net7_04Protocol.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第四章投影片</a>
+                </div>
             </div>
         </section>
 
@@ -958,11 +1260,78 @@
         <section id="ch05" class="section">
             <div class="section-header">
                 <h2>🔌 第五章：Ethernet (乙太網路)</h2>
-                <p>乙太網路技術</p>
+                <p>乙太網路技術 — IEEE 802.3 標準系列</p>
             </div>
-            <div class="card" style="text-align: center; padding: 3rem;">
-                <p style="font-size: 1.125rem; margin-bottom: 1rem;">請下載投影片檢閱完整內容</p>
-                <a href="114期末考/Net7_05Ethernet.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none; font-size: 1rem; padding: 0.75rem 1.5rem;" download>📥 下載第五章投影片</a>
+
+            <div class="card">
+                <h3>乙太網路演進</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>標準</th><th>速度</th><th>傳輸媒介</th><th>最大距離</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>10BASE5</strong></td><td>10 Mbps</td><td>粗同軸纜線</td><td>500m</td></tr>
+                            <tr><td><strong>10BASE2</strong></td><td>10 Mbps</td><td>細同軸纜線</td><td>185m</td></tr>
+                            <tr><td><strong>10BASE-T</strong></td><td>10 Mbps</td><td>UTP Cat3</td><td>100m</td></tr>
+                            <tr><td><strong>100BASE-TX</strong></td><td>100 Mbps</td><td>UTP Cat5</td><td>100m</td></tr>
+                            <tr><td><strong>1000BASE-T</strong></td><td>1 Gbps</td><td>UTP Cat5e</td><td>100m</td></tr>
+                            <tr><td><strong>10GBASE-T</strong></td><td>10 Gbps</td><td>UTP Cat6a</td><td>100m</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="highlight-box">
+                    <p><strong>命名規則：</strong>速度 + BASE + 媒介代碼。<br>
+                    例如：1000BASE-T = 1000 Mbps、基頻(Baseband)、雙絞線(Twisted pair)</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>CSMA/CD 存取控制</h3>
+                <p>傳統半雙工乙太網路使用 CSMA/CD 控制媒體存取：</p>
+                <ol>
+                    <li><strong>載波偵聽</strong>：傳送前先偵聽線路是否空閒</li>
+                    <li><strong>傳送</strong>：空閒則開始傳送資料</li>
+                    <li><strong>碰撞偵測</strong>：傳送時持續監聽是否發生碰撞</li>
+                    <li><strong>Jam訊號</strong>：碰撞發生時傳送擁塞訊號通知所有設備</li>
+                    <li><strong>指數退避</strong>：隨機等待後重新嘗試傳送</li>
+                </ol>
+                <div class="highlight-box warning">
+                    <p><strong>注意：</strong>使用交換器的全雙工模式不需要CSMA/CD，因為發送和接收使用不同線對，不會碰撞。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>乙太網路幀格式</h3>
+                <div class="code-block">
+| Preamble | SFD | Dest MAC | Src MAC | Type | Payload | FCS |
+|  7B      | 1B  |  6B      |  6B     | 2B   |46-1500B | 4B  |
+                </div>
+                <ul>
+                    <li><strong>前導碼 (Preamble)</strong>：7 bytes，同步訊號</li>
+                    <li><strong>SFD</strong>：1 byte，幀起始分隔符</li>
+                    <li><strong>目的/來源MAC</strong>：各6 bytes</li>
+                    <li><strong>Type/Length</strong>：2 bytes，上層協定類型</li>
+                    <li><strong>Payload</strong>：46-1500 bytes（不足需填充）</li>
+                    <li><strong>FCS</strong>：4 bytes，CRC-32錯誤檢查</li>
+                </ul>
+                <div class="highlight-box success">
+                    <p><strong>最小幀大小：</strong>64 bytes（確保CSMA/CD正確偵測碰撞）<br>
+                    <strong>最大幀大小：</strong>1518 bytes（MTU=1500）</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>MAC 位址</h3>
+                <ul>
+                    <li>48位元（6 bytes），全球唯一硬體位址</li>
+                    <li>前24位元：OUI（IEEE分配給製造商）</li>
+                    <li>後24位元：製造商分配</li>
+                    <li>廣播位址：<code>FF:FF:FF:FF:FF:FF</code></li>
+                </ul>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+                    <a href="114期末考/Net7_05Ethernet.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第五章投影片</a>
+                </div>
             </div>
         </section>
 
@@ -970,11 +1339,74 @@
         <section id="ch07" class="section">
             <div class="section-header">
                 <h2>🌐 第七章：LAN (區域網路)</h2>
-                <p>區域網路技術</p>
+                <p>區域網路技術 — IEEE 802標準、VLAN、無線LAN</p>
             </div>
-            <div class="card" style="text-align: center; padding: 3rem;">
-                <p style="font-size: 1.125rem; margin-bottom: 1rem;">請下載投影片檢閱完整內容</p>
-                <a href="114期末考/Net7_07LAN.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none; font-size: 1rem; padding: 0.75rem 1.5rem;" download>📥 下載第七章投影片</a>
+
+            <div class="card">
+                <h3>LAN 定義與特性</h3>
+                <p>區域網路（Local Area Network）是在有限地理範圍內連接多台設備的通訊網路。</p>
+                <ul>
+                    <li><strong>範圍</strong>：單一建築或校園</li>
+                    <li><strong>速度</strong>：10 Mbps ~ 100 Gbps</li>
+                    <li><strong>所有權</strong>：單一組織擁有管理</li>
+                    <li><strong>錯誤率</strong>：低（傳輸品質高）</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>IEEE 802 標準家族</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>標準</th><th>說明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>802.1</strong></td><td>橋接、VLAN、STP</td></tr>
+                            <tr><td><strong>802.3</strong></td><td>乙太網路 (CSMA/CD)</td></tr>
+                            <tr><td><strong>802.11</strong></td><td>無線區域網路 (Wi-Fi)</td></tr>
+                            <tr><td><strong>802.15</strong></td><td>無線個人網路 (Bluetooth)</td></tr>
+                            <tr><td><strong>802.16</strong></td><td>寬頻無線 (WiMAX)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>VLAN 虛擬區域網路</h3>
+                <p>VLAN在單一實體交換器上建立多個邏輯網路：</p>
+                <ul>
+                    <li><strong>優點</strong>：安全性、減少廣播風暴、管理彈性</li>
+                    <li><strong>Port-based</strong>：依據交換器埠號分配VLAN</li>
+                    <li><strong>IEEE 802.1Q</strong>：在乙太網路幀插入4 bytes VLAN標籤</li>
+                    <li><strong>VLAN ID</strong>：12 bits，範圍1-4094</li>
+                    <li><strong>Trunk</strong>：跨交換器傳送多個VLAN流量</li>
+                </ul>
+                <div class="highlight-box">
+                    <p><strong>802.1Q標籤結構：</strong>TPID(2B, 0x8100) + Priority(3b) + CFI(1b) + VLAN ID(12b)</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>無線區域網路 (WLAN)</h3>
+                <p>WLAN基於IEEE 802.11標準，使用無線電波傳輸：</p>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>標準</th><th>頻段</th><th>最大速率</th><th>特色</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>802.11b</strong></td><td>2.4 GHz</td><td>11 Mbps</td><td>最早普及</td></tr>
+                            <tr><td><strong>802.11g</strong></td><td>2.4 GHz</td><td>54 Mbps</td><td>OFDM調變</td></tr>
+                            <tr><td><strong>802.11a</strong></td><td>5 GHz</td><td>54 Mbps</td><td>干擾較少</td></tr>
+                            <tr><td><strong>802.11n (Wi-Fi 4)</strong></td><td>2.4/5 GHz</td><td>600 Mbps</td><td>MIMO技術</td></tr>
+                            <tr><td><strong>802.11ac (Wi-Fi 5)</strong></td><td>5 GHz</td><td>6.9 Gbps</td><td>MU-MIMO</td></tr>
+                            <tr><td><strong>802.11ax (Wi-Fi 6)</strong></td><td>2.4/5/6 GHz</td><td>9.6 Gbps</td><td>OFDMA</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+                    <a href="114期末考/Net7_07LAN.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第七章投影片</a>
+                </div>
             </div>
         </section>
 
@@ -982,11 +1414,105 @@
         <section id="ch08" class="section">
             <div class="section-header">
                 <h2>🌍 第八章：IP (網際網路協定)</h2>
-                <p>網際網路協定</p>
+                <p>網際網路協定 — IPv4/IPv6定址、子網路切割、NAT、路由協定</p>
             </div>
-            <div class="card" style="text-align: center; padding: 3rem;">
-                <p style="font-size: 1.125rem; margin-bottom: 1rem;">請下載投影片檢閱完整內容</p>
-                <a href="114期末考/Net7_08IP.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none; font-size: 1rem; padding: 0.75rem 1.5rem;" download>📥 下載第八章投影片</a>
+
+            <div class="card">
+                <h3>IPv4 定址</h3>
+                <p>IPv4 位址為32位元，以點分十進制表示：</p>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Class</th><th>範圍</th><th>預設遮罩</th><th>用途</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>A</td><td>1.0.0.0 - 126.255.255.255</td><td>/8</td><td>大型網路</td></tr>
+                            <tr><td>B</td><td>128.0.0.0 - 191.255.255.255</td><td>/16</td><td>中型網路</td></tr>
+                            <tr><td>C</td><td>192.0.0.0 - 223.255.255.255</td><td>/24</td><td>小型網路</td></tr>
+                            <tr><td>D</td><td>224.0.0.0 - 239.255.255.255</td><td>N/A</td><td>多播</td></tr>
+                            <tr><td>E</td><td>240.0.0.0 - 255.255.255.255</td><td>N/A</td><td>實驗用</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>私有IP位址 (RFC 1918)</h3>
+                <ul>
+                    <li><strong>10.0.0.0/8</strong>：10.0.0.0 - 10.255.255.255</li>
+                    <li><strong>172.16.0.0/12</strong>：172.16.0.0 - 172.31.255.255</li>
+                    <li><strong>192.168.0.0/16</strong>：192.168.0.0 - 192.168.255.255</li>
+                    <li><strong>127.0.0.0/8</strong>：Loopback（本機回送）</li>
+                    <li><strong>169.254.0.0/16</strong>：APIPA（自動私有IP）</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>子網路切割 (Subnetting)</h3>
+                <p>將一個大網路劃分為多個小網路，提高位址利用率：</p>
+                <ul>
+                    <li>子網路數 = 2^(借用位元數)</li>
+                    <li>可用主機數 = 2^(剩餘主機位元數) - 2</li>
+                    <li>減2原因：網路位址（全0）和廣播位址（全1）</li>
+                </ul>
+                <div class="highlight-box">
+                    <p><strong>CIDR表示法：</strong>IP位址/前綴長度<br>
+                    例：<code>192.168.1.0/24</code> 表示前24位元為網路部分，後8位元為主機部分</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>IPv4 封包結構</h3>
+                <p>IPv4標頭最小20 bytes，主要欄位：</p>
+                <ul>
+                    <li><strong>Version</strong>(4b)：IP版本</li>
+                    <li><strong>IHL</strong>(4b)：標頭長度</li>
+                    <li><strong>Total Length</strong>(16b)：封包總長</li>
+                    <li><strong>TTL</strong>(8b)：存活時間，每跳減1</li>
+                    <li><strong>Protocol</strong>(8b)：上層協定（TCP=6, UDP=17）</li>
+                    <li><strong>Source/Dest IP</strong>(各32b)</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>NAT 網路位址轉譯</h3>
+                <ul>
+                    <li><strong>靜態NAT</strong>：一對一映射</li>
+                    <li><strong>動態NAT</strong>：從公有IP池取用</li>
+                    <li><strong>PAT (NAPT)</strong>：多對一，使用埠號區分（家用路由器最常用）</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>路由協定</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>協定</th><th>類型</th><th>度量</th><th>適用範圍</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>RIP</strong></td><td>距離向量</td><td>跳數</td><td>小型網路</td></tr>
+                            <tr><td><strong>OSPF</strong></td><td>鏈路狀態</td><td>成本</td><td>中大型網路</td></tr>
+                            <tr><td><strong>EIGRP</strong></td><td>混合型</td><td>複合度量</td><td>思科網路</td></tr>
+                            <tr><td><strong>BGP</strong></td><td>路徑向量</td><td>AS路徑</td><td>網際網路骨幹</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>IPv6 簡介</h3>
+                <ul>
+                    <li>128位元位址空間，解決IPv4枯竭</li>
+                    <li>冒號十六進制表示：<code>2001:db8::1</code></li>
+                    <li>內建IPSec安全性</li>
+                    <li>SLAAC無狀態自動設定IP</li>
+                    <li>無廣播，使用多播取代</li>
+                    <li>無NAT需求（位址充足）</li>
+                </ul>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+                    <a href="114期末考/Net7_08IP.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第八章投影片</a>
+                </div>
             </div>
         </section>
 
