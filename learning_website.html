@@ -304,6 +304,7 @@
         <button onclick="showSec('ch05')">Ch5 乙太網路</button>
         <button onclick="showSec('ch07')">Ch7 區域網路</button>
         <button onclick="showSec('ch08')">Ch8 IP</button>
+        <button onclick="showSec('midterm')">期中考重點</button>
         <button onclick="showSec('quiz')">練習題庫</button>
     </div>
 </nav>
@@ -1229,6 +1230,193 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 子網路 3: 192.168.1.128/26 (192.168.1.129 - 192.168.1.190)
 子網路 4: 192.168.1.192/26 (192.168.1.193 - 192.168.1.254)
             </div>
+        </div>
+    </section>
+
+    <!-- ==================== MIDTERM ==================== -->
+    <section id="midterm">
+        <div class="sec-title">
+            <h2>期中考重點整理</h2>
+            <p>期中考範圍：Ch1 區域網路基礎與訊號編碼、Ch2 通訊、Ch3 設備、Ch4 OSI 模型</p>
+        </div>
+
+        <div class="card">
+            <h3>數位訊號編碼方式 (Line Coding)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>編碼方式</th><th>規則</th><th>特點</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>NRZ-L</strong></td><td>正電壓 = 0，負電壓 = 1 (依電壓位準)</td><td>非歸零，需時脈同步</td></tr>
+                        <tr><td><strong>NRZ-I</strong></td><td>0: keep (保持), 1: invert (反轉)</td><td>非歸零，遇 1 反轉</td></tr>
+                        <tr><td><strong>Manchester</strong></td><td>0: ┌┐ (高轉低), 1: └┘ (低轉高)</td><td>位元中間有電壓轉換，內建同步</td></tr>
+                        <tr><td><strong>Differential Manchester</strong></td><td>0: keep (維持), 1: invert (反轉)</td><td>差動，抗干擾性強</td></tr>
+                        <tr><td><strong>MLT-3</strong></td><td>0: same state (維持), 1: next state (切換)</td><td>三種電壓狀態：+V, 0, -V</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>網路類型與拓樸</h3>
+            <div class="grid2">
+                <div>
+                    <h4>網路類型 (依範圍)</h4>
+                    <ul>
+                        <li><strong>PAN</strong>：個人網路 (~10m)，如藍牙</li>
+                        <li><strong>LAN</strong>：區域網路 (~2km)，如家中 Wi-Fi</li>
+                        <li><strong>MAN</strong>：都會網路 (Metropolitan)</li>
+                        <li><strong>WAN</strong>：廣域網路 (跨國、Internet)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>網路拓樸 (Topology)</h4>
+                    <ul>
+                        <li><strong>星型 (Star)</strong>：所有設備連到中央 Switch/Hub</li>
+                        <li><strong>匯流排型 (Bus)</strong>：所有設備在一條主幹上</li>
+                        <li><strong>環狀型 (Ring)</strong>：頭尾相連成圓環</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>網路作業環境</h3>
+            <div class="grid2">
+                <div>
+                    <h4>對等式 (Peer-to-Peer)</h4>
+                    <ul>
+                        <li>每台電腦平起平坐，是 Client 也是 Server</li>
+                        <li>分散式管理，各節點自行維護資源</li>
+                        <li>建置成本低，無須專門伺服器</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>主從式 (Client-Server)</h4>
+                    <ul>
+                        <li>專用伺服器提供資源，客戶端發出請求</li>
+                        <li>集中式管理，安全性、備份容易</li>
+                        <li>效能穩定，擴充性強</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>通訊傳輸模式</h3>
+            <div class="grid2">
+                <div>
+                    <h4>單工 (Simplex)</h4>
+                    <p>只能單向傳播。如：電視廣播。</p>
+                </div>
+                <div>
+                    <h4>半雙工 (Half-Duplex)</h4>
+                    <p>雙向但不能同時。如：對講機。</p>
+                </div>
+                <div>
+                    <h4>全雙工 (Full-Duplex)</h4>
+                    <p>可同時雙向傳播。如：電話、現代交換器。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>訊號、調變與多工</h3>
+            <div class="grid2">
+                <div>
+                    <h4>訊號三要素</h4>
+                    <ul>
+                        <li><strong>振幅 (Amplitude)</strong></li>
+                        <li><strong>頻率 (Frequency)</strong></li>
+                        <li><strong>相位 (Phase)</strong></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>調變 (Modulation)</h4>
+                    <p><strong>數位調變：</strong>ASK (振幅鍵移)、FSK (頻率鍵移)、PSK (相位鍵移)</p>
+                    <p><strong>類比調變：</strong>AM (調幅)、FM (調頻)、PM (調相)</p>
+                </div>
+                <div>
+                    <h4>多工處理 (MUX)</h4>
+                    <ul>
+                        <li><strong>FDM</strong>：分頻多工，如廣播電台</li>
+                        <li><strong>TDM</strong>：分時多工，分配時間片段</li>
+                        <li><strong>CDM</strong>：分碼多工，獨特編碼解碼</li>
+                        <li><strong>WDM</strong>：分波多工，專用於光纖</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>類比轉數位訊號 (ADC)</h3>
+            <ol>
+                <li><strong>抽樣 (Sampling)</strong>：取樣類比訊號</li>
+                <li><strong>量化 (Quantization)</strong>：將樣本對應到離散數值</li>
+                <li><strong>編碼 (Encoding)</strong>：轉換為數位資料儲存</li>
+            </ol>
+        </div>
+
+        <div class="card">
+            <h3>OSI 七層 vs TCP/IP 四層</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>OSI 七層</th><th>TCP/IP 四層</th><th>功能 / 協定</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>應用層 (Application)</strong></td><td rowspan="3">應用層</td><td rowspan="3">HTTP, FTP, DNS</td></tr>
+                        <tr><td><strong>表示層 (Presentation)</strong></td></tr>
+                        <tr><td><strong>會議層 (Session)</strong></td></tr>
+                        <tr><td><strong>傳輸層 (Transport)</strong></td><td>傳輸層</td><td>TCP, UDP</td></tr>
+                        <tr><td><strong>網路層 (Network)</strong></td><td>網路互聯層</td><td>IP (路由 + IP 定址)</td></tr>
+                        <tr><td><strong>資料連結層 (Data Link)</strong></td><td rowspan="2">網路存取層</td><td>MAC 定址</td></tr>
+                        <tr><td><strong>實體層 (Physical)</strong></td><td>位元傳輸</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>OSI 七層與網路設備</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>層級</th><th>資料單位</th><th>設備</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>L1 實體層</strong></td><td>Bit (位元)</td><td>集線器 (Hub)、中繼器 (Repeater)、網路線</td></tr>
+                        <tr><td><strong>L2 資料連結層</strong></td><td>Frame (訊框)</td><td>交換器 (Switch)、橋接器 (Bridge)、網路卡</td></tr>
+                        <tr><td><strong>L3 網路層</strong></td><td>Packet (封包)</td><td>路由器 (Router)、L3 交換器</td></tr>
+                        <tr><td><strong>L4 傳輸層</strong></td><td>Segment</td><td>確保資料可靠傳送 (TCP)</td></tr>
+                        <tr><td><strong>L5 會議層</strong></td><td>資料</td><td>建立、管理、終止連線會話</td></tr>
+                        <tr><td><strong>L6 表示層</strong></td><td>資料</td><td>資料格式、加密、壓縮</td></tr>
+                        <tr><td><strong>L7 應用層</strong></td><td>資料</td><td>HTTP, FTP, DNS</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Switch vs Hub 比較</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>比較項目</th><th>Switch (交換器)</th><th>Hub (集線器)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>OSI 層級</strong></td><td>L2 (資料連結層)</td><td>L1 (實體層)</td></tr>
+                        <tr><td><strong>傳輸模式</strong></td><td>單播 (Unicast)</td><td>廣播 (Broadcast)</td></tr>
+                        <tr><td><strong>通訊模式</strong></td><td>全雙工 (Full-Duplex)</td><td>半雙工 (Half-Duplex)</td></tr>
+                        <tr><td><strong>辨識方式</strong></td><td>認 MAC 位址，有 MAC 表</td><td>不認 MAC，只傳遞訊號</td></tr>
+                        <tr><td><strong>效率</strong></td><td>高 (專屬通道，互不干擾)</td><td>低 (太多人容易碰撞)</td></tr>
+                        <tr><td><strong>價格</strong></td><td>較貴，現代網路主流</td><td>便宜，幾乎消失</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>碰撞網域 vs 廣播網域</h4>
+            <ul>
+                <li><strong>碰撞網域 (Collision Domain)</strong>：Hub 所有埠在同一網域（會碰撞）；Switch 每埠獨立（不碰撞）</li>
+                <li><strong>廣播網域 (Broadcast Domain)</strong>：兩者都會將廣播封包傳給所有人（除發送者外）</li>
+            </ul>
+            <h4>運作邏輯</h4>
+            <ul>
+                <li><strong>Hub</strong>：A 傳給 B 時，複製訊號轉發到所有埠，安全性差且效率低</li>
+                <li><strong>Switch</strong>：查 MAC 位址表，針對目標直接傳送，效率高</li>
+            </ul>
         </div>
     </section>
 
