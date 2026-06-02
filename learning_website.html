@@ -310,7 +310,6 @@
 </nav>
 
 <main>
-    <!-- ==================== OVERVIEW ==================== -->
     <section id="overview" class="active">
         <div class="sec-title">
             <h2>總覽</h2>
@@ -366,7 +365,6 @@
         </div>
     </section>
 
-    <!-- ==================== CH1 ==================== -->
     <section id="ch01">
         <div class="sec-title">
             <h2>Ch1 網路簡介</h2>
@@ -476,7 +474,6 @@
         </div>
     </section>
 
-    <!-- ==================== CH2 ==================== -->
     <section id="ch02">
         <div class="sec-title">
             <h2>Ch2 通訊</h2>
@@ -580,7 +577,6 @@
         </div>
     </section>
 
-    <!-- ==================== CH3 ==================== -->
     <section id="ch03">
         <div class="sec-title">
             <h2>Ch3 設備</h2>
@@ -687,7 +683,6 @@
         </div>
     </section>
 
-    <!-- ==================== CH4 ==================== -->
     <section id="ch04">
         <div class="sec-title">
             <h2>Ch4 通訊協定</h2>
@@ -850,7 +845,6 @@
         </div>
     </section>
 
-    <!-- ==================== CH5 ==================== -->
     <section id="ch05">
         <div class="sec-title">
             <h2>Ch5 乙太網路</h2>
@@ -958,7 +952,6 @@
         </div>
     </section>
 
-    <!-- ==================== CH7 ==================== -->
     <section id="ch07">
         <div class="sec-title">
             <h2>Ch7 區域網路</h2>
@@ -1075,7 +1068,6 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
     </section>
 
-    <!-- ==================== CH8 ==================== -->
     <section id="ch08">
         <div class="sec-title">
             <h2>Ch8 網際網路協定</h2>
@@ -1138,13 +1130,13 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |Version|  IHL  |   DSCP   | ECN |       Total Length          |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|         Identification        |Flags|    Fragment Offset     |
+|         Identification        |Flags|    Fragment Offset      |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |   Time to Live  |   Protocol   |       Header Checksum       |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                       Source IP Address                      |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                     Destination IP Address                    |
+|                    Destination IP Address                    |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                        Options (if IHL > 5)                  |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1233,7 +1225,6 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
     </section>
 
-    <!-- ==================== MIDTERM ==================== -->
     <section id="midterm">
         <div class="sec-title">
             <h2>期中考重點整理</h2>
@@ -1256,6 +1247,197 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             </div>
         </div>
 
+        <div class="card">
+            <h3>互動式波形模擬器 (Line Coding Simulator)</h3>
+            <p>在下方輸入 0 或 1 來觀察不同數位編碼方式的波形變化（預設為筆記上的 01001100011）。</p>
+            <div style="margin-top: 1rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; background: #fff; overflow-x: auto;">
+                <div style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <label for="binary-input" style="font-weight: 600;">輸入二進位字串:</label>
+                    <input type="text" id="binary-input" value="01001100011" style="padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; font-family: monospace; letter-spacing: 2px; width: 250px;">
+                    <span id="input-error" style="color: var(--danger); font-size: 0.85rem; display: none;">只能輸入 0 或 1 喔！</span>
+                </div>
+                <canvas id="waveform-canvas" width="800" height="600" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"></canvas>
+            </div>
+            
+            <script>
+                const canvas = document.getElementById('waveform-canvas');
+                const ctx = canvas.getContext('2d');
+                const input = document.getElementById('binary-input');
+                const errorMsg = document.getElementById('input-error');
+
+                const width = canvas.width;
+                const height = canvas.height;
+                const padding = 80; 
+                const topPadding = 40;
+                const chartHeight = 80;
+                const chartSpacing = 30;
+
+                const encodings = [
+                    { name: '1. NRZ-L', method: drawNRZL },
+                    { name: '2. NRZ-I', method: drawNRZI },
+                    { name: '3. Manchester', method: drawManchester },
+                    { name: '4. Diff. Manchester', method: drawDiffManchester },
+                    { name: '5. MLT-3', method: drawMLT3 }
+                ];
+
+                function draw() {
+                    let binaryString = input.value;
+                    
+                    if (!/^[01]*$/.test(binaryString)) {
+                        errorMsg.style.display = 'inline';
+                        return;
+                    }
+                    errorMsg.style.display = 'none';
+                    if (binaryString.length === 0) {
+                        ctx.clearRect(0, 0, width, height);
+                        return;
+                    }
+
+                    ctx.clearRect(0, 0, width, height);
+                    const bitWidth = (width - padding - 20) / binaryString.length;
+
+                    ctx.font = 'bold 18px monospace';
+                    ctx.fillStyle = '#212529';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    
+                    for (let i = 0; i < binaryString.length; i++) {
+                        let x = padding + (i * bitWidth) + (bitWidth / 2);
+                        ctx.fillText(binaryString[i], x, topPadding - 10);
+
+                        ctx.beginPath();
+                        ctx.strokeStyle = '#e9ecef';
+                        ctx.setLineDash([5, 5]);
+                        ctx.moveTo(padding + i * bitWidth, topPadding);
+                        ctx.lineTo(padding + i * bitWidth, height);
+                        ctx.stroke();
+                    }
+                    ctx.beginPath();
+                    ctx.moveTo(padding + binaryString.length * bitWidth, topPadding);
+                    ctx.lineTo(padding + binaryString.length * bitWidth, height);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    encodings.forEach((encoding, index) => {
+                        const startY = topPadding + index * (chartHeight + chartSpacing);
+                        drawChartBase(encoding.name, startY, bitWidth, binaryString.length);
+                        
+                        ctx.beginPath();
+                        ctx.strokeStyle = '#4263eb'; 
+                        ctx.lineWidth = 2.5;
+                        ctx.lineJoin = 'round';
+                        encoding.method(binaryString, padding, startY, bitWidth, chartHeight);
+                        ctx.stroke();
+                    });
+                }
+
+                function drawChartBase(title, startY, bitWidth, numBits) {
+                    ctx.font = 'bold 14px sans-serif';
+                    ctx.fillStyle = '#495057';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(title, 10, startY - 20);
+
+                    const zeroY = startY + chartHeight / 2;
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#dee2e6';
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(padding, zeroY);
+                    ctx.lineTo(padding + numBits * bitWidth, zeroY);
+                    ctx.stroke();
+                    
+                    ctx.font = '12px sans-serif';
+                    ctx.fillStyle = '#868e96';
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('+V', padding - 8, startY + 10);
+                    ctx.fillText('0', padding - 8, startY + chartHeight / 2);
+                    ctx.fillText('-V', padding - 8, startY + chartHeight - 10);
+                }
+
+                function drawNRZL(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    for (let i = 0; i < bits.length; i++) {
+                        let y = bits[i] === '0' ? startY + 10 : startY + h - 10;
+                        if (i === 0) ctx.moveTo(currentX, y);
+                        else ctx.lineTo(currentX, y);
+                        ctx.lineTo(currentX + bitWidth, y);
+                        currentX += bitWidth;
+                    }
+                }
+
+                function drawNRZI(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    let currentLevel = 'HIGH'; 
+                    for (let i = 0; i < bits.length; i++) {
+                        if (bits[i] === '1') {
+                            currentLevel = currentLevel === 'HIGH' ? 'LOW' : 'HIGH';
+                        }
+                        let y = currentLevel === 'HIGH' ? startY + 10 : startY + h - 10;
+                        if (i === 0) ctx.moveTo(currentX, y);
+                        else ctx.lineTo(currentX, y);
+                        ctx.lineTo(currentX + bitWidth, y);
+                        currentX += bitWidth;
+                    }
+                }
+
+                function drawManchester(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    for (let i = 0; i < bits.length; i++) {
+                        let y1 = bits[i] === '0' ? startY + 10 : startY + h - 10;
+                        let y2 = bits[i] === '0' ? startY + h - 10 : startY + 10;
+                        if (i === 0) ctx.moveTo(currentX, y1);
+                        else ctx.lineTo(currentX, y1);
+                        ctx.lineTo(currentX + bitWidth / 2, y1);
+                        ctx.lineTo(currentX + bitWidth / 2, y2);
+                        ctx.lineTo(currentX + bitWidth, y2);
+                        currentX += bitWidth;
+                    }
+                }
+
+                function drawDiffManchester(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    let currentLevel = 'HIGH'; 
+                    for (let i = 0; i < bits.length; i++) {
+                        if (bits[i] === '0') {
+                            currentLevel = currentLevel === 'HIGH' ? 'LOW' : 'HIGH';
+                        }
+                        let y1 = currentLevel === 'HIGH' ? startY + 10 : startY + h - 10;
+                        let y2 = currentLevel === 'HIGH' ? startY + h - 10 : startY + 10;
+                        if (i === 0) ctx.moveTo(currentX, y1);
+                        else ctx.lineTo(currentX, y1);
+                        ctx.lineTo(currentX + bitWidth / 2, y1);
+                        ctx.lineTo(currentX + bitWidth / 2, y2);
+                        ctx.lineTo(currentX + bitWidth, y2);
+                        currentLevel = currentLevel === 'HIGH' ? 'LOW' : 'HIGH'; 
+                        currentX += bitWidth;
+                    }
+                }
+
+                function drawMLT3(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    let cycle = ['0', '-V', '0', '+V']; 
+                    let cycleIdx = 0; 
+                    for (let i = 0; i < bits.length; i++) {
+                        if (bits[i] === '1') {
+                            cycleIdx = (cycleIdx + 1) % 4;
+                        }
+                        let y;
+                        if (cycle[cycleIdx] === '+V') y = startY + 10;
+                        else if (cycle[cycleIdx] === '0') y = startY + h / 2;
+                        else if (cycle[cycleIdx] === '-V') y = startY + h - 10;
+
+                        if (i === 0) ctx.moveTo(currentX, y);
+                        else ctx.lineTo(currentX, y);
+                        ctx.lineTo(currentX + bitWidth, y);
+                        currentX += bitWidth;
+                    }
+                }
+
+                input.addEventListener('input', draw);
+                draw();
+            </script>
+        </div>
         <div class="card">
             <h3>網路類型與拓樸</h3>
             <div class="grid2">
@@ -1420,7 +1602,6 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
     </section>
 
-    <!-- ==================== QUIZ ==================== -->
     <section id="quiz">
         <div class="sec-title">
             <h2>練習題庫</h2>
