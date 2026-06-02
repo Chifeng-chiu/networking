@@ -3,1799 +3,1369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>網路概論期末考 - 學習網頁</title>
+    <title>網路概論 重點總複習</title>
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #dbeafe;
-            --secondary: #0f172a;
-            --accent: #f59e0b;
-            --accent-light: #fef3c7;
-            --success: #10b981;
-            --success-light: #d1fae5;
-            --danger: #ef4444;
-            --danger-light: #fee2e2;
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-300: #cbd5e1;
-            --gray-400: #94a3b8;
-            --gray-500: #64748b;
-            --gray-600: #475569;
-            --gray-700: #334155;
-            --gray-800: #1e293b;
-            --gray-900: #0f172a;
-            --radius: 12px;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
-            --shadow-xl: 0 20px 50px -12px rgba(0,0,0,0.15);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        :root {
+            --bg: #f0f2f5;
+            --surface: #fff;
+            --surface2: #f8f9fa;
+            --border: #dee2e6;
+            --text: #212529;
+            --text2: #495057;
+            --text3: #868e96;
+            --primary: #4263eb;
+            --primary-light: #dbe4ff;
+            --primary-dark: #3b5bdb;
+            --accent: #f59f00;
+            --accent-light: #fff3bf;
+            --success: #2f9e44;
+            --success-light: #d3f9d8;
+            --danger: #e03131;
+            --danger-light: #ffe0e0;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+        }
+        html { scroll-behavior: smooth; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
-            background: var(--gray-50);
-            color: var(--gray-800);
-            line-height: 1.7;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
         }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
-            color: white;
-            padding: 3rem 2rem 2rem;
+        header {
+            background: linear-gradient(135deg, #1c7ed6, #4263eb, #7048e8);
+            color: #fff;
+            padding: 2.5rem 1.5rem 1.5rem;
             position: relative;
             overflow: hidden;
         }
-
-        .header::before {
+        header::after {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,.12) 0%, transparent 60%);
         }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        header > * { position: relative; z-index: 1; }
+        header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: .35rem; }
+        header p { font-size: 1rem; opacity: .85; max-width: 560px; }
+        header .stats { display: flex; gap: 1.25rem; margin-top: 1.25rem; flex-wrap: wrap; }
+        header .stat {
+            background: rgba(255,255,255,.15);
+            backdrop-filter: blur(6px);
+            padding: .4rem .85rem;
+            border-radius: 6px;
+            font-size: .8rem;
         }
+        header .stat strong { display: block; font-size: 1.05rem; }
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .header p {
-            font-size: 1.125rem;
-            opacity: 0.9;
-            max-width: 600px;
-        }
-
-        .header-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(255,255,255,0.15);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-        }
-
-        .stat-icon {
-            font-size: 1.25rem;
-        }
-
-        .stat-text {
-            font-size: 0.875rem;
-        }
-
-        .stat-text strong {
-            display: block;
-            font-size: 1.125rem;
-        }
-
-        /* Navigation */
-        .nav-container {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: white;
-            border-bottom: 1px solid var(--gray-200);
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
             box-shadow: var(--shadow);
         }
-
-        .nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 0.25rem;
-            padding: 0.5rem 1rem;
+        nav .inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; gap: 2px; padding: .4rem .75rem;
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        nav .inner::-webkit-scrollbar { display: none; }
+        nav button {
+            flex-shrink: 0;
+            padding: .5rem .9rem;
+            border: none; background: transparent;
+            font-size: .82rem; font-weight: 500; color: var(--text2);
+            border-radius: 6px;
+            cursor: pointer; white-space: nowrap;
+            transition: all .15s;
+        }
+        nav button:hover { background: var(--surface2); color: var(--text); }
+        nav button.active { background: var(--primary); color: #fff; }
+
+        .search-box {
+            max-width: 1200px; margin: 1rem auto 0; padding: 0 1rem;
+            position: relative; z-index: 1;
+        }
+        .search-box input {
+            width: 100%; padding: .7rem 1rem .7rem 2.4rem;
+            border: 2px solid var(--border); border-radius: 8px;
+            font-size: .9rem; background: var(--surface);
+            outline: none; transition: border-color .15s;
+        }
+        .search-box input:focus { border-color: var(--primary); }
+        .search-box .icon {
+            position: absolute; left: 1.9rem; top: 50%; transform: translateY(-50%);
+            color: var(--text3); font-size: .85rem;
         }
 
-        .nav::-webkit-scrollbar {
-            height: 0;
+        main {
+            max-width: 1200px; margin: 0 auto;
+            padding: 1.5rem 1rem 3rem;
         }
+        section { display: none; }
+        section.active { display: block; animation: fade .25s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        .nav-btn {
-            padding: 0.625rem 1.25rem;
-            border: none;
-            background: transparent;
-            color: var(--gray-600);
-            font-size: 0.875rem;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .sec-title {
+            margin-bottom: 1.25rem;
         }
+        .sec-title h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: .2rem; }
+        .sec-title p { color: var(--text3); font-size: .9rem; }
 
-        .nav-btn:hover {
-            background: var(--gray-100);
-            color: var(--gray-800);
-        }
-
-        .nav-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .nav-btn .nav-icon {
-            font-size: 1rem;
-        }
-
-        /* Main Content */
-        .main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Section Header */
-        .section-header {
-            margin-bottom: 2rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .section-header p {
-            color: var(--gray-500);
-            font-size: 1rem;
-        }
-
-        /* Cards */
         .card {
-            background: white;
+            background: var(--surface);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--gray-100);
-            transition: all 0.2s;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
         }
-
-        .card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-
         .card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 1.1rem; font-weight: 700;
+            margin-bottom: .6rem; padding-bottom: .4rem;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex; align-items: center; gap: .5rem;
         }
-
-        .card h4 {
-            font-size: 1.0625rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin: 1rem 0 0.5rem;
-        }
-
-        .card p, .card li {
-            color: var(--gray-600);
-            font-size: 0.9375rem;
-        }
-
-        .card ul, .card ol {
-            padding-left: 1.25rem;
-            margin: 0.5rem 0;
-        }
-
-        .card li {
-            margin-bottom: 0.375rem;
-        }
-
-        /* Tags */
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.625rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .tag-blue {
+        .card h4 { font-size: 1rem; font-weight: 600; margin: .85rem 0 .35rem; color: var(--text); }
+        .card p, .card li { font-size: .9rem; color: var(--text2); }
+        .card ul, .card ol { padding-left: 1.1rem; margin: .3rem 0; }
+        .card li { margin-bottom: .2rem; }
+        .card blockquote {
+            border-left: 3px solid var(--primary);
             background: var(--primary-light);
-            color: var(--primary);
+            padding: .6rem .9rem; margin: .6rem 0;
+            border-radius: 0 4px 4px 0;
+            font-size: .85rem; color: var(--text);
         }
-
-        .tag-amber {
+        .card blockquote.warn {
+            border-left-color: var(--accent);
             background: var(--accent-light);
-            color: #b45309;
         }
-
-        .tag-green {
+        .card blockquote.ok {
+            border-left-color: var(--success);
             background: var(--success-light);
-            color: #047857;
         }
 
-        .tag-red {
-            background: var(--danger-light);
-            color: #b91c1c;
+        .tag {
+            display: inline-block;
+            padding: .1rem .5rem;
+            border-radius: 4px;
+            font-size: .72rem; font-weight: 600;
         }
+        .tag-p { background: var(--primary-light); color: var(--primary-dark); }
+        .tag-a { background: var(--accent-light); color: #b88500; }
+        .tag-s { background: var(--success-light); color: var(--success); }
+        .tag-d { background: var(--danger-light); color: var(--danger); }
 
-        /* Table Styles */
-        .table-wrapper {
-            overflow-x: auto;
-            margin: 1rem 0;
-            border-radius: 8px;
-            border: 1px solid var(--gray-200);
-        }
+        .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.875rem;
+            width: 100%; border-collapse: collapse;
+            font-size: .85rem; margin: .5rem 0;
         }
-
         th {
-            background: var(--gray-50);
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: var(--gray-700);
-            border-bottom: 2px solid var(--gray-200);
+            background: var(--surface2);
+            padding: .55rem .7rem; text-align: left;
+            font-weight: 600; border-bottom: 2px solid var(--border);
+            color: var(--text);
         }
-
         td {
-            padding: 0.625rem 1rem;
-            border-bottom: 1px solid var(--gray-100);
-            color: var(--gray-600);
+            padding: .45rem .7rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text2);
         }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--surface2); }
+        .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; margin: .5rem 0; }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background: var(--gray-50);
-        }
-
-        /* Highlight Box */
-        .highlight-box {
-            background: var(--primary-light);
-            border-left: 4px solid var(--primary);
-            padding: 1rem 1.25rem;
-            border-radius: 0 8px 8px 0;
-            margin: 1rem 0;
-        }
-
-        .highlight-box.warning {
-            background: var(--accent-light);
-            border-left-color: var(--accent);
-        }
-
-        .highlight-box.success {
-            background: var(--success-light);
-            border-left-color: var(--success);
-        }
-
-        .highlight-box p {
-            color: var(--gray-700);
-            font-size: 0.875rem;
-        }
-
-        /* Grid Layout */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        /* Accordion */
-        .accordion {
-            margin-bottom: 0.75rem;
-        }
-
-        .accordion-header {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            padding: 1rem 1.25rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            color: var(--gray-800);
-            transition: all 0.2s;
-        }
-
-        .accordion-header:hover {
-            background: var(--gray-50);
-            border-color: var(--primary);
-        }
-
-        .accordion-header::after {
-            content: '+';
-            font-size: 1.25rem;
-            color: var(--primary);
-            transition: transform 0.2s;
-        }
-
-        .accordion-header.open::after {
-            transform: rotate(45deg);
-        }
-
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .accordion-content.open {
-            max-height: 2000px;
-        }
-
-        .accordion-body {
-            padding: 1rem 1.25rem;
-            color: var(--gray-600);
-            font-size: 0.9375rem;
-        }
-
-        /* Quiz Section */
-        .quiz-card {
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--gray-100);
-        }
-
-        .quiz-question {
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--gray-800);
-            margin-bottom: 1rem;
-        }
-
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .quiz-option {
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--gray-200);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.875rem;
-        }
-
-        .quiz-option:hover {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .quiz-option.correct {
-            border-color: var(--success);
-            background: var(--success-light);
-            color: #047857;
-        }
-
-        .quiz-option.wrong {
-            border-color: var(--danger);
-            background: var(--danger-light);
-            color: #b91c1c;
-        }
-
-        .quiz-option.disabled {
-            pointer-events: none;
-        }
-
-        .quiz-explanation {
-            margin-top: 1rem;
-            padding: 0.75rem 1rem;
-            background: var(--gray-50);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            display: none;
-        }
-
-        .quiz-explanation.show {
-            display: block;
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            margin: 1rem 0;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: var(--gray-200);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--success));
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .progress-text {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-            margin-top: 0.25rem;
-        }
-
-        /* Code block */
         code {
-            background: var(--gray-100);
-            padding: 0.125rem 0.375rem;
-            border-radius: 4px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.875em;
+            background: var(--surface2);
+            padding: .1rem .35rem; border-radius: 3px;
+            font-family: 'Consolas', monospace; font-size: .85em;
             color: var(--primary-dark);
         }
-
         .code-block {
-            background: var(--gray-900);
-            color: #e2e8f0;
-            padding: 1rem 1.25rem;
-            border-radius: 8px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.875rem;
-            overflow-x: auto;
-            margin: 1rem 0;
+            background: #1e1e2e; color: #cdd6f4;
+            padding: .8rem 1rem; border-radius: 6px;
+            font-family: 'Consolas', monospace; font-size: .8rem;
+            overflow-x: auto; margin: .5rem 0;
+            line-height: 1.5;
         }
+        .code-block .hl { color: #f9e2af; }
+        .code-block .hl2 { color: #89b4fa; }
 
-        /* Footer */
-        .footer {
-            background: var(--gray-900);
-            color: var(--gray-400);
-            padding: 2rem;
-            text-align: center;
-            font-size: 0.875rem;
-            margin-top: 3rem;
-        }
+        .def-list dt { font-weight: 600; margin-top: .5rem; color: var(--text); }
+        .def-list dd { margin-left: 1rem; color: var(--text2); font-size: .88rem; }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.875rem;
-            }
-
-            .header-stats {
-                gap: 0.75rem;
-            }
-
-            .main {
-                padding: 1rem;
-            }
-
-            .grid-2, .grid-3 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Dark mode toggle */
-        .theme-toggle {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            cursor: pointer;
-            box-shadow: var(--shadow-lg);
-            font-size: 1.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            transition: all 0.2s;
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        /* Search */
-        .search-container {
-            max-width: 1200px;
-            margin: 1.5rem auto 0;
-            padding: 0 1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border: 2px solid var(--gray-200);
-            border-radius: 10px;
-            font-size: 0.9375rem;
-            background: white;
-            color: var(--gray-800);
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-400);
-        }
-
-        /* Comparison cards */
-        .comparison-card {
-            background: white;
+        .quiz-card {
+            background: var(--surface);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            overflow: hidden;
-            border: 1px solid var(--gray-100);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
         }
-
-        .comparison-card-header {
-            padding: 1rem 1.25rem;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .comparison-card-header.blue {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-        }
-
-        .comparison-card-header.amber {
-            background: var(--accent-light);
-            color: #92400e;
-        }
-
-        .comparison-card-header.green {
-            background: var(--success-light);
-            color: #047857;
-        }
-
-        .comparison-card-body {
-            padding: 1rem 1.25rem;
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .comparison-card-body ul {
-            padding-left: 1rem;
-        }
-
-        .comparison-card-body li {
-            margin-bottom: 0.375rem;
-        }
-
-        /* Score display */
-        .score-display {
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, var(--primary-light), var(--success-light));
-            border-radius: var(--radius);
-            margin: 1rem 0;
-        }
-
-        .score-display .score {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .score-display .score-label {
-            color: var(--gray-500);
-            font-size: 0.875rem;
-        }
-
-        /* Back to top */
-        .back-to-top {
-            position: fixed;
-            bottom: 2rem;
-            left: 2rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-            border: 1px solid var(--gray-200);
-            box-shadow: var(--shadow);
+        .quiz-q { font-weight: 600; margin-bottom: .7rem; font-size: .95rem; }
+        .quiz-opts { display: flex; flex-direction: column; gap: .4rem; }
+        .quiz-opt {
+            padding: .55rem .85rem;
+            border: 2px solid var(--border);
+            border-radius: 6px;
             cursor: pointer;
+            transition: all .15s;
+            font-size: .85rem;
+        }
+        .quiz-opt:hover { border-color: var(--primary); background: var(--primary-light); }
+        .quiz-opt.disabled { pointer-events: none; }
+        .quiz-opt.correct { border-color: var(--success); background: var(--success-light); color: #1a5e2a; }
+        .quiz-opt.wrong { border-color: var(--danger); background: var(--danger-light); color: #a52525; }
+        .quiz-exp {
+            margin-top: .6rem; padding: .6rem .85rem;
+            background: var(--surface2); border-radius: 6px;
+            font-size: .82rem; color: var(--text2);
             display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            color: var(--gray-600);
-            transition: all 0.2s;
+        }
+        .quiz-exp.show { display: block; }
+
+        .score-box {
+            text-align: center; padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-light), var(--success-light));
+            border-radius: var(--radius); margin: 1rem 0;
+        }
+        .score-box .num { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+        .score-box .lbl { color: var(--text3); font-size: .82rem; }
+        .bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: .5rem 0; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); border-radius: 3px; transition: width .4s; }
+
+        .btn { display: inline-block; padding: .4rem .85rem; border: none; border-radius: 6px; cursor: pointer; font-size: .82rem; font-weight: 500; background: var(--primary); color: #fff; transition: background .15s; }
+        .btn:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+        .btn-outline:hover { background: var(--primary-light); }
+
+        .progress-track {
+            display: flex; align-items: center; gap: .5rem;
+            margin: .5rem 0; font-size: .78rem; color: var(--text3);
+        }
+        .progress-track .bar { flex: 1; }
+
+        .footer {
+            background: #1e1e2e; color: var(--text3);
+            text-align: center; padding: 1.5rem;
+            font-size: .8rem;
         }
 
-        .back-to-top:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+        @media (max-width: 640px) {
+            header h1 { font-size: 1.4rem; }
+            main { padding: 1rem .5rem; }
+            .card { padding: 1rem; }
+            .grid2 { grid-template-columns: 1fr; }
+            nav .inner { padding: .3rem; }
+            nav button { font-size: .75rem; padding: .4rem .65rem; }
         }
 
-        .back-to-top.show {
-            display: flex;
+        /* floating toc */
+        .toc-card { position: sticky; top: 4rem; }
+        .toc-card a {
+            display: block; padding: .25rem 0; font-size: .82rem;
+            color: var(--text2); text-decoration: none; transition: color .15s;
         }
+        .toc-card a:hover { color: var(--primary); }
 
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--gray-200);
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 1.5rem;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2rem;
-            top: 0.5rem;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--primary);
-            border: 2px solid white;
-            box-shadow: 0 0 0 2px var(--primary);
-        }
-
-        .timeline-item h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 0.25rem;
-        }
-
-        .timeline-item p {
-            font-size: 0.875rem;
-            color: var(--gray-500);
-        }
+        .kword { color: var(--primary-dark); font-weight: 600; }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <h1>網路概論期末考</h1>
-            <p>網路通訊協定、乙太網路、TIA標準與區域網路的完整學習指南</p>
-            <div class="header-stats">
-                <div class="stat-item">
-                    <span class="stat-icon">📚</span>
-                    <div class="stat-text">
-                        <strong>7</strong>
-                        章節投影片
-                    </div>
+
+<header>
+    <h1>網路概論 重點總複習</h1>
+    <p>基於「網路概論與實務第七版」各章節內容整理 — 重點摘要、比較表格、自我測驗</p>
+    <div class="stats">
+        <div class="stat"><strong>7</strong> 章節</div>
+        <div class="stat"><strong>514</strong> 張投影片</div>
+        <div class="stat"><strong>40</strong> 練習題</div>
+    </div>
+</header>
+
+<nav>
+    <div class="inner">
+        <button class="active" onclick="showSec('overview')">總覽</button>
+        <button onclick="showSec('ch01')">Ch1 簡介</button>
+        <button onclick="showSec('ch02')">Ch2 通訊</button>
+        <button onclick="showSec('ch03')">Ch3 設備</button>
+        <button onclick="showSec('ch04')">Ch4 協定</button>
+        <button onclick="showSec('ch05')">Ch5 乙太網路</button>
+        <button onclick="showSec('ch07')">Ch7 區域網路</button>
+        <button onclick="showSec('ch08')">Ch8 IP</button>
+        <button onclick="showSec('quiz')">練習題庫</button>
+    </div>
+</nav>
+
+<main>
+    <!-- ==================== OVERVIEW ==================== -->
+    <section id="overview" class="active">
+        <div class="sec-title">
+            <h2>總覽</h2>
+            <p>七章重點一覽 — 快速掌握各章核心</p>
+        </div>
+
+        <div class="grid2">
+            <div class="card">
+                <h3>Ch1 網路簡介</h3>
+                <p>網路定義、分類（規模/角色）、拓撲、傳輸模式、網路三要素</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">44 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch2 通訊</h3>
+                <p>資料通訊元件、類比/數位訊號、編碼方式、傳輸媒介、多工技術</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">64 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch3 設備</h3>
+                <p>L1-L7 網路設備、碰撞域與廣播域、MAC表、路由表</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">33 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch4 通訊協定</h3>
+                <p>OSI 七層、TCP/IP 四層、TCP/UDP、應用層協定、埠號</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">44 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch5 乙太網路</h3>
+                <p>Ethernet 演進、CSMA/CD、幀格式、MAC 位址、自動協商</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">74 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch7 區域網路</h3>
+                <p>IEEE 802 標準、VLAN、STP、無線 LAN、Wi-Fi 演進</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">94 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch8 網際網路協定</h3>
+                <p>IPv4 分類、子網路切割、CIDR、NAT、路由協定、IPv6</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">161 張投影片</span></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>學習進度</h3>
+            <p>點擊上方導覽按鈕開始閱讀各章重點。</p>
+            <div class="progress-track">
+                <span>已讀</span>
+                <div class="bar bar-wrap"><div class="bar-fill" id="overall-bar" style="width:0%"></div></div>
+                <span><span id="overall-pct">0</span>%</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CH1 ==================== -->
+    <section id="ch01">
+        <div class="sec-title">
+            <h2>Ch1 網路簡介</h2>
+            <p>Introduction — 網路的定義、分類、拓撲與傳輸模式</p>
+        </div>
+
+        <div class="card">
+            <h3>1.1 什麼是網路</h3>
+            <p><span class="kword">網路 (Network)</span> 是將兩台以上的電腦與設備透過傳輸媒介連接，使其能交換資料與共享資源的系統。</p>
+            <blockquote>
+                <strong>網路三要素：</strong>設備 (Devices) + 傳輸媒介 (Medium) + 通訊協定 (Protocol)
+            </blockquote>
+            <h4>網路的主要目的</h4>
+            <ul>
+                <li><strong>資源共享</strong>：印表機、儲存空間、應用程式</li>
+                <li><strong>資料交換</strong>：檔案傳輸、電子郵件、即時通訊</li>
+                <li><strong>集中管理</strong>：伺服器集中控管使用者與安全政策</li>
+                <li><strong>提高可靠性</strong>：備援機制確保服務不中斷</li>
+                <li><strong>節省成本</strong>：共享硬體設備與軟體授權</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>1.2 網路分類（依規模）</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>類型</th><th>全名</th><th>範圍</th><th>速度</th><th>範例</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="tag tag-s">PAN</span></td><td>Personal Area Network</td><td>個人周圍 1-10m</td><td>1-24 Mbps</td><td>藍牙、USB</td></tr>
+                        <tr><td><span class="tag tag-p">LAN</span></td><td>Local Area Network</td><td>建築物 ~1km</td><td>10 Mbps - 100 Gbps</td><td>校園、辦公室</td></tr>
+                        <tr><td><span class="tag tag-a">MAN</span></td><td>Metropolitan Area Network</td><td>城市 ~10km</td><td>100 Mbps - 10 Gbps</td><td>城市 Wi-Fi</td></tr>
+                        <tr><td><span class="tag tag-d">WAN</span></td><td>Wide Area Network</td><td>國家/全球</td><td>1 Mbps - 100 Gbps</td><td>網際網路</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>1.3 網路分類（依角色）</h3>
+            <div class="grid2">
+                <div>
+                    <h4>Client-Server 架構</h4>
+                    <ul>
+                        <li>伺服器集中提供服務</li>
+                        <li>客戶端提出請求</li>
+                        <li>集中管理、安全性高</li>
+                        <li>伺服器成本較高</li>
+                    </ul>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-icon">📝</span>
-                    <div class="stat-text">
-                        <strong>266</strong>
-                        投影片內容
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">❓</span>
-                    <div class="stat-text">
-                        <strong>20</strong>
-                        練習題庫
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">📥</span>
-                    <div class="stat-text">
-                        <strong>3</strong>
-                        投影片下載
-                    </div>
+                <div>
+                    <h4>Peer-to-Peer 架構</h4>
+                    <ul>
+                        <li>每台設備兼任客戶端與伺服器</li>
+                        <li>無中央管理節點</li>
+                        <li>成本低、設定簡單</li>
+                        <li>安全性較低</li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </header>
 
-    <!-- Navigation -->
-    <nav class="nav-container">
-        <div class="nav">
-            <button class="nav-btn active" onclick="showSection('overview')">
-                <span class="nav-icon">🏠</span> 總覽
-            </button>
-            <button class="nav-btn" onclick="showSection('ch01')">
-                <span class="nav-icon">📖</span> Ch1 簡介
-            </button>
-            <button class="nav-btn" onclick="showSection('ch02')">
-                <span class="nav-icon">📡</span> Ch2 通訊
-            </button>
-            <button class="nav-btn" onclick="showSection('ch03')">
-                <span class="nav-icon">🔧</span> Ch3 設備
-            </button>
-            <button class="nav-btn" onclick="showSection('ch04')">
-                <span class="nav-icon">📜</span> Ch4 協定
-            </button>
-            <button class="nav-btn" onclick="showSection('ch05')">
-                <span class="nav-icon">🔌</span> Ch5 Ethernet
-            </button>
-            <button class="nav-btn" onclick="showSection('ch07')">
-                <span class="nav-icon">🌐</span> Ch7 LAN
-            </button>
-            <button class="nav-btn" onclick="showSection('ch08')">
-                <span class="nav-icon">🌍</span> Ch8 IP
-            </button>
-            <button class="nav-btn" onclick="showSection('quiz')">
-                <span class="nav-icon">🎯</span> 練習題庫
-            </button>
+        <div class="card">
+            <h3>1.4 網路拓撲</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>拓撲</th><th>說明</th><th>優點</th><th>缺點</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>匯流排 (Bus)</strong></td><td>所有設備共享一條主幹線</td><td>佈線簡單、成本低</td><td>主幹故障全網中斷</td><td>早期 10BASE2</td></tr>
+                        <tr><td><strong>星狀 (Star)</strong></td><td>設備連接到中央節點</td><td>易管理、除錯方便</td><td>中央設備故障全網中斷</td><td>現代乙太網路</td></tr>
+                        <tr><td><strong>環狀 (Ring)</strong></td><td>設備首尾相連成環</td><td>傳輸穩定、無碰撞</td><td>單點故障影響全網</td><td>Token Ring、FDDI</td></tr>
+                        <tr><td><strong>網狀 (Mesh)</strong></td><td>所有設備互相連接</td><td>高冗餘、高可靠</td><td>佈線成本最高</td><td>骨幹網路</td></tr>
+                        <tr><td><strong>樹狀 (Tree)</strong></td><td>星狀的層級延伸</td><td>易擴充、分層管理</td><td>根節點故障影響大</td><td>企業網路</td></tr>
+                        <tr><td><strong>混合 (Hybrid)</strong></td><td>結合多種拓撲</td><td>靈活彈性</td><td>設計管理複雜</td><td>大型網路</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote>現代乙太網路幾乎都使用 <strong>星狀拓撲 (Star)</strong>，以交換器為中央節點。</blockquote>
         </div>
-    </nav>
 
-    <main class="main">
-        <!-- Overview Section -->
-        <section id="overview" class="section active">
-            <div class="section-header">
-                <h2>🏠 課程總覽</h2>
-                <p>網路概論期末考 — 各章節投影片下載</p>
-            </div>
-
-            <div class="grid-2">
-                <div class="card">
-                    <h3>📖 第一章：Introduction (簡介)</h3>
-                    <span class="tag tag-blue">Net7_01Introduction.ppt</span>
-                    <p style="margin-top: 0.75rem;">網路概論基礎介紹</p>
-                    <div style="margin-top: 0.75rem;">
-                        <a href="114期末考/Net7_01Introduction.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載投影片</a>
-                    </div>
+        <div class="card">
+            <h3>1.5 傳輸模式</h3>
+            <div class="grid2">
+                <div>
+                    <h4>單工 (Simplex)</h4>
+                    <p>資料只能單向傳輸。如：廣播、電視、監視器。</p>
                 </div>
-
-                <div class="card">
-                    <h3>📡 第二章：Communication (通訊)</h3>
-                    <span class="tag tag-blue">Net7_02Communication.ppt</span>
-                    <p style="margin-top: 0.75rem;">網路通訊基礎概念</p>
-                    <div style="margin-top: 0.75rem;">
-                        <a href="114期末考/Net7_02Communication.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載投影片</a>
-                    </div>
+                <div>
+                    <h4>半雙工 (Half-Duplex)</h4>
+                    <p>雙方可互傳，但同一時間只能單向。如：對講機。</p>
                 </div>
-
-                <div class="card">
-                    <h3>🔧 第三章：Equipment (設備)</h3>
-                    <span class="tag tag-blue">Net7_03Equipment.ppt</span>
-                    <p style="margin-top: 0.75rem;">網路設備介紹</p>
-                    <div style="margin-top: 0.75rem;">
-                        <a href="114期末考/Net7_03Equipment.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載投影片</a>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>📜 第四章：Protocol (協定)</h3>
-                    <span class="tag tag-blue">Net7_04Protocol.ppt</span>
-                    <p style="margin-top: 0.75rem;">網路通訊協定</p>
-                    <div style="margin-top: 0.75rem;">
-                        <a href="114期末考/Net7_04Protocol.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載投影片</a>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>🔌 第五章：Ethernet (乙太網路)</h3>
-                    <span class="tag tag-blue">Net7_05Ethernet.ppt</span>
-                    <p style="margin-top: 0.75rem;">乙太網路技術</p>
-                    <div style="margin-top: 0.75rem;">
-                        <a href="114期末考/Net7_05Ethernet.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載投影片</a>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>🌐 第七章：LAN (區域網路)</h3>
-                    <span class="tag tag-blue">Net7_07LAN.ppt</span>
-                    <p style="margin-top: 0.75rem;">區域網路技術</p>
-                    <div style="margin-top: 0.75rem;">
-                        <a href="114期末考/Net7_07LAN.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載投影片</a>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>🌍 第八章：IP (網際網路協定)</h3>
-                    <span class="tag tag-blue">Net7_08IP.ppt</span>
-                    <p style="margin-top: 0.75rem;">網際網路協定</p>
-                    <div style="margin-top: 0.75rem;">
-                        <a href="114期末考/Net7_08IP.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載投影片</a>
-                    </div>
+                <div>
+                    <h4>全雙工 (Full-Duplex)</h4>
+                    <p>雙方可同時傳送和接收。如：電話、交換器網路。</p>
                 </div>
             </div>
-        </section>
+            <blockquote class="ok">Gigabit Ethernet 以上強制使用全雙工模式。</blockquote>
+        </div>
 
-        <!-- Ch1: Introduction -->
-        <section id="ch01" class="section">
-            <div class="section-header">
-                <h2>📖 第一章：Introduction (簡介)</h2>
-                <p>網路概論基礎介紹 — 網路的定義、類型與拓撲</p>
+        <div class="card">
+            <h3>1.6 關鍵術語</h3>
+            <dl class="def-list">
+                <dt>頻寬 (Bandwidth)</dt><dd>單位時間內能傳輸的最大資料量，單位 bps</dd>
+                <dt>吞吐量 (Throughput)</dt><dd>實際成功傳輸的資料量</dd>
+                <dt>延遲 (Latency)</dt><dd>資料從源端到目的端的時間延遲</dd>
+                <dt>傳輸時間 (Propagation Delay)</dt><dd>訊號在媒介中傳遞的時間</dd>
+            </dl>
+        </div>
+    </section>
+
+    <!-- ==================== CH2 ==================== -->
+    <section id="ch02">
+        <div class="sec-title">
+            <h2>Ch2 通訊</h2>
+            <p>Communication — 訊號、編碼、傳輸媒介與多工技術</p>
+        </div>
+
+        <div class="card">
+            <h3>2.1 資料通訊系統五大元件</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>元件</th><th>說明</th><th>範例</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>訊息 (Message)</strong></td><td>要傳送的資料內容</td><td>文字、圖片、聲音、影片</td></tr>
+                        <tr><td><strong>傳送端 (Sender)</strong></td><td>發出訊息的設備</td><td>電腦、手機</td></tr>
+                        <tr><td><strong>接收端 (Receiver)</strong></td><td>接收訊息的設備</td><td>電腦、手機</td></tr>
+                        <tr><td><strong>傳輸媒介 (Medium)</strong></td><td>訊號傳遞的通道</td><td>雙絞線、光纖、無線電波</td></tr>
+                        <tr><td><strong>協定 (Protocol)</strong></td><td>規範通訊的規則集合</td><td>TCP/IP、HTTP</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>網路的定義</h3>
-                <p>網路（Network）是將多台電腦與設備透過傳輸媒介連接起來，使彼此能夠交換資料與共享資源的系統。</p>
-                <div class="highlight-box">
-                    <p><strong>網路三要素：</strong>至少兩台設備、傳輸媒介（纜線或無線）、通訊協定（共同語言規則）。</p>
+        <div class="card">
+            <h3>2.2 類比訊號 vs 數位訊號</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>特性</th><th>類比訊號 (Analog)</th><th>數位訊號 (Digital)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>波形</strong></td><td>連續平滑波形（正弦波）</td><td>離散階梯狀方波（0/1）</td></tr>
+                        <tr><td><strong>衰減處理</strong></td><td>使用放大器，同時放大雜訊</td><td>使用中繼器，可還原訊號</td></tr>
+                        <tr><td><strong>抗干擾</strong></td><td>較差，雜訊累積</td><td>較強，可透過編碼糾錯</td></tr>
+                        <tr><td><strong>應用</strong></td><td>傳統電話、廣播</td><td>電腦網路、數位電視</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote class="ok">數位傳輸優點：低成本、低錯誤率、易加密壓縮、可整合多種資料類型。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>2.3 資料編碼方式</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>編碼</th><th>原理</th><th>特性</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>NRZ</strong></td><td>1=高電位，0=低電位</td><td>簡單但可能失去同步</td><td>低速介面</td></tr>
+                        <tr><td><strong>Manchester</strong></td><td>每位元中間有電位轉換</td><td>內建時脈同步</td><td>早期乙太網路 (10BASE-T)</td></tr>
+                        <tr><td><strong>Differential Manchester</strong></td><td>位元開始處有無轉換</td><td>抗干擾性強</td><td>Token Ring</td></tr>
+                        <tr><td><strong>4B/5B</strong></td><td>4 位元編碼為 5 位元</td><td>保證足夠轉換</td><td>100BASE-TX</td></tr>
+                        <tr><td><strong>8B/10B</strong></td><td>8 位元編碼為 10 位元</td><td>DC 平衡</td><td>Gigabit Ethernet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2.4 傳輸媒介</h3>
+            <div class="grid2">
+                <div>
+                    <h4>有線傳輸 (Guided Media)</h4>
+                    <ul>
+                        <li><strong>雙絞線</strong>：UTP（無遮蔽）、STP（有遮蔽），最大 100m</li>
+                        <li><strong>同軸纜線</strong>：中心導體 + 絕緣層 + 金屬網，抗干擾佳</li>
+                        <li><strong>光纖</strong>：單模（雷射，極長距離）、多模（LED，較短距離）<br>高頻寬、低衰減、不受 EMI 干擾</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>無線傳輸 (Unguided Media)</h4>
+                    <ul>
+                        <li><strong>無線電波</strong>：全方向、穿透建築、Wi-Fi (2.4/5/6 GHz)</li>
+                        <li><strong>微波</strong>：方向性、需視線 LOS、衛星通訊</li>
+                        <li><strong>紅外線</strong>：短距離、無法穿透牆壁</li>
+                    </ul>
                 </div>
             </div>
+            <blockquote>UTP 纜線依頻寬分為 Cat3 (16MHz)、Cat5 (100MHz)、Cat5e (100MHz)、Cat6 (250MHz)、Cat6a (500MHz)、Cat7 (600MHz)、Cat8 (2000MHz)。</blockquote>
+        </div>
 
-            <div class="card">
-                <h3>網路的分類 (依規模)</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>類型</th>
-                                <th>全名</th>
-                                <th>涵蓋範圍</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>PAN</strong></td><td>Personal Area Network</td><td>個人範圍（藍芽、USB）</td></tr>
-                            <tr><td><strong>LAN</strong></td><td>Local Area Network</td><td>建築物內（校園、辦公室）</td></tr>
-                            <tr><td><strong>MAN</strong></td><td>Metropolitan Area Network</td><td>城市範圍</td></tr>
-                            <tr><td><strong>WAN</strong></td><td>Wide Area Network</td><td>國家/全球（網際網路）</td></tr>
-                        </tbody>
-                    </table>
+        <div class="card">
+            <h3>2.5 多工技術</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>技術</th><th>原理</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>FDM</strong> 頻分多工</td><td>不同訊號使用不同頻率</td><td>廣播電台、有線電視</td></tr>
+                        <tr><td><strong>TDM</strong> 時分多工</td><td>輪流分配時間槽</td><td>T1/E1、SONET</td></tr>
+                        <tr><td><strong>WDM</strong> 波分多工</td><td>不同波長的光在同一光纖</td><td>光纖骨幹（數十 Tbps）</td></tr>
+                        <tr><td><strong>CDMA</strong> 碼分多工</td><td>不同編碼同時同頻傳輸</td><td>3G 行動通訊</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2.6 交換技術</h3>
+            <ul>
+                <li><strong>電路交換 (Circuit Switching)</strong>：建立專用線路，如傳統電話。優點：穩定；缺點：頻寬浪費</li>
+                <li><strong>封包交換 (Packet Switching)</strong>：資料分割為封包獨立傳送。優點：高效利用頻寬；缺點：延遲不確定</li>
+                <li><strong>訊息交換 (Message Switching)</strong>：完整訊息逐跳轉送 (Store-and-Forward)</li>
+            </ul>
+            <blockquote>現代網路主要使用 <strong>封包交換</strong> 技術。</blockquote>
+        </div>
+    </section>
+
+    <!-- ==================== CH3 ==================== -->
+    <section id="ch03">
+        <div class="sec-title">
+            <h2>Ch3 設備</h2>
+            <p>Equipment — L1 到 L7 網路設備功能、原理與應用</p>
+        </div>
+
+        <div class="card">
+            <h3>3.1 網路設備層級總覽</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>設備</th><th>OSI</th><th>定址</th><th>碰撞域</th><th>廣播域</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>中繼器 (Repeater)</strong></td><td>L1</td><td>無</td><td>不分割</td><td>不分割</td></tr>
+                        <tr><td><strong>集線器 (Hub)</strong></td><td>L1</td><td>無</td><td>不分割</td><td>不分割</td></tr>
+                        <tr><td><strong>橋接器 (Bridge)</strong></td><td>L2</td><td>MAC</td><td>分割</td><td>不分割</td></tr>
+                        <tr><td><strong>交換器 (Switch)</strong></td><td>L2</td><td>MAC</td><td>每埠分割</td><td>不分割</td></tr>
+                        <tr><td><strong>路由器 (Router)</strong></td><td>L3</td><td>IP</td><td>每埠分割</td><td>每埠分割</td></tr>
+                        <tr><td><strong>L3 交換器</strong></td><td>L2+L3</td><td>MAC+IP</td><td>每埠分割</td><td>可分割</td></tr>
+                        <tr><td><strong>閘道器 (Gateway)</strong></td><td>L4-L7</td><td>依協定</td><td>—</td><td>—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote>
+                <strong>碰撞域 (Collision Domain)</strong>：可能發生碰撞的區域。交換器每埠為獨立碰撞域。<br>
+                <strong>廣播域 (Broadcast Domain)</strong>：廣播封包能到達的範圍。路由器每埠為獨立廣播域。
+            </blockquote>
+        </div>
+
+        <div class="card">
+            <h3>3.2 L1 設備：中繼器與集線器</h3>
+            <div class="grid2">
+                <div>
+                    <h4>中繼器 (Repeater)</h4>
+                    <ul>
+                        <li>工作在實體層，處理位元訊號</li>
+                        <li>將衰減訊號放大後重新傳送</li>
+                        <li>延長網路傳輸距離</li>
+                        <li>2 埠設備（進/出），不具過濾功能</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>集線器 (Hub)</h4>
+                    <ul>
+                        <li>多埠中繼器（4-24 埠）</li>
+                        <li>收到的訊號複製到所有其他埠</li>
+                        <li>所有埠共享頻寬與碰撞域</li>
+                        <li>半雙工模式，已被交換器取代</li>
+                    </ul>
                 </div>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>網路拓撲 (Topology)</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>拓撲</th>
-                                <th>說明</th>
-                                <th>優點</th>
-                                <th>缺點</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>匯流排 (Bus)</strong></td>
-                                <td>所有設備共享一條主幹線</td>
-                                <td>佈線簡單、成本低</td>
-                                <td>主幹故障全網中斷、碰撞問題</td>
-                            </tr>
-                            <tr>
-                                <td><strong>星狀 (Star)</strong></td>
-                                <td>所有設備連接到中央節點</td>
-                                <td>易管理、單點故障不影響全網</td>
-                                <td>中央節點故障全網中斷</td>
-                            </tr>
-                            <tr>
-                                <td><strong>環狀 (Ring)</strong></td>
-                                <td>設備首尾相連成環</td>
-                                <td>傳輸穩定、無碰撞</td>
-                                <td>單點故障影響全網</td>
-                            </tr>
-                            <tr>
-                                <td><strong>網狀 (Mesh)</strong></td>
-                                <td>每個設備互相連接</td>
-                                <td>高冗餘、高可靠性</td>
-                                <td>佈線成本高</td>
-                            </tr>
-                            <tr>
-                                <td><strong>樹狀 (Tree)</strong></td>
-                                <td>星狀的層級延伸</td>
-                                <td>易擴充</td>
-                                <td>根節點故障影響大</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="card">
+            <h3>3.3 L2 設備：橋接器與交換器</h3>
+            <h4>橋接器 (Bridge)</h4>
+            <ul>
+                <li>2-4 埠，連接兩個網路區段</li>
+                <li>根據 MAC 位址決定是否轉送</li>
+                <li>建立 MAC 學習表，可分割碰撞域</li>
+            </ul>
+            <h4>交換器 (Switch) — 現代網路核心</h4>
+            <p>交換器是多埠橋接器，透過硬體 ASIC 高速轉送：</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>功能</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>MAC 位址學習</strong></td><td>記錄來源 MAC 與對應埠號到 MAC 表</td></tr>
+                        <tr><td><strong>轉送/過濾</strong></td><td>查 MAC 表決定轉送到特定埠或泛洪 (Flooding)</td></tr>
+                        <tr><td><strong>MAC 表老化</strong></td><td>TTL 通常 300 秒，逾時自動刪除</td></tr>
+                        <tr><td><strong>Store-and-Forward</strong></td><td>完整接收後檢查 FCS 再轉送，保證正確性</td></tr>
+                        <tr><td><strong>Cut-Through</strong></td><td>僅讀取目的 MAC 立即轉送，延遲低但無錯誤檢查</td></tr>
+                        <tr><td><strong>VLAN</strong></td><td>分割為多個邏輯網路，隔離廣播域</td></tr>
+                        <tr><td><strong>STP/RSTP</strong></td><td>防止網路迴路導致廣播風暴</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>傳輸模式</h3>
-                <ul>
-                    <li><strong>單工 (Simplex)</strong>：單向傳輸，如廣播、電視</li>
-                    <li><strong>半雙工 (Half-Duplex)</strong>：雙向但不能同時，如對講機</li>
-                    <li><strong>全雙工 (Full-Duplex)</strong>：雙向可同時，如電話、網路交換器</li>
-                </ul>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
-                    <a href="114期末考/Net7_01Introduction.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第一章投影片</a>
-                </div>
+        <div class="card">
+            <h3>3.4 L3 設備：路由器</h3>
+            <p>路由器的核心功能：</p>
+            <ul>
+                <li><strong>路由表</strong>：記錄目的地網路、下一跳位址、輸出介面</li>
+                <li><strong>路由來源</strong>：直接連接、靜態路由、動態路由 (RIP/OSPF/BGP)</li>
+                <li><strong>路由選擇</strong>：比對目的 IP，選擇最長匹配前綴</li>
+                <li><strong>NAT</strong>：私有 IP 轉換為公有 IP</li>
+                <li><strong>ACL</strong>：存取控制串列，允許/拒絕特定流量</li>
+            </ul>
+            <blockquote class="ok">封包轉送流程：進入 → 檢查目的 IP → 查路由表 (最長匹配) → 修改 TTL 與 Checksum → 從對應介面轉送。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>3.5 交換器轉送模式比較</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>模式</th><th>延遲</th><th>錯誤檢查</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Store-and-Forward</strong></td><td>高（完整接收）</td><td>完整 CRC</td><td>企業核心交換器</td></tr>
+                        <tr><td><strong>Cut-Through</strong></td><td>低（僅讀 MAC）</td><td>無</td><td>高效能運算</td></tr>
+                        <tr><td><strong>Fragment-Free</strong></td><td>中（讀 64 bytes）</td><td>檢查衝突片段</td><td>一般用途</td></tr>
+                    </tbody>
+                </table>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Ch2: Communication -->
-        <section id="ch02" class="section">
-            <div class="section-header">
-                <h2>📡 第二章：Communication (通訊)</h2>
-                <p>網路通訊基礎概念 — 訊號、傳輸媒介與多工技術</p>
+    <!-- ==================== CH4 ==================== -->
+    <section id="ch04">
+        <div class="sec-title">
+            <h2>Ch4 通訊協定</h2>
+            <p>Protocol — OSI 模型、TCP/IP、重要協定與埠號</p>
+        </div>
+
+        <div class="card">
+            <h3>4.1 通訊協定三要素</h3>
+            <ul>
+                <li><strong>語法 (Syntax)</strong>：資料格式與結構</li>
+                <li><strong>語意 (Semantics)</strong>：欄位意義與控制資訊</li>
+                <li><strong>時序 (Timing)</strong>：傳送時機與速度匹配</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>4.2 OSI 七層模型</h3>
+            <p>ISO 制定的標準網路架構，由上到下：</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>層級</th><th>名稱</th><th>功能</th><th>資料單位</th><th>協定/技術</th></tr></thead>
+                    <tbody>
+                        <tr><td>L7</td><td><strong>應用層</strong></td><td>使用者應用服務</td><td>資料</td><td>HTTP, FTP, SMTP, DNS</td></tr>
+                        <tr><td>L6</td><td><strong>表達層</strong></td><td>資料格式轉換、加密</td><td>資料</td><td>SSL/TLS, JPEG, ASCII</td></tr>
+                        <tr><td>L5</td><td><strong>會議層</strong></td><td>會話管理、同步</td><td>資料</td><td>NetBIOS, RPC</td></tr>
+                        <tr><td>L4</td><td><strong>傳輸層</strong></td><td>端對端傳輸、流量控制</td><td>區段 (Segment)</td><td>TCP, UDP</td></tr>
+                        <tr><td>L3</td><td><strong>網路層</strong></td><td>路由選擇、邏輯定址</td><td>封包 (Packet)</td><td>IP, ICMP, ARP</td></tr>
+                        <tr><td>L2</td><td><strong>資料連結層</strong></td><td>幀傳輸、MAC 定址</td><td>幀 (Frame)</td><td>Ethernet, PPP</td></tr>
+                        <tr><td>L1</td><td><strong>實體層</strong></td><td>位元傳輸、電氣訊號</td><td>位元 (Bit)</td><td>RS-232, RJ-45</td></tr>
+                    </tbody>
+                </table>
             </div>
+            <blockquote class="ok"><strong>口訣：</strong>由上到下「<strong>應表會傳網資實</strong>」</blockquote>
+            <h4>封裝與解封裝</h4>
+            <p>傳送端：資料 → L7 → L6 → … → L1（逐層加上標頭）<br>接收端：L1 → L2 → … → L7（逐層移除標頭）</p>
+        </div>
 
-            <div class="card">
-                <h3>資料通訊系統五大元件</h3>
-                <ol>
-                    <li><strong>訊息 (Message)</strong>：要傳送的資料（文字、圖像、聲音）</li>
-                    <li><strong>傳送端 (Sender)</strong>：發出訊息的設備</li>
-                    <li><strong>接收端 (Receiver)</strong>：接收訊息的設備</li>
-                    <li><strong>傳輸媒介 (Medium)</strong>：訊號傳遞的通道</li>
-                    <li><strong>協定 (Protocol)</strong>：通訊規則的集合</li>
-                </ol>
+        <div class="card">
+            <h3>4.3 TCP/IP 模型（四層）</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>TCP/IP 層</th><th>對應 OSI</th><th>主要協定</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>應用層</strong></td><td>L5+L6+L7</td><td>HTTP, FTP, SMTP, DNS, SSH, DHCP</td></tr>
+                        <tr><td><strong>傳輸層</strong></td><td>L4</td><td>TCP (可靠)、UDP (不可靠)</td></tr>
+                        <tr><td><strong>網際網路層</strong></td><td>L3</td><td>IP, ICMP, ARP</td></tr>
+                        <tr><td><strong>網路存取層</strong></td><td>L1+L2</td><td>Ethernet, Wi-Fi, PPP</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>類比 vs 數位訊號</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>特性</th>
-                                <th>類比訊號 (Analog)</th>
-                                <th>數位訊號 (Digital)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>波形</td><td>連續平滑波形</td><td>離散階梯狀（0/1）</td></tr>
-                            <tr><td>衰減</td><td>會衰減，需放大器</td><td>會衰減，需中繼器</td></tr>
-                            <tr><td>雜訊</td><td>放大時同時放大雜訊</td><td>可還原，抗干擾性強</td></tr>
-                            <tr><td>頻寬使用</td><td>較高</td><td>較低</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="card">
+            <h3>4.4 TCP 詳細介紹</h3>
+            <p>TCP (Transmission Control Protocol) 是 <strong>面向連線</strong>、<strong>可靠</strong> 的傳輸層協定。</p>
+            <h4>TCP 三次握手 (Three-Way Handshake)</h4>
+            <div class="code-block">
+<span class="hl2">Client</span>                          <span class="hl2">Server</span>
+   |                                |
+   |------ SYN (seq=x) ------------>|  Step 1: Client 發送 SYN
+   |                                |
+   |<--- SYN+ACK (seq=y, ack=x+1)--|  Step 2: Server 回覆 SYN+ACK
+   |                                |
+   |------ ACK (ack=y+1) ---------->|  Step 3: Client 確認，連線建立
+   |                                |
             </div>
+            <h4>TCP 分段釋放 (Four-Way Handshake)</h4>
+            <ul>
+                <li>一方發送 FIN → 另一方回覆 ACK → 另一方發送 FIN → 原方回覆 ACK</li>
+            </ul>
+            <h4>TCP 可靠機制</h4>
+            <ul>
+                <li><strong>序號 (SN) / 確認號 (ACK)</strong>：確保資料按序送達</li>
+                <li><strong>滑動視窗 (Sliding Window)</strong>：流量控制，避免接收端 overflow</li>
+                <li><strong>擁塞控制</strong>：慢啟動 (Slow Start)、擁塞避免、快速重傳、快速恢復</li>
+                <li><strong>Checksum</strong>：檢查資料完整性</li>
+            </ul>
+        </div>
 
-            <div class="card">
-                <h3>傳輸媒介</h3>
-                <div class="grid-2">
-                    <div class="comparison-card">
-                        <div class="comparison-card-header blue">有線傳輸</div>
-                        <div class="comparison-card-body">
-                            <ul>
-                                <li><strong>雙絞線 (UTP/STP)</strong>：成本低、易安裝，常用於乙太網路</li>
-                                <li><strong>同軸纜線 (Coaxial)</strong>：抗干擾佳，早期用於有線電視</li>
-                                <li><strong>光纖 (Fiber Optic)</strong>：高頻寬、長距離、抗電磁干擾</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="comparison-card">
-                        <div class="comparison-card-header amber">無線傳輸</div>
-                        <div class="comparison-card-body">
-                            <ul>
-                                <li><strong>無線電波</strong>：Wi-Fi、行動通訊</li>
-                                <li><strong>微波</strong>：衛星通訊、點對點</li>
-                                <li><strong>紅外線</strong>：短距離遙控</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+        <div class="card">
+            <h3>4.5 UDP 詳細介紹</h3>
+            <p>UDP (User Datagram Protocol) 是 <strong>無連線</strong>、<strong>不可靠</strong> 的傳輸層協定。</p>
+            <ul>
+                <li><strong>無握手</strong>：直接發送資料，延遲低</li>
+                <li><strong>無流量控制</strong>：傳送速率不受接收端限制</li>
+                <li><strong>無擁塞控制</strong>：可能導致網路壅塞</li>
+                <li><strong>無序號</strong>：封包可能亂序到達</li>
+                <li><strong>適用</strong>：即時應用（串流、VoIP、DNS、DHCP）</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>4.6 TCP vs UDP 比較</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>特性</th><th>TCP</th><th>UDP</th></tr></thead>
+                    <tbody>
+                        <tr><td>連線</td><td>面向連線（三次握手）</td><td>無連線</td></tr>
+                        <tr><td>可靠性</td><td>可靠（重傳、確認）</td><td>不可靠（盡力而為）</td></tr>
+                        <tr><td>順序</td><td>按序送達</td><td>可能亂序</td></tr>
+                        <tr><td>流量控制</td><td>有（滑動視窗）</td><td>無</td></tr>
+                        <tr><td>擁塞控制</td><td>有（慢啟動等）</td><td>無</td></tr>
+                        <tr><td>速度</td><td>較慢</td><td>較快</td></tr>
+                        <tr><td>標頭大小</td><td>20-60 bytes</td><td>8 bytes</td></tr>
+                        <tr><td>應用</td><td>網頁、郵件、檔案</td><td>串流、DNS、VoIP</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>多工技術 (Multiplexing)</h3>
-                <ul>
-                    <li><strong>FDM (頻分工)</strong>：不同訊號使用不同頻率，如廣播電台</li>
-                    <li><strong>TDM (時分工)</strong>：不同訊號輪流使用時間槽，如T1/E1線路</li>
-                    <li><strong>WDM (波分工)</strong>：光纖中使用不同波長的光</li>
-                    <li><strong>CDMA (碼分工)</strong>：使用不同編碼同時傳輸，如3G</li>
-                </ul>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
-                    <a href="114期末考/Net7_02Communication.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第二章投影片</a>
-                </div>
+        <div class="card">
+            <h3>4.7 應用層協定與埠號</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>協定</th><th>全名</th><th>傳輸層</th><th>埠號</th><th>功能</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>HTTP</code></td><td>Hypertext Transfer Protocol</td><td>TCP</td><td>80</td><td>網頁傳輸</td></tr>
+                        <tr><td><code>HTTPS</code></td><td>HTTP Secure</td><td>TCP</td><td>443</td><td>加密網頁傳輸 (TLS)</td></tr>
+                        <tr><td><code>FTP</code></td><td>File Transfer Protocol</td><td>TCP</td><td>20/21</td><td>檔案傳輸</td></tr>
+                        <tr><td><code>SMTP</code></td><td>Simple Mail Transfer Protocol</td><td>TCP</td><td>25</td><td>郵件傳送</td></tr>
+                        <tr><td><code>POP3</code></td><td>Post Office Protocol v3</td><td>TCP</td><td>110</td><td>郵件接收</td></tr>
+                        <tr><td><code>IMAP</code></td><td>Internet Message Access Protocol</td><td>TCP</td><td>143</td><td>郵件接收（保留伺服器）</td></tr>
+                        <tr><td><code>DNS</code></td><td>Domain Name System</td><td>UDP (主) / TCP</td><td>53</td><td>域名解析</td></tr>
+                        <tr><td><code>DHCP</code></td><td>Dynamic Host Configuration Protocol</td><td>UDP</td><td>67/68</td><td>自動配發 IP</td></tr>
+                        <tr><td><code>SSH</code></td><td>Secure Shell</td><td>TCP</td><td>22</td><td>安全遠端登入</td></tr>
+                        <tr><td><code>Telnet</code></td><td>Telecommunication Network</td><td>TCP</td><td>23</td><td>遠端登入（不安全）</td></tr>
+                    </tbody>
+                </table>
             </div>
-        </section>
+        </div>
 
-        <!-- Ch3: Equipment -->
-        <section id="ch03" class="section">
-            <div class="section-header">
-                <h2>🔧 第三章：Equipment (設備)</h2>
-                <p>網路設備 — 從實體層到網路層的設備功能與應用</p>
+        <div class="card">
+            <h3>4.8 ARP 與 ICMP</h3>
+            <h4>ARP (Address Resolution Protocol)</h4>
+            <ul>
+                <li>功能：將 IP 位址解析為 MAC 位址</li>
+                <li>流程：廣播 ARP Request → 目標回覆 ARP Reply</li>
+                <li>ARP Cache：暫存解析結果，減少廣播</li>
+                <li>攻擊：ARP Spoofing（偽造 ARP 回覆進行中間人攻擊）</li>
+            </ul>
+            <h4>ICMP (Internet Control Message Protocol)</h4>
+            <ul>
+                <li>功能：錯誤報告與診斷</li>
+                <li><code>ping</code>：發送 ICMP Echo Request，測試連通性</li>
+                <li><code>traceroute</code>：利用 TTL 逐跳探測路徑</li>
+                <li>類型：Destination Unreachable (3), Time Exceeded (11), Echo (8/0)</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>4.9 DHCP 運作流程</h3>
+            <div class="code-block">
+<span class="hl">D</span>iscover  - Client 廣播尋找 DHCP 伺服器
+<span class="hl">O</span>ffer     - 伺服器提議 IP 位址
+<span class="hl">R</span>equest   - Client 選擇並請求該 IP
+<span class="hl">A</span>CK       - 伺服器確認，租約生效
             </div>
+            <p>縮寫：<strong>DORA</strong></p>
+            <blockquote class="warn">DHCP 使用 UDP，埠 67 (伺服器) / 68 (客戶端)。</blockquote>
+        </div>
+    </section>
 
-            <div class="card">
-                <h3>網路設備層級分類</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>設備</th>
-                                <th>OSI層級</th>
-                                <th>功能</th>
-                                <th>定址方式</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>中繼器 (Repeater)</strong></td><td>Layer 1</td><td>訊號放大延伸距離</td><td>無</td></tr>
-                            <tr><td><strong>集線器 (Hub)</strong></td><td>Layer 1</td><td>多埠中繼器，廣播到所有埠</td><td>無</td></tr>
-                            <tr><td><strong>橋接器 (Bridge)</strong></td><td>Layer 2</td><td>分割碰撞域，過濾幀</td><td>MAC位址</td></tr>
-                            <tr><td><strong>交換器 (Switch)</strong></td><td>Layer 2</td><td>多埠橋接器，MAC表轉送</td><td>MAC位址</td></tr>
-                            <tr><td><strong>路由器 (Router)</strong></td><td>Layer 3</td><td>路由選擇，分割廣播域</td><td>IP位址</td></tr>
-                            <tr><td><strong>閘道器 (Gateway)</strong></td><td>Layer 4-7</td><td>協定轉換，連接不同網路</td><td>依協定而定</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="highlight-box">
-                    <p><strong>碰撞域 vs 廣播域：</strong>Hub不分割碰撞域，Switch每個埠獨立碰撞域，Router每個埠獨立廣播域。</p>
-                </div>
+    <!-- ==================== CH5 ==================== -->
+    <section id="ch05">
+        <div class="sec-title">
+            <h2>Ch5 乙太網路</h2>
+            <p>Ethernet — IEEE 802.3 標準、CSMA/CD、幀格式、MAC 位址</p>
+        </div>
+
+        <div class="card">
+            <h3>5.1 乙太網路演進</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>標準</th><th>速度</th><th>媒體</th><th>最大距離</th><th>編碼</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>10BASE5</strong></td><td>10 Mbps</td><td>粗同軸 (Thicknet)</td><td>500m</td><td>Manchester</td></tr>
+                        <tr><td><strong>10BASE2</strong></td><td>10 Mbps</td><td>細同軸 (Thinnet)</td><td>185m</td><td>Manchester</td></tr>
+                        <tr><td><strong>10BASE-T</strong></td><td>10 Mbps</td><td>UTP Cat3</td><td>100m</td><td>Manchester</td></tr>
+                        <tr><td><strong>100BASE-TX</strong></td><td>100 Mbps</td><td>UTP Cat5</td><td>100m</td><td>4B/5B + MLT-3</td></tr>
+                        <tr><td><strong>1000BASE-T</strong></td><td>1 Gbps</td><td>UTP Cat5e</td><td>100m</td><td>4D-PAM5</td></tr>
+                        <tr><td><strong>10GBASE-T</strong></td><td>10 Gbps</td><td>UTP Cat6a</td><td>100m</td><td>DSQ128</td></tr>
+                        <tr><td><strong>40GBASE-T</strong></td><td>40 Gbps</td><td>Cat8</td><td>30m</td><td>PAM16</td></tr>
+                    </tbody>
+                </table>
             </div>
+            <blockquote><strong>命名規則：</strong>速度 + BASE + 媒介代碼。例：1000BASE-T = 1000 Mbps、基頻、雙絞線。</blockquote>
+        </div>
 
-            <div class="card">
-                <h3>交換器 (Switch) 進階功能</h3>
-                <ul>
-                    <li><strong>MAC位址學習</strong>：記錄來源MAC與對應埠號</li>
-                    <li><strong>Store-and-Forward</strong>：完整接收幀後檢查錯誤再轉送</li>
-                    <li><strong>Cut-Through</strong>：讀取目的MAC後立即轉送，低延遲</li>
-                    <li><strong>VLAN</strong>：將單一交換器分割為多個邏輯網路</li>
-                    <li><strong>STP (生成樹協定)</strong>：防止網路迴路</li>
-                    <li><strong>Link Aggregation</strong>：多條鏈路合併增加頻寬</li>
-                </ul>
+        <div class="card">
+            <h3>5.2 CSMA/CD 存取控制</h3>
+            <p>傳統半雙工乙太網路使用 CSMA/CD 控制媒體存取：</p>
+            <div class="code-block">
+<span class="hl">Carrier Sense</span>  Multiple Access with <span class="hl">Collision Detection</span>
             </div>
+            <ol>
+                <li><strong>載波偵聽</strong>：傳送前先偵聽線路是否空閒</li>
+                <li><strong>傳送</strong>：空閒則開始傳送資料</li>
+                <li><strong>碰撞偵測</strong>：傳送時持續監聽是否發生碰撞</li>
+                <li><strong>Jam 訊號</strong>：碰撞發生時傳送 32-bit 擁塞訊號</li>
+                <li><strong>指數退避 (Exponential Backoff)</strong>：隨機等待後重試</li>
+            </ol>
+            <blockquote class="ok">全雙工交換器網路不需要 CSMA/CD，因為發送與接收使用不同線對，不會碰撞。</blockquote>
+        </div>
 
-            <div class="card">
-                <h3>路由器 (Router)</h3>
-                <ul>
-                    <li><strong>路由表</strong>：記錄目的地網路與下一跳位址</li>
-                    <li><strong>靜態路由</strong>：管理員手動設定</li>
-                    <li><strong>動態路由</strong>：透過路由協定自動學習（RIP、OSPF、BGP）</li>
-                    <li><strong>NAT</strong>：私有IP轉換為公有IP</li>
-                    <li><strong>ACL</strong>：存取控制清單，過濾封包</li>
-                </ul>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
-                    <a href="114期末考/Net7_03Equipment.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第三章投影片</a>
-                </div>
+        <div class="card">
+            <h3>5.3 乙太網路幀格式</h3>
+            <div class="code-block">
+  Preamble  |  SFD  | Dest MAC | Src MAC | Type  |   Payload    |  FCS
+  7 bytes   | 1 B   |  6 B     |  6 B    | 2 B   | 46-1500 B   | 4 B
             </div>
-        </section>
+            <ul>
+                <li><strong>前導碼 (Preamble)</strong>：7 bytes，同步訊號 (101010...)</li>
+                <li><strong>SFD</strong>：1 byte，幀起始分隔符 (10101011)</li>
+                <li><strong>目的/來源 MAC</strong>：各 6 bytes 硬體位址</li>
+                <li><strong>Type/Length</strong>：2 bytes，指定上層協定（IPv4=0x0800, ARP=0x0806）</li>
+                <li><strong>Payload</strong>：46-1500 bytes（不足需填充至 46）</li>
+                <li><strong>FCS</strong>：4 bytes，CRC-32 錯誤檢查</li>
+            </ul>
+            <blockquote><strong>最小幀：64 bytes</strong>（確保 CSMA/CD 正確偵測碰撞）<br><strong>最大幀：1518 bytes</strong>（MTU = 1500）</blockquote>
+        </div>
 
-        <!-- Ch4: Protocol -->
-        <section id="ch04" class="section">
-            <div class="section-header">
-                <h2>📜 第四章：Protocol (協定)</h2>
-                <p>網路通訊協定 — OSI模型、TCP/IP與重要協定</p>
+        <div class="card">
+            <h3>5.4 MAC 位址</h3>
+            <ul>
+                <li>48 位元 (6 bytes)，全球唯一硬體位址</li>
+                <li>前 24 位元：<strong>OUI</strong> (Organizationally Unique Identifier)，IEEE 分配給製造商</li>
+                <li>後 24 位元：製造商自行分配</li>
+                <li>表示法：<code>00:1A:2B:3C:4D:5E</code> 或 <code>00-1A-2B-3C-4D-5E</code></li>
+                <li><strong>廣播位址</strong>：<code>FF:FF:FF:FF:FF:FF</code></li>
+                <li><strong>多播位址</strong>：第 1 個 byte 最低位元為 1</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>5.5 自動協商 (Auto-Negotiation)</h3>
+            <ul>
+                <li>自動偵測對端設備的速度與雙工模式</li>
+                <li>優先順序（由高到低）：1000BASE-T Full → 1000BASE-T Half → 100BASE-TX Full → 100BASE-TX Half → 10BASE-T Full → 10BASE-T Half</li>
+                <li>使用 FLP (Fast Link Pulse) 進行協商</li>
+            </ul>
+            <blockquote class="warn">如果一端啟用自動協商而另一端固定設定，可能導致 <strong>速度/雙工不匹配</strong>，造成效能低落與錯誤。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>5.6 全雙工 vs 半雙工</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>特性</th><th>半雙工</th><th>全雙工</th></tr></thead>
+                    <tbody>
+                        <tr><td>資料流向</td><td>同一時間只能單向</td><td>可同時雙向傳輸</td></tr>
+                        <tr><td>碰撞</td><td>可能發生（需 CSMA/CD）</td><td>不會碰撞</td></tr>
+                        <tr><td>有效頻寬</td><td>= 連線速度</td><td>= 連線速度 × 2</td></tr>
+                        <tr><td>連線方式</td><td>使用同一線對</td><td>使用不同傳送/接收線對</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>通訊協定三要素</h3>
-                <ul>
-                    <li><strong>語法 (Syntax)</strong>：資料格式與結構</li>
-                    <li><strong>語意 (Semantics)</strong>：欄位意義與控制資訊</li>
-                    <li><strong>時序 (Timing)</strong>：傳送時機與速度匹配</li>
-                </ul>
+        <div class="card">
+            <h3>5.7 PoE (Power over Ethernet)</h3>
+            <ul>
+                <li>透過乙太網路纜線同時傳輸資料與電力</li>
+                <li><strong>IEEE 802.3af</strong>：最大 15.4W</li>
+                <li><strong>IEEE 802.3at (PoE+)</strong>：最大 30W</li>
+                <li><strong>IEEE 802.3bt (PoE++)</strong>：最大 60-100W</li>
+                <li>應用：IP Cam、無線 AP、VoIP 電話</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ==================== CH7 ==================== -->
+    <section id="ch07">
+        <div class="sec-title">
+            <h2>Ch7 區域網路</h2>
+            <p>LAN — IEEE 802 標準、VLAN、STP、無線區域網路</p>
+        </div>
+
+        <div class="card">
+            <h3>7.1 LAN 定義與特性</h3>
+            <p>區域網路 (Local Area Network) 是在有限地理範圍內連接多台設備的通訊網路。</p>
+            <ul>
+                <li><strong>範圍</strong>：單一建築或校園</li>
+                <li><strong>速度</strong>：10 Mbps ~ 100 Gbps</li>
+                <li><strong>所有權</strong>：單一組織擁有管理</li>
+                <li><strong>錯誤率</strong>：極低（傳輸品質高）</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>7.2 IEEE 802 標準家族</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>標準</th><th>說明</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>802.1</strong></td><td>橋接、VLAN、STP</td><td>交換器網路</td></tr>
+                        <tr><td><strong>802.3</strong></td><td>乙太網路 (CSMA/CD)</td><td>有線區域網路</td></tr>
+                        <tr><td><strong>802.11</strong></td><td>無線區域網路 (Wi-Fi)</td><td>無線上網</td></tr>
+                        <tr><td><strong>802.15</strong></td><td>無線個人網路</td><td>藍牙、ZigBee</td></tr>
+                        <tr><td><strong>802.16</strong></td><td>寬頻無線</td><td>WiMAX</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>OSI 七層模型</h3>
-                <p>由ISO制定的標準網路架構模型：</p>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr><th>層級</th><th>名稱</th><th>功能</th><th>協定/技術</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>L7</td><td>應用層</td><td>使用者應用服務</td><td>HTTP, FTP, SMTP, DNS</td></tr>
-                            <tr><td>L6</td><td>表達層</td><td>資料格式轉換、加密</td><td>SSL/TLS, JPEG</td></tr>
-                            <tr><td>L5</td><td>會議層</td><td>會話管理</td><td>NetBIOS, RPC</td></tr>
-                            <tr><td>L4</td><td>傳輸層</td><td>端對端傳輸、流量控制</td><td>TCP, UDP</td></tr>
-                            <tr><td>L3</td><td>網路層</td><td>路由、邏輯定址</td><td>IP, ICMP, ARP</td></tr>
-                            <tr><td>L2</td><td>資料連結層</td><td>幀傳輸、MAC定址</td><td>Ethernet, PPP</td></tr>
-                            <tr><td>L1</td><td>實體層</td><td>位元傳輸、電氣訊號</td><td>RS-232, RJ-45</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="highlight-box success">
-                    <p><strong>口訣：</strong>由上到下 — 應表會傳網資實</p>
-                </div>
+        <div class="card">
+            <h3>7.3 VLAN 虛擬區域網路</h3>
+            <p>VLAN 在單一實體交換器上建立多個邏輯網路：</p>
+            <ul>
+                <li><strong>優點</strong>：安全性、減少廣播風暴、管理彈性</li>
+                <li><strong>Port-based VLAN</strong>：依據交換器埠號分配 VLAN</li>
+                <li><strong>IEEE 802.1Q</strong>：在乙太網路幀插入 4 bytes VLAN 標籤</li>
+                <li><strong>VLAN ID</strong>：12 bits，範圍 1-4094（0 和 4095 保留）</li>
+            </ul>
+            <h4>802.1Q 標籤結構</h4>
+            <div class="code-block">
+TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             </div>
+            <ul>
+                <li><strong>Trunk (主幹)</strong>：跨交換器傳送多個 VLAN 流量</li>
+                <li><strong>Access Port</strong>：連接到終端設備，屬於單一 VLAN</li>
+            </ul>
+        </div>
 
-            <div class="card">
-                <h3>TCP/IP 模型</h3>
-                <p>網際網路實際使用的四層架構：</p>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr><th>TCP/IP層</th><th>對應OSI</th><th>主要協定</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>應用層</strong></td><td>L5+L6+L7</td><td>HTTP, FTP, SMTP, DNS, SSH</td></tr>
-                            <tr><td><strong>傳輸層</strong></td><td>L4</td><td>TCP（可靠）、UDP（不可靠）</td></tr>
-                            <tr><td><strong>網際網路層</strong></td><td>L3</td><td>IP, ICMP, ARP</td></tr>
-                            <tr><td><strong>網路存取層</strong></td><td>L1+L2</td><td>Ethernet, Wi-Fi, PPP</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="card">
+            <h3>7.4 STP 生成樹協定</h3>
+            <ul>
+                <li><strong>目的</strong>：防止交換器網路中的實體迴路導致廣播風暴</li>
+                <li><strong>演算法</strong>：選出 Root Bridge → 選出 Root Port → 選出 Designated Port → Block 其他埠</li>
+                <li><strong>BPDU (Bridge Protocol Data Unit)</strong>：交換器之間交換的協定訊息</li>
+                <li><strong>橋接器 ID</strong>：優先權 (2B) + MAC 位址 (6B)，數值越小越優先</li>
+                <li><strong>埠狀態</strong>：Blocking → Listening → Learning → Forwarding</li>
+            </ul>
+            <h4>STP vs RSTP vs MSTP</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>協定</th><th>收斂時間</th><th>標準</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>STP</strong> (802.1D)</td><td>30-50 秒</td><td>傳統</td></tr>
+                        <tr><td><strong>RSTP</strong> (802.1w)</td><td>1-3 秒</td><td>快速收斂</td></tr>
+                        <tr><td><strong>MSTP</strong> (802.1s)</td><td>依 VLAN 分組</td><td>多實例</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>TCP vs UDP</h3>
-                <div class="grid-2">
-                    <div class="comparison-card">
-                        <div class="comparison-card-header blue">TCP</div>
-                        <div class="comparison-card-body">
-                            <ul>
-                                <li>面向連線（三次握手）</li>
-                                <li>可靠傳輸、流量控制</li>
-                                <li>擁塞控制（慢啟動）</li>
-                                <li>資料按序送達</li>
-                                <li>適用：HTTP, FTP, Email</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="comparison-card">
-                        <div class="comparison-card-header amber">UDP</div>
-                        <div class="comparison-card-body">
-                            <ul>
-                                <li>無連線</li>
-                                <li>不可靠、盡力傳送</li>
-                                <li>低延遲、高效率</li>
-                                <li>無流量/擁塞控制</li>
-                                <li>適用：DNS, VoIP, 串流</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+        <div class="card">
+            <h3>7.5 無線區域網路 (WLAN)</h3>
+            <p>WLAN 基於 IEEE 802.11 標準：</p>
+            <h4>Wi-Fi 演進</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>標準</th><th>Wi-Fi</th><th>頻段</th><th>最大速率</th><th>調變</th></tr></thead>
+                    <tbody>
+                        <tr><td>802.11b</td><td>Wi-Fi 1</td><td>2.4 GHz</td><td>11 Mbps</td><td>DSSS</td></tr>
+                        <tr><td>802.11a</td><td>Wi-Fi 2</td><td>5 GHz</td><td>54 Mbps</td><td>OFDM</td></tr>
+                        <tr><td>802.11g</td><td>Wi-Fi 3</td><td>2.4 GHz</td><td>54 Mbps</td><td>OFDM</td></tr>
+                        <tr><td>802.11n</td><td><strong>Wi-Fi 4</strong></td><td>2.4/5 GHz</td><td>600 Mbps</td><td>MIMO-OFDM</td></tr>
+                        <tr><td>802.11ac</td><td><strong>Wi-Fi 5</strong></td><td>5 GHz</td><td>6.9 Gbps</td><td>MU-MIMO</td></tr>
+                        <tr><td>802.11ax</td><td><strong>Wi-Fi 6</strong></td><td>2.4/5/6 GHz</td><td>9.6 Gbps</td><td>OFDMA</td></tr>
+                        <tr><td>802.11be</td><td><strong>Wi-Fi 7</strong></td><td>2.4/5/6 GHz</td><td>46 Gbps</td><td>4096-QAM, 320MHz</td></tr>
+                    </tbody>
+                </table>
             </div>
+            <h4>WLAN 運作模式</h4>
+            <ul>
+                <li><strong>基礎架構模式 (Infrastructure)</strong>：透過 AP (Access Point) 連接，最常見</li>
+                <li><strong>臨時模式 (Ad-hoc)</strong>：設備直接互連，無需 AP</li>
+            </ul>
+            <h4>CSMA/CA</h4>
+            <ul>
+                <li>無線網路使用 CSMA/CA（碰撞避免），而非 CSMA/CD</li>
+                <li>原因：無線環境無法偵測碰撞（隱藏節點問題）</li>
+                <li>機制：DIFS 等待 → 隨機退避 → RTS/CTS（選擇性）→ 傳送 → ACK</li>
+            </ul>
+        </div>
 
-            <div class="card">
-                <h3>重要協定彙整</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr><th>協定</th><th>全名</th><th>功能</th><th>埠號</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><code>HTTP</code></td><td>Hypertext Transfer Protocol</td><td>網頁傳輸</td><td>80</td></tr>
-                            <tr><td><code>HTTPS</code></td><td>HTTP Secure</td><td>加密網頁傳輸</td><td>443</td></tr>
-                            <tr><td><code>FTP</code></td><td>File Transfer Protocol</td><td>檔案傳輸</td><td>21</td></tr>
-                            <tr><td><code>SMTP</code></td><td>Simple Mail Transfer Protocol</td><td>郵件傳送</td><td>25</td></tr>
-                            <tr><td><code>DNS</code></td><td>Domain Name System</td><td>域名解析</td><td>53</td></tr>
-                            <tr><td><code>DHCP</code></td><td>Dynamic Host Configuration Protocol</td><td>自動配發IP</td><td>67/68</td></tr>
-                            <tr><td><code>ARP</code></td><td>Address Resolution Protocol</td><td>IP→MAC轉換</td><td>N/A</td></tr>
-                            <tr><td><code>ICMP</code></td><td>Internet Control Message Protocol</td><td>錯誤報告（ping）</td><td>N/A</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
-                    <a href="114期末考/Net7_04Protocol.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第四章投影片</a>
-                </div>
+        <div class="card">
+            <h3>7.6 Link Aggregation</h3>
+            <ul>
+                <li>將多條實體鏈路合併為一條邏輯鏈路</li>
+                <li>標準：IEEE 802.3ad (LACP)</li>
+                <li>優點：增加頻寬、提供備援</li>
+                <li>最多可聚合 8 條鏈路</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ==================== CH8 ==================== -->
+    <section id="ch08">
+        <div class="sec-title">
+            <h2>Ch8 網際網路協定</h2>
+            <p>IP — IPv4、子網路切割、CIDR、NAT、路由協定、IPv6</p>
+        </div>
+
+        <div class="card">
+            <h3>8.1 IPv4 定址</h3>
+            <p>IPv4 位址為 <strong>32 位元</strong>，以點分十進制表示，分為網路部分與主機部分。</p>
+            <h4>類別式定址 (Classful Addressing)</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Class</th><th>首位</th><th>範圍</th><th>預設遮罩</th><th>網路數</th><th>主機數/網路</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>A</strong></td><td>0</td><td>1.0.0.0 - 126.255.255.255</td><td>/8 (255.0.0.0)</td><td>126</td><td>16,777,214</td></tr>
+                        <tr><td><strong>B</strong></td><td>10</td><td>128.0.0.0 - 191.255.255.255</td><td>/16 (255.255.0.0)</td><td>16,384</td><td>65,534</td></tr>
+                        <tr><td><strong>C</strong></td><td>110</td><td>192.0.0.0 - 223.255.255.255</td><td>/24 (255.255.255.0)</td><td>2,097,152</td><td>254</td></tr>
+                        <tr><td><strong>D</strong></td><td>1110</td><td>224.0.0.0 - 239.255.255.255</td><td>N/A</td><td colspan="2">多播 (Multicast)</td></tr>
+                        <tr><td><strong>E</strong></td><td>1111</td><td>240.0.0.0 - 255.255.255.255</td><td>N/A</td><td colspan="2">實驗保留</td></tr>
+                    </tbody>
+                </table>
             </div>
-        </section>
+            <blockquote class="warn">127.0.0.0/8 保留為 Loopback（本機回送測試）。</blockquote>
+        </div>
 
-        <!-- Ch5: Ethernet -->
-        <section id="ch05" class="section">
-            <div class="section-header">
-                <h2>🔌 第五章：Ethernet (乙太網路)</h2>
-                <p>乙太網路技術 — IEEE 802.3 標準系列</p>
+        <div class="card">
+            <h3>8.2 私有 IP 位址 (RFC 1918)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>範圍</th><th>CIDR</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>10.0.0.0 - 10.255.255.255</code></td><td>10.0.0.0/8</td><td>大型企業內部網路</td></tr>
+                        <tr><td><code>172.16.0.0 - 172.31.255.255</code></td><td>172.16.0.0/12</td><td>中型企業</td></tr>
+                        <tr><td><code>192.168.0.0 - 192.168.255.255</code></td><td>192.168.0.0/16</td><td>家庭/小型辦公室</td></tr>
+                        <tr><td><code>169.254.0.0 - 169.254.255.255</code></td><td>169.254.0.0/16</td><td>APIPA（DHCP 失敗時自動配發）</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>乙太網路演進</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr><th>標準</th><th>速度</th><th>傳輸媒介</th><th>最大距離</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>10BASE5</strong></td><td>10 Mbps</td><td>粗同軸纜線</td><td>500m</td></tr>
-                            <tr><td><strong>10BASE2</strong></td><td>10 Mbps</td><td>細同軸纜線</td><td>185m</td></tr>
-                            <tr><td><strong>10BASE-T</strong></td><td>10 Mbps</td><td>UTP Cat3</td><td>100m</td></tr>
-                            <tr><td><strong>100BASE-TX</strong></td><td>100 Mbps</td><td>UTP Cat5</td><td>100m</td></tr>
-                            <tr><td><strong>1000BASE-T</strong></td><td>1 Gbps</td><td>UTP Cat5e</td><td>100m</td></tr>
-                            <tr><td><strong>10GBASE-T</strong></td><td>10 Gbps</td><td>UTP Cat6a</td><td>100m</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="highlight-box">
-                    <p><strong>命名規則：</strong>速度 + BASE + 媒介代碼。<br>
-                    例如：1000BASE-T = 1000 Mbps、基頻(Baseband)、雙絞線(Twisted pair)</p>
-                </div>
+        <div class="card">
+            <h3>8.3 子網路切割 (Subnetting) &amp; CIDR</h3>
+            <p>將一個大網路劃分為多個小網路，提高位址利用率。</p>
+            <ul>
+                <li>子網路數 = 2<sup>借用位元數</sup></li>
+                <li>可用主機數 = 2<sup>剩餘主機位元數</sup> - 2</li>
+                <li>減 2 原因：網路位址（全 0）和廣播位址（全 1）不可分配給主機</li>
+            </ul>
+            <blockquote><strong>CIDR 表示法：</strong>IP 位址 / 前綴長度，如 <code>192.168.1.0/24</code> 表示前 24 位元為網路部分。</blockquote>
+            <h4>VLSM (Variable Length Subnet Mask)</h4>
+            <p>可變長度子網路遮罩，允許在同一個網路中使用不同的子網路遮罩長度，更靈活地分配 IP。</p>
+        </div>
+
+        <div class="card">
+            <h3>8.4 IPv4 封包結構</h3>
+            <p>IPv4 標頭最小 20 bytes，最大 60 bytes（含 Options）：</p>
+            <div class="code-block">
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Version|  IHL  |   DSCP   | ECN |       Total Length          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|         Identification        |Flags|    Fragment Offset     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Time to Live  |   Protocol   |       Header Checksum       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                       Source IP Address                      |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                     Destination IP Address                    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                        Options (if IHL > 5)                  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
             </div>
-
-            <div class="card">
-                <h3>CSMA/CD 存取控制</h3>
-                <p>傳統半雙工乙太網路使用 CSMA/CD 控制媒體存取：</p>
-                <ol>
-                    <li><strong>載波偵聽</strong>：傳送前先偵聽線路是否空閒</li>
-                    <li><strong>傳送</strong>：空閒則開始傳送資料</li>
-                    <li><strong>碰撞偵測</strong>：傳送時持續監聽是否發生碰撞</li>
-                    <li><strong>Jam訊號</strong>：碰撞發生時傳送擁塞訊號通知所有設備</li>
-                    <li><strong>指數退避</strong>：隨機等待後重新嘗試傳送</li>
-                </ol>
-                <div class="highlight-box warning">
-                    <p><strong>注意：</strong>使用交換器的全雙工模式不需要CSMA/CD，因為發送和接收使用不同線對，不會碰撞。</p>
-                </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>欄位</th><th>大小</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Version</strong></td><td>4 bits</td><td>IP 版本（IPv4 = 4）</td></tr>
+                        <tr><td><strong>IHL</strong></td><td>4 bits</td><td>標頭長度（單位 4 bytes，最小 5）</td></tr>
+                        <tr><td><strong>Total Length</strong></td><td>16 bits</td><td>封包總長（含標頭），最大 65535 bytes</td></tr>
+                        <tr><td><strong>TTL</strong></td><td>8 bits</td><td>存活時間，每經過一個路由器減 1，歸零丟棄</td></tr>
+                        <tr><td><strong>Protocol</strong></td><td>8 bits</td><td>上層協定：TCP=6, UDP=17, ICMP=1</td></tr>
+                        <tr><td><strong>Header Checksum</strong></td><td>16 bits</td><td>標頭錯誤檢查（每次 TTL 改變需重新計算）</td></tr>
+                        <tr><td><strong>Source / Dest IP</strong></td><td>各 32 bits</td><td>來源與目的 IP 位址</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="card">
-                <h3>乙太網路幀格式</h3>
-                <div class="code-block">
-| Preamble | SFD | Dest MAC | Src MAC | Type | Payload | FCS |
-|  7B      | 1B  |  6B      |  6B     | 2B   |46-1500B | 4B  |
-                </div>
-                <ul>
-                    <li><strong>前導碼 (Preamble)</strong>：7 bytes，同步訊號</li>
-                    <li><strong>SFD</strong>：1 byte，幀起始分隔符</li>
-                    <li><strong>目的/來源MAC</strong>：各6 bytes</li>
-                    <li><strong>Type/Length</strong>：2 bytes，上層協定類型</li>
-                    <li><strong>Payload</strong>：46-1500 bytes（不足需填充）</li>
-                    <li><strong>FCS</strong>：4 bytes，CRC-32錯誤檢查</li>
-                </ul>
-                <div class="highlight-box success">
-                    <p><strong>最小幀大小：</strong>64 bytes（確保CSMA/CD正確偵測碰撞）<br>
-                    <strong>最大幀大小：</strong>1518 bytes（MTU=1500）</p>
-                </div>
+        <div class="card">
+            <h3>8.5 NAT 網路位址轉譯</h3>
+            <ul>
+                <li><strong>靜態 NAT (Static NAT)</strong>：一對一映射，一個私有 IP 對應一個公有 IP</li>
+                <li><strong>動態 NAT (Dynamic NAT)</strong>：從公有 IP 池中動態取用</li>
+                <li><strong>PAT (Port Address Translation) / NAPT</strong>：多對一映射，使用埠號區分不同連線，家用路由器最常用</li>
+            </ul>
+            <blockquote class="ok">PAT 優點：節省公有 IP 位址；缺點：無法從外部主動連入內部主機（需埠轉發）。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>8.6 路由協定</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>協定</th><th>類型</th><th>度量</th><th>適用範圍</th><th>AD 值</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>RIP</strong></td><td>距離向量 (Distance Vector)</td><td>跳數 (Hop Count)</td><td>小型網路（最大 15 跳）</td><td>120</td></tr>
+                        <tr><td><strong>OSPF</strong></td><td>鏈路狀態 (Link State)</td><td>成本 (Cost)</td><td>中大型網路</td><td>110</td></tr>
+                        <tr><td><strong>EIGRP</strong></td><td>混合型</td><td>複合度量（頻寬+延遲）</td><td>Cisco 網路</td><td>90</td></tr>
+                        <tr><td><strong>BGP</strong></td><td>路徑向量 (Path Vector)</td><td>AS 路徑長度</td><td>網際網路骨幹</td><td>20 (eBGP)</td></tr>
+                    </tbody>
+                </table>
             </div>
+            <blockquote><strong>AD (Administrative Distance)</strong>：管理距離，數值越小越可信。<br>直接連接 = 0 &gt; 靜態 = 1 &gt; eBGP = 20 &gt; OSPF = 110 &gt; RIP = 120</blockquote>
+        </div>
 
-            <div class="card">
-                <h3>MAC 位址</h3>
-                <ul>
-                    <li>48位元（6 bytes），全球唯一硬體位址</li>
-                    <li>前24位元：OUI（IEEE分配給製造商）</li>
-                    <li>後24位元：製造商分配</li>
-                    <li>廣播位址：<code>FF:FF:FF:FF:FF:FF</code></li>
-                </ul>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
-                    <a href="114期末考/Net7_05Ethernet.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第五章投影片</a>
-                </div>
+        <div class="card">
+            <h3>8.7 IPv6 簡介</h3>
+            <ul>
+                <li><strong>128 位元</strong>位址空間（IPv4 的 2<sup>96</sup> 倍）</li>
+                <li>表示法：冒號十六進制，如 <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>
+                <li>前導零可省略，連續的 0 區段可用 <code>::</code> 代替（限一次）</li>
+                <li>內建 <strong>IPSec</strong> 安全機制</li>
+                <li><strong>SLAAC</strong> (Stateless Address Auto-Configuration)：無狀態自動設定 IP</li>
+                <li>無廣播位址，使用 <strong>多播 (Multicast)</strong> 取代</li>
+                <li>無需 NAT（位址充足）</li>
+            </ul>
+            <h4>IPv6 位址類型</h4>
+            <ul>
+                <li><strong>單播 (Unicast)</strong>：一對一通訊</li>
+                <li><strong>多播 (Multicast)</strong>：一對多，取代 IPv4 廣播</li>
+                <li><strong>任播 (Anycast)</strong>：一對最近的一個</li>
+            </ul>
+            <h4>IPv4 → IPv6 過渡技術</h4>
+            <ul>
+                <li><strong>雙堆疊 (Dual Stack)</strong>：同時執行 IPv4 與 IPv6</li>
+                <li><strong>通道 (Tunneling)</strong>：IPv6 封包封裝在 IPv4 中傳送</li>
+                <li><strong>轉譯 (Translation)</strong>：NAT64 / DNS64</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>8.8 IP 子網路計算範例</h3>
+            <p><strong>範例：</strong>將 <code>192.168.1.0/24</code> 切割為 4 個等大小的子網路。</p>
+            <ul>
+                <li>需借用 2 位元（2<sup>2</sup> = 4 個子網路）</li>
+                <li>新遮罩：/26 (255.255.255.192)</li>
+                <li>每個子網路主機數：2<sup>6</sup> - 2 = 62 台</li>
+            </ul>
+            <div class="code-block">
+子網路 1: 192.168.1.0/26   (192.168.1.1 - 192.168.1.62)
+子網路 2: 192.168.1.64/26  (192.168.1.65 - 192.168.1.126)
+子網路 3: 192.168.1.128/26 (192.168.1.129 - 192.168.1.190)
+子網路 4: 192.168.1.192/26 (192.168.1.193 - 192.168.1.254)
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Ch7: LAN -->
-        <section id="ch07" class="section">
-            <div class="section-header">
-                <h2>🌐 第七章：LAN (區域網路)</h2>
-                <p>區域網路技術 — IEEE 802標準、VLAN、無線LAN</p>
-            </div>
+    <!-- ==================== QUIZ ==================== -->
+    <section id="quiz">
+        <div class="sec-title">
+            <h2>練習題庫</h2>
+            <p>測試你對網路概論各章節的理解程度（共 40 題）</p>
+        </div>
+        <div id="quiz-container"></div>
+        <div class="score-box" id="score-display" style="display:none">
+            <div class="num" id="score-value">0/40</div>
+            <div class="lbl">正確率</div>
+            <div class="bar-wrap" style="max-width:240px;margin:.5rem auto"><div class="bar-fill" id="score-bar" style="width:0%"></div></div>
+            <button class="btn" onclick="resetQuiz()">重新測驗</button>
+        </div>
+    </section>
+</main>
 
-            <div class="card">
-                <h3>LAN 定義與特性</h3>
-                <p>區域網路（Local Area Network）是在有限地理範圍內連接多台設備的通訊網路。</p>
-                <ul>
-                    <li><strong>範圍</strong>：單一建築或校園</li>
-                    <li><strong>速度</strong>：10 Mbps ~ 100 Gbps</li>
-                    <li><strong>所有權</strong>：單一組織擁有管理</li>
-                    <li><strong>錯誤率</strong>：低（傳輸品質高）</li>
-                </ul>
-            </div>
+<footer class="footer">
+    <p>網路概論 重點總複習 | 整理自「網路概論與實務第七版」</p>
+</footer>
 
-            <div class="card">
-                <h3>IEEE 802 標準家族</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr><th>標準</th><th>說明</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>802.1</strong></td><td>橋接、VLAN、STP</td></tr>
-                            <tr><td><strong>802.3</strong></td><td>乙太網路 (CSMA/CD)</td></tr>
-                            <tr><td><strong>802.11</strong></td><td>無線區域網路 (Wi-Fi)</td></tr>
-                            <tr><td><strong>802.15</strong></td><td>無線個人網路 (Bluetooth)</td></tr>
-                            <tr><td><strong>802.16</strong></td><td>寬頻無線 (WiMAX)</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<script>
+    function showSec(id) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        event.target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateProgress();
+    }
 
-            <div class="card">
-                <h3>VLAN 虛擬區域網路</h3>
-                <p>VLAN在單一實體交換器上建立多個邏輯網路：</p>
-                <ul>
-                    <li><strong>優點</strong>：安全性、減少廣播風暴、管理彈性</li>
-                    <li><strong>Port-based</strong>：依據交換器埠號分配VLAN</li>
-                    <li><strong>IEEE 802.1Q</strong>：在乙太網路幀插入4 bytes VLAN標籤</li>
-                    <li><strong>VLAN ID</strong>：12 bits，範圍1-4094</li>
-                    <li><strong>Trunk</strong>：跨交換器傳送多個VLAN流量</li>
-                </ul>
-                <div class="highlight-box">
-                    <p><strong>802.1Q標籤結構：</strong>TPID(2B, 0x8100) + Priority(3b) + CFI(1b) + VLAN ID(12b)</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>無線區域網路 (WLAN)</h3>
-                <p>WLAN基於IEEE 802.11標準，使用無線電波傳輸：</p>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr><th>標準</th><th>頻段</th><th>最大速率</th><th>特色</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>802.11b</strong></td><td>2.4 GHz</td><td>11 Mbps</td><td>最早普及</td></tr>
-                            <tr><td><strong>802.11g</strong></td><td>2.4 GHz</td><td>54 Mbps</td><td>OFDM調變</td></tr>
-                            <tr><td><strong>802.11a</strong></td><td>5 GHz</td><td>54 Mbps</td><td>干擾較少</td></tr>
-                            <tr><td><strong>802.11n (Wi-Fi 4)</strong></td><td>2.4/5 GHz</td><td>600 Mbps</td><td>MIMO技術</td></tr>
-                            <tr><td><strong>802.11ac (Wi-Fi 5)</strong></td><td>5 GHz</td><td>6.9 Gbps</td><td>MU-MIMO</td></tr>
-                            <tr><td><strong>802.11ax (Wi-Fi 6)</strong></td><td>2.4/5/6 GHz</td><td>9.6 Gbps</td><td>OFDMA</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
-                    <a href="114期末考/Net7_07LAN.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第七章投影片</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Ch8: IP -->
-        <section id="ch08" class="section">
-            <div class="section-header">
-                <h2>🌍 第八章：IP (網際網路協定)</h2>
-                <p>網際網路協定 — IPv4/IPv6定址、子網路切割、NAT、路由協定</p>
-            </div>
-
-            <div class="card">
-                <h3>IPv4 定址</h3>
-                <p>IPv4 位址為32位元，以點分十進制表示：</p>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr><th>Class</th><th>範圍</th><th>預設遮罩</th><th>用途</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>A</td><td>1.0.0.0 - 126.255.255.255</td><td>/8</td><td>大型網路</td></tr>
-                            <tr><td>B</td><td>128.0.0.0 - 191.255.255.255</td><td>/16</td><td>中型網路</td></tr>
-                            <tr><td>C</td><td>192.0.0.0 - 223.255.255.255</td><td>/24</td><td>小型網路</td></tr>
-                            <tr><td>D</td><td>224.0.0.0 - 239.255.255.255</td><td>N/A</td><td>多播</td></tr>
-                            <tr><td>E</td><td>240.0.0.0 - 255.255.255.255</td><td>N/A</td><td>實驗用</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>私有IP位址 (RFC 1918)</h3>
-                <ul>
-                    <li><strong>10.0.0.0/8</strong>：10.0.0.0 - 10.255.255.255</li>
-                    <li><strong>172.16.0.0/12</strong>：172.16.0.0 - 172.31.255.255</li>
-                    <li><strong>192.168.0.0/16</strong>：192.168.0.0 - 192.168.255.255</li>
-                    <li><strong>127.0.0.0/8</strong>：Loopback（本機回送）</li>
-                    <li><strong>169.254.0.0/16</strong>：APIPA（自動私有IP）</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>子網路切割 (Subnetting)</h3>
-                <p>將一個大網路劃分為多個小網路，提高位址利用率：</p>
-                <ul>
-                    <li>子網路數 = 2^(借用位元數)</li>
-                    <li>可用主機數 = 2^(剩餘主機位元數) - 2</li>
-                    <li>減2原因：網路位址（全0）和廣播位址（全1）</li>
-                </ul>
-                <div class="highlight-box">
-                    <p><strong>CIDR表示法：</strong>IP位址/前綴長度<br>
-                    例：<code>192.168.1.0/24</code> 表示前24位元為網路部分，後8位元為主機部分</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>IPv4 封包結構</h3>
-                <p>IPv4標頭最小20 bytes，主要欄位：</p>
-                <ul>
-                    <li><strong>Version</strong>(4b)：IP版本</li>
-                    <li><strong>IHL</strong>(4b)：標頭長度</li>
-                    <li><strong>Total Length</strong>(16b)：封包總長</li>
-                    <li><strong>TTL</strong>(8b)：存活時間，每跳減1</li>
-                    <li><strong>Protocol</strong>(8b)：上層協定（TCP=6, UDP=17）</li>
-                    <li><strong>Source/Dest IP</strong>(各32b)</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>NAT 網路位址轉譯</h3>
-                <ul>
-                    <li><strong>靜態NAT</strong>：一對一映射</li>
-                    <li><strong>動態NAT</strong>：從公有IP池取用</li>
-                    <li><strong>PAT (NAPT)</strong>：多對一，使用埠號區分（家用路由器最常用）</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>路由協定</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr><th>協定</th><th>類型</th><th>度量</th><th>適用範圍</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>RIP</strong></td><td>距離向量</td><td>跳數</td><td>小型網路</td></tr>
-                            <tr><td><strong>OSPF</strong></td><td>鏈路狀態</td><td>成本</td><td>中大型網路</td></tr>
-                            <tr><td><strong>EIGRP</strong></td><td>混合型</td><td>複合度量</td><td>思科網路</td></tr>
-                            <tr><td><strong>BGP</strong></td><td>路徑向量</td><td>AS路徑</td><td>網際網路骨幹</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>IPv6 簡介</h3>
-                <ul>
-                    <li>128位元位址空間，解決IPv4枯竭</li>
-                    <li>冒號十六進制表示：<code>2001:db8::1</code></li>
-                    <li>內建IPSec安全性</li>
-                    <li>SLAAC無狀態自動設定IP</li>
-                    <li>無廣播，使用多播取代</li>
-                    <li>無NAT需求（位址充足）</li>
-                </ul>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
-                    <a href="114期末考/Net7_08IP.ppt" class="nav-btn active" style="display: inline-flex; text-decoration: none;" download>📥 下載第八章投影片</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Quiz Section -->
-        <section id="quiz" class="section">
-            <div class="section-header">
-                <h2>🎯 練習題庫</h2>
-                <p>測試你對網路概論的理解程度</p>
-            </div>
-
-            <div id="quiz-container"></div>
-
-            <div class="score-display" id="score-display" style="display: none;">
-                <div class="score" id="score-value">0/20</div>
-                <div class="score-label">正確率</div>
-                <div class="progress-container" style="max-width: 300px; margin: 1rem auto;">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="score-bar" style="width: 0%"></div>
-                    </div>
-                </div>
-                <button class="nav-btn active" onclick="resetQuiz()" style="margin-top: 1rem;">重新測驗</button>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>網路概論期末考學習網頁 | 提供各章節投影片下載</p>
-        <p style="margin-top: 0.5rem; font-size: 0.75rem;"><a href="https://github.com/Chifeng-chiu/networking/tree/main/114期末考" style="color: var(--gray-400);">📥 下載所有投影片</a></p>
-    </footer>
-
-    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
-
-    <script>
-        // Section Navigation
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById(sectionId).classList.add('active');
-            event.target.closest('.nav-btn').classList.add('active');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Update progress
-            updateProgress();
-        }
-
-        // Accordion
-        document.querySelectorAll('.accordion-header').forEach(header => {
-            header.addEventListener('click', () => {
-                header.classList.toggle('open');
-                header.nextElementSibling.classList.toggle('open');
-            });
+    function updateProgress() {
+        const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08'];
+        let viewed = 0;
+        chapters.forEach(id => {
+            if (document.getElementById(id).classList.contains('active')) viewed++;
         });
+        const pct = Math.round(viewed / 7 * 100);
+        document.getElementById('overall-pct').textContent = pct;
+        document.getElementById('overall-bar').style.width = pct + '%';
+    }
 
-        // Back to top button
-        window.addEventListener('scroll', () => {
-            const btn = document.getElementById('backToTop');
-            if (window.scrollY > 300) {
-                btn.classList.add('show');
-            } else {
-                btn.classList.remove('show');
-            }
+    const quizData = [
+        { q: "OSI 參考模型共分幾層？", opts: ["4", "5", "6", "7"], ans: 3, exp: "OSI 模型分為七層：應用、表達、會議、傳輸、網路、資料連結、實體。" },
+        { q: "TCP/IP 模型分為幾層？", opts: ["3", "4", "5", "7"], ans: 1, exp: "TCP/IP 模型分為四層：應用層、傳輸層、網際網路層、網路存取層。" },
+        { q: "TCP 協定使用哪個機制建立連線？", opts: ["二次握手", "三次握手", "四次握手", "隨機連線"], ans: 1, exp: "TCP 使用三次握手 (SYN, SYN+ACK, ACK) 建立連線。" },
+        { q: "下列哪個協定是無連線的？", opts: ["TCP", "UDP", "FTP", "HTTP"], ans: 1, exp: "UDP 是無連線的傳輸層協定，不建立連線就直接傳送資料。" },
+        { q: "DNS 預設使用哪個傳輸層協定？", opts: ["TCP 為主", "UDP 為主", "兩者皆可", "純 TCP"], ans: 1, exp: "DNS 查詢主要使用 UDP 埠 53，只有在區域傳輸 (Zone Transfer) 時使用 TCP。" },
+        { q: "ARP 的功能是什麼？", opts: ["IP 轉 MAC", "MAC 轉 IP", "域名解析", "路由選擇"], ans: 0, exp: "ARP (Address Resolution Protocol) 將 IP 位址解析為 MAC 位址。" },
+        { q: "ping 指令使用哪個協定？", opts: ["TCP", "UDP", "ICMP", "ARP"], ans: 2, exp: "ping 使用 ICMP (Internet Control Message Protocol) 的 Echo Request/Echo Reply。" },
+        { q: "TCP 標頭的最小大小是多少？", opts: ["8 bytes", "20 bytes", "32 bytes", "60 bytes"], ans: 1, exp: "TCP 標頭最小 20 bytes，最大 60 bytes（含 Options 欄位）。" },
+        { q: "UDP 標頭大小是多少？", opts: ["8 bytes", "20 bytes", "32 bytes", "64 bytes"], ans: 0, exp: "UDP 標頭固定為 8 bytes，包含來源埠、目的埠、長度、Checksum。" },
+        { q: "乙太網路幀的最小大小（不含 Preamble）？", opts: ["32 bytes", "46 bytes", "64 bytes", "128 bytes"], ans: 2, exp: "乙太網路最小幀為 64 bytes，確保 CSMA/CD 能正確偵測碰撞。" },
+        { q: "乙太網路幀的 MTU 是多少？", opts: ["576", "1000", "1500", "9000"], ans: 2, exp: "標準乙太網路 MTU 為 1500 bytes，Jumbo Frame 可達 9000 bytes。" },
+        { q: "MAC 位址長度是多少？", opts: ["32 bits", "48 bits", "64 bits", "128 bits"], ans: 1, exp: "MAC 位址為 48 bits (6 bytes)，前 24 bits 為 OUI，後 24 bits 為製造商分配。" },
+        { q: "IPv4 位址長度是多少？", opts: ["16 bits", "32 bits", "64 bits", "128 bits"], ans: 1, exp: "IPv4 位址為 32 bits，以點分十進制表示。" },
+        { q: "IPv6 位址長度是多少？", opts: ["32 bits", "64 bits", "128 bits", "256 bits"], ans: 2, exp: "IPv6 位址為 128 bits，以冒號十六進制表示。" },
+        { q: "路由器的 AD 值中，哪個協定最可信？", opts: ["RIP (120)", "OSPF (110)", "靜態路由 (1)", "直接連接 (0)"], ans: 3, exp: "AD 值越小越可信，直接連接的 AD 為 0，最高優先。" },
+        { q: "STP 的主要功能是什麼？", opts: ["增加頻寬", "防止網路迴路", "加密傳輸", "負載平衡"], ans: 1, exp: "STP (Spanning Tree Protocol) 防止交換器網路中的實體迴路，避免廣播風暴。" },
+        { q: "VLAN 標籤 (802.1Q) 佔用多少 bytes？", opts: ["2", "4", "6", "8"], ans: 1, exp: "802.1Q VLAN 標籤佔 4 bytes，插入在 Source MAC 與 Type 之間。" },
+        { q: "VLAN ID 有效範圍？", opts: ["0-255", "1-4094", "0-4095", "1-1024"], ans: 1, exp: "VLAN ID 使用 12 bits，有效範圍 1-4094，0 和 4095 保留。" },
+        { q: "下列哪個不是私有 IP？", opts: ["10.0.0.1", "172.16.0.1", "192.168.1.1", "8.8.8.8"], ans: 3, exp: "8.8.8.8 是 Google 的公有 DNS 伺服器，非私有 IP。" },
+        { q: "子網路 192.168.1.0/26 有多少可用主機？", opts: ["30", "62", "126", "254"], ans: 1, exp: "/26 表示主機部分 6 bits，2^6 - 2 = 62 台可用主機。" },
+        { q: "哪個設備可以分割廣播域？", opts: ["Hub", "Switch", "Bridge", "Router"], ans: 3, exp: "Router (路由器) 可以分割廣播域，每個介面為獨立廣播域。" },
+        { q: "交換器採用哪種轉送方式最可靠？", opts: ["Cut-Through", "Fragment-Free", "Store-and-Forward", "Fast-Forward"], ans: 2, exp: "Store-and-Forward 完整接收後檢查 FCS 再轉送，最可靠但延遲較高。" },
+        { q: "1000BASE-T 使用哪種纜線？", opts: ["Cat3", "Cat5", "Cat5e", "Cat6a"], ans: 2, exp: "1000BASE-T 使用 Cat5e (或更好) 的 UTP 纜線，最大 100m。" },
+        { q: "Wi-Fi 6 對應的 IEEE 標準？", opts: ["802.11ac", "802.11ax", "802.11be", "802.11n"], ans: 1, exp: "Wi-Fi 6 = IEEE 802.11ax，引入 OFDMA 技術。" },
+        { q: "CSMA/CA 中的 CA 代表？", opts: ["Collision Avoidance", "Collision Access", "Carrier Access", "Code Avoidance"], ans: 0, exp: "CA = Collision Avoidance（碰撞避免），用於無線網路。" },
+        { q: "全雙工 1 Gbps 連線的理論總吞吐量？", opts: ["500 Mbps", "1 Gbps", "2 Gbps", "4 Gbps"], ans: 2, exp: "全雙工可同時傳送與接收，1 Gbps 全雙工 = 2 Gbps 總吞吐量。" },
+        { q: "PoE (802.3af) 最大供電功率？", opts: ["7.5W", "15.4W", "30W", "60W"], ans: 1, exp: "802.3af (PoE) 最大 15.4W，802.3at (PoE+) 最大 30W。" },
+        { q: "NAT 中多對一映射的技術名稱？", opts: ["靜態 NAT", "動態 NAT", "PAT/NAPT", "雙向 NAT"], ans: 2, exp: "PAT (Port Address Translation) 使用不同埠號區分多個內部主機的連線。" },
+        { q: "OSPF 屬於哪種路由協定？", opts: ["距離向量", "鏈路狀態", "路徑向量", "混合型"], ans: 1, exp: "OSPF 是鏈路狀態 (Link State) 路由協定，使用 SPF 演算法計算最短路徑。" },
+        { q: "BGP 主要用在哪裡？", opts: ["家庭網路", "企業內部", "ISP 骨幹", "資料中心內部"], ans: 2, exp: "BGP 是網際網路的核心路由協定，用於 ISP 與 ISP 之間交換路由資訊。" },
+        { q: "DHCP 的四個步驟簡稱？", opts: ["ABCD", "DORA", "ROAD", "HAND"], ans: 1, exp: "DHCP 流程：Discover → Offer → Request → ACK，簡稱 DORA。" },
+        { q: "通訊協定的三要素不包括哪個？", opts: ["語法", "語意", "時序", "語音"], ans: 3, exp: "三要素：語法 (Syntax)、語意 (Semantics)、時序 (Timing)。" },
+        { q: "IEEE 802.11 使用哪種存取控制？", opts: ["CSMA/CD", "CSMA/CA", "Token Passing", "FDMA"], ans: 1, exp: "無線網路使用 CSMA/CA (碰撞避免)，因為無線環境無法有效偵測碰撞。" },
+        { q: "traceroute 利用哪個 IP 標頭欄位？", opts: ["Protocol", "TTL", "Checksum", "Fragment Offset"], ans: 1, exp: "traceroute 利用 TTL (Time to Live) 欄位，每次遞增 TTL 以逐跳探測路徑。" },
+        { q: "RIP 路由協定的最大跳數？", opts: ["15", "16", "32", "255"], ans: 0, exp: "RIP 最大 15 跳，16 跳表示不可達。因此 RIP 僅適用於小型網路。" },
+        { q: "LACP 的標準編號？", opts: ["802.1D", "802.1Q", "802.3ad", "802.11ax"], ans: 2, exp: "LACP (Link Aggregation Control Protocol) 定義在 IEEE 802.3ad。" },
+        { q: "IPSec 是 IPv6 的哪種特性？", opts: ["選配", "內建", "不支援", "需額外安裝"], ans: 1, exp: "IPSec 是 IPv6 的內建安全機制，提供認證與加密。" },
+        { q: "SLAAC 的功能是什麼？", opts: ["自動分配 VLAN", "自動設定 IP", "自動路由", "自動加密"], ans: 1, exp: "SLAAC (Stateless Address Auto-Configuration) 讓 IPv6 設備自動取得 IP 位址。" },
+        { q: "Cat6 纜線支援的最高頻寬？", opts: ["100 MHz", "250 MHz", "500 MHz", "600 MHz"], ans: 1, exp: "Cat6 支援 250 MHz，55m 內可達 10 Gbps。" },
+        { q: "哪種網路拓撲具有最高可靠性？", opts: ["匯流排", "星狀", "環狀", "網狀"], ans: 3, exp: "網狀拓撲 (Mesh) 的每個設備與所有其他設備互連，冗餘度最高，可靠性也最高。" },
+    ];
+
+    let score = 0, answered = 0;
+
+    function initQuiz() {
+        const c = document.getElementById('quiz-container');
+        c.innerHTML = '';
+        score = 0; answered = 0;
+        document.getElementById('score-display').style.display = 'none';
+        quizData.forEach((q, i) => {
+            const card = document.createElement('div');
+            card.className = 'quiz-card';
+            card.id = 'q-' + i;
+            card.innerHTML = `
+                <div class="quiz-q">${i+1}. ${q.q}</div>
+                <div class="quiz-opts">
+                    ${q.opts.map((o, j) => `<div class="quiz-opt" onclick="check(${i},${j})">${o}</div>`).join('')}
+                </div>
+                <div class="quiz-exp" id="exp-${i}"><strong>解答：</strong>${q.exp}</div>
+            `;
+            c.appendChild(card);
         });
+    }
 
-        // Progress tracking
-        function updateProgress() {
-            const sections = ['ch01', 'ch02', 'ch03', 'ch04', 'ch05', 'ch07', 'ch08'];
-            let totalViewed = 0;
-            
-            sections.forEach(id => {
-                const card = document.getElementById(id);
-                if (card && card.classList.contains('active')) {
-                    totalViewed++;
-                }
-            });
-            
-            const percent = Math.round((totalViewed / 7) * 100);
-            document.getElementById('progress-percent').textContent = percent;
-            document.getElementById('overall-progress').style.width = percent + '%';
-        }
+    function check(qi, sel) {
+        const card = document.getElementById('q-' + qi);
+        if (card.dataset.done) return;
+        card.dataset.done = '1';
+        const opts = card.querySelectorAll('.quiz-opt');
+        const q = quizData[qi];
+        opts.forEach((o, i) => {
+            o.classList.add('disabled');
+            if (i === q.ans) o.classList.add('correct');
+            else if (i === sel && sel !== q.ans) o.classList.add('wrong');
+        });
+        if (sel === q.ans) score++;
+        answered++;
+        document.getElementById('exp-' + qi).classList.add('show');
+        if (answered === quizData.length) showScore();
+    }
 
-        // Quiz System
-        const quizData = [
-            {
-                question: "OSI參考模型中，哪一層負責路由選擇和邏輯定址？",
-                options: ["資料連結層", "網路層", "傳輸層", "會議層"],
-                correct: 1,
-                explanation: "網路層（Layer 3）負責路由選擇、封包轉送和邏輯定址（IP位址）。"
-            },
-            {
-                question: "TCP和UDP的主要區別是什麼？",
-                options: ["TCP較快", "UDP面向連線", "TCP提供可靠傳輸", "UDP有流量控制"],
-                correct: 2,
-                explanation: "TCP是面向連線的可靠傳輸協定，提供流量控制、擁塞控制和按序交付；UDP是無連線的不可靠協定。"
-            },
-            {
-                question: "乙太網路幀的最小大小是多少（不含Preamble）？",
-                options: ["32 bytes", "46 bytes", "64 bytes", "128 bytes"],
-                correct: 2,
-                explanation: "乙太網路幀最小為64 bytes，這是為了確保CSMA/CD能正確偵測碰撞。"
-            },
-            {
-                question: "CSMA/CD中的CD代表什麼？",
-                options: ["Carrier Detection", "Collision Detection", "Code Division", "Channel Delay"],
-                correct: 1,
-                explanation: "CSMA/CD = Carrier Sense Multiple Access with Collision Detection（載波偵聽多重存取與碰撞偵測）。"
-            },
-            {
-                question: "TIA-568標準中，水平佈線的最大固定長度是多少？",
-                options: ["50公尺", "90公尺", "100公尺", "150公尺"],
-                correct: 1,
-                explanation: "水平固定纜線最大長度為90公尺，加上跳接線後總通道長度不超過100公尺。"
-            },
-            {
-                question: "Cat 6纜線支援的最高頻寬是多少？",
-                options: ["100 MHz", "250 MHz", "500 MHz", "600 MHz"],
-                correct: 1,
-                explanation: "Cat 6纜線支援250 MHz頻寬，在55公尺內可支援10 Gbps傳輸速率。"
-            },
-            {
-                question: "T568A和T568B的差別在於哪兩對線的順序互換？",
-                options: ["藍和棕", "綠和橙", "紅和黃", "白和黒"],
-                correct: 1,
-                explanation: "T568A和T568B的差別在於綠線對和橙線對的位置互換。"
-            },
-            {
-                question: "下列哪個設備可以分割廣播域？",
-                options: ["Hub", "Switch", "Bridge", "Router"],
-                correct: 3,
-                explanation: "只有路由器（Router）可以分割廣播域，每個路由器介面是一個獨立的廣播域。"
-            },
-            {
-                question: "VLAN標籤（802.1Q）佔用多少bytes？",
-                options: ["2 bytes", "4 bytes", "6 bytes", "8 bytes"],
-                correct: 1,
-                explanation: "802.1Q VLAN標籤佔用4 bytes，插入在Source MAC和Type欄位之間。"
-            },
-            {
-                question: "VLAN ID的有效範圍是多少？",
-                options: ["0-255", "1-4094", "1-1024", "0-4095"],
-                correct: 1,
-                explanation: "VLAN ID使用12 bits，有效範圍是1-4094，其中0和4095為保留值。"
-            },
-            {
-                question: "STP（生成樹協定）的主要目的是什麼？",
-                options: ["增加頻寬", "防止網路迴路", "加密傳輸", "负载均衡"],
-                correct: 1,
-                explanation: "STP用於防止交換器網路中的迴路問題，避免廣播風暴和幀重複。"
-            },
-            {
-                question: "IEEE 802.11ax對應的Wi-Fi世代名稱是什麼？",
-                options: ["Wi-Fi 4", "Wi-Fi 5", "Wi-Fi 6", "Wi-Fi 7"],
-                correct: 2,
-                explanation: "802.11ax = Wi-Fi 6，引入OFDMA技術提升多設備環境下的效率。"
-            },
-            {
-                question: "CRC錯誤偵測技術使用在哪個乙太網路幀欄位？",
-                options: ["Preamble", "Type/Length", "Data", "FCS"],
-                correct: 3,
-                explanation: "FCS（Frame Check Sequence）欄位使用CRC-32演算法進行錯誤偵測。"
-            },
-            {
-                question: "全雙工乙太網路的1 Gbps連線，理論總吞吐量是多少？",
-                options: ["500 Mbps", "1 Gbps", "2 Gbps", "4 Gbps"],
-                correct: 2,
-                explanation: "全雙工模式下，發送和接收可同時進行，1 Gbps全雙工 = 2 Gbps總吞吐量。"
-            },
-            {
-                question: "下列哪一項不是通訊協定的三要素之一？",
-                options: ["語法", "語意", "語音", "時序"],
-                correct: 2,
-                explanation: "通訊協定的三要素是：語法（Syntax）、語意（Semantics）、時序（Timing）。"
-            },
-            {
-                question: "1000BASE-T使用哪種纜線？",
-                options: ["同軸纜線", "Cat3 UTP", "Cat5e UTP", "光纖"],
-                correct: 2,
-                explanation: "1000BASE-T使用Cat5e（或更好）的UTP纜線，最大傳輸距離100公尺。"
-            },
-            {
-                question: "在交換器網路中，每個埠是什麼？",
-                options: ["獨立的廣播域", "獨立的碰撞域", "共享的碰撞域", "共享的頻寬"],
-                correct: 1,
-                explanation: "交換器的每個埠是一個獨立的碰撞域，這與Hub（所有埠共享一個碰撞域）不同。"
-            },
-            {
-                question: "DHCP協定的主要功能是什麼？",
-                options: ["域名解析", "自動分配IP位址", "檔案傳輸", "網頁瀏覽"],
-                correct: 1,
-                explanation: "DHCP（Dynamic Host Configuration Protocol）用於自動分配IP位址和網路設定給客戶端。"
-            },
-            {
-                question: "MAC位址的長度是多少？",
-                options: ["32 bits", "48 bits", "64 bits", "128 bits"],
-                correct: 1,
-                explanation: "MAC位址是48 bits（6 bytes），通常表示為12位十六進制數字。"
-            },
-            {
-                question: "802.11n（Wi-Fi 4）引入了什麼技術來提升效能？",
-                options: ["OFDMA", "MIMO", "MU-MIMO", "4K QAM"],
-                correct: 1,
-                explanation: "802.11n引入了MIMO（Multiple Input Multiple Output）技術，使用多天線提升速率和覆蓋範圍。"
-            }
-        ];
+    function showScore() {
+        const d = document.getElementById('score-display');
+        d.style.display = 'block';
+        document.getElementById('score-value').textContent = score + '/' + quizData.length;
+        document.getElementById('score-bar').style.width = Math.round(score / quizData.length * 100) + '%';
+        d.scrollIntoView({ behavior: 'smooth' });
+    }
 
-        let quizScore = 0;
-        let answeredCount = 0;
+    function resetQuiz() { initQuiz(); document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' }); }
 
-        function initQuiz() {
-            const container = document.getElementById('quiz-container');
-            container.innerHTML = '';
-            quizScore = 0;
-            answeredCount = 0;
-            document.getElementById('score-display').style.display = 'none';
-
-            quizData.forEach((q, index) => {
-                const card = document.createElement('div');
-                card.className = 'quiz-card';
-                card.id = `quiz-${index}`;
-                card.innerHTML = `
-                    <div class="quiz-question">${index + 1}. ${q.question}</div>
-                    <div class="quiz-options">
-                        ${q.options.map((opt, i) => `
-                            <div class="quiz-option" onclick="checkAnswer(${index}, ${i})">${opt}</div>
-                        `).join('')}
-                    </div>
-                    <div class="quiz-explanation" id="explanation-${index}">
-                        <strong>解釋：</strong>${q.explanation}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function checkAnswer(questionIndex, selectedOption) {
-            const q = quizData[questionIndex];
-            const card = document.getElementById(`quiz-${questionIndex}`);
-            const options = card.querySelectorAll('.quiz-option');
-            const explanation = document.getElementById(`explanation-${questionIndex}`);
-
-            // Prevent double answering
-            if (card.dataset.answered) return;
-            card.dataset.answered = 'true';
-
-            options.forEach((opt, i) => {
-                opt.classList.add('disabled');
-                if (i === q.correct) {
-                    opt.classList.add('correct');
-                } else if (i === selectedOption && selectedOption !== q.correct) {
-                    opt.classList.add('wrong');
-                }
-            });
-
-            if (selectedOption === q.correct) {
-                quizScore++;
-            }
-
-            answeredCount++;
-            explanation.classList.add('show');
-
-            if (answeredCount === quizData.length) {
-                showScore();
-            }
-        }
-
-        function showScore() {
-            const display = document.getElementById('score-display');
-            display.style.display = 'block';
-            document.getElementById('score-value').textContent = `${quizScore}/${quizData.length}`;
-            const percent = Math.round((quizScore / quizData.length) * 100);
-            document.getElementById('score-bar').style.width = percent + '%';
-            display.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function resetQuiz() {
-            initQuiz();
-            document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Initialize quiz
-        initQuiz();
-    </script>
+    initQuiz();
+</script>
 </body>
 </html>
