@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網路概論 重點總複習</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg: #f0f2f5;
+            --surface: #fff;
+            --surface2: #f8f9fa;
+            --border: #dee2e6;
+            --text: #212529;
+            --text2: #495057;
+            --text3: #868e96;
+            --primary: #4263eb;
+            --primary-light: #dbe4ff;
+            --primary-dark: #3b5bdb;
+            --accent: #f59f00;
+            --accent-light: #fff3bf;
+            --success: #2f9e44;
+            --success-light: #d3f9d8;
+            --danger: #e03131;
+            --danger-light: #ffe0e0;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1c7ed6, #4263eb, #7048e8);
+            color: #fff;
+            padding: 2.5rem 1.5rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        header::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,.12) 0%, transparent 60%);
+        }
+        header > * { position: relative; z-index: 1; }
+        header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: .35rem; }
+        header p { font-size: 1rem; opacity: .85; max-width: 560px; }
+        header .stats { display: flex; gap: 1.25rem; margin-top: 1.25rem; flex-wrap: wrap; }
+        header .stat {
+            background: rgba(255,255,255,.15);
+            backdrop-filter: blur(6px);
+            padding: .4rem .85rem;
+            border-radius: 6px;
+            font-size: .8rem;
+        }
+        header .stat strong { display: block; font-size: 1.05rem; }
+
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        nav .inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; gap: 2px; padding: .4rem .75rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        nav .inner::-webkit-scrollbar { display: none; }
+        nav button {
+            flex-shrink: 0;
+            padding: .5rem .9rem;
+            border: none; background: transparent;
+            font-size: .82rem; font-weight: 500; color: var(--text2);
+            border-radius: 6px;
+            cursor: pointer; white-space: nowrap;
+            transition: all .15s;
+        }
+        nav button:hover { background: var(--surface2); color: var(--text); }
+        nav button.active { background: var(--primary); color: #fff; }
+
+        .search-box {
+            max-width: 1200px; margin: 1rem auto 0; padding: 0 1rem;
+            position: relative; z-index: 1;
+        }
+        .search-box input {
+            width: 100%; padding: .7rem 1rem .7rem 2.4rem;
+            border: 2px solid var(--border); border-radius: 8px;
+            font-size: .9rem; background: var(--surface);
+            outline: none; transition: border-color .15s;
+        }
+        .search-box input:focus { border-color: var(--primary); }
+        .search-box .icon {
+            position: absolute; left: 1.9rem; top: 50%; transform: translateY(-50%);
+            color: var(--text3); font-size: .85rem;
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto;
+            padding: 1.5rem 1rem 3rem;
+        }
+        section { display: none; }
+        section.active { display: block; animation: fade .25s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .sec-title {
+            margin-bottom: 1.25rem;
+        }
+        .sec-title h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: .2rem; }
+        .sec-title p { color: var(--text3); font-size: .9rem; }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+        .card h3 {
+            font-size: 1.1rem; font-weight: 700;
+            margin-bottom: .6rem; padding-bottom: .4rem;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex; align-items: center; gap: .5rem;
+        }
+        .card h4 { font-size: 1rem; font-weight: 600; margin: .85rem 0 .35rem; color: var(--text); }
+        .card p, .card li { font-size: .9rem; color: var(--text2); }
+        .card ul, .card ol { padding-left: 1.1rem; margin: .3rem 0; }
+        .card li { margin-bottom: .2rem; }
+        .card blockquote {
+            border-left: 3px solid var(--primary);
+            background: var(--primary-light);
+            padding: .6rem .9rem; margin: .6rem 0;
+            border-radius: 0 4px 4px 0;
+            font-size: .85rem; color: var(--text);
+        }
+        .card blockquote.warn {
+            border-left-color: var(--accent);
+            background: var(--accent-light);
+        }
+        .card blockquote.ok {
+            border-left-color: var(--success);
+            background: var(--success-light);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: .1rem .5rem;
+            border-radius: 4px;
+            font-size: .72rem; font-weight: 600;
+        }
+        .tag-p { background: var(--primary-light); color: var(--primary-dark); }
+        .tag-a { background: var(--accent-light); color: #b88500; }
+        .tag-s { background: var(--success-light); color: var(--success); }
+        .tag-d { background: var(--danger-light); color: var(--danger); }
+
+        .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+
+        table {
+            width: 100%; border-collapse: collapse;
+            font-size: .85rem; margin: .5rem 0;
+        }
+        th {
+            background: var(--surface2);
+            padding: .55rem .7rem; text-align: left;
+            font-weight: 600; border-bottom: 2px solid var(--border);
+            color: var(--text);
+        }
+        td {
+            padding: .45rem .7rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text2);
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--surface2); }
+        .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; margin: .5rem 0; }
+
+        code {
+            background: var(--surface2);
+            padding: .1rem .35rem; border-radius: 3px;
+            font-family: 'Consolas', monospace; font-size: .85em;
+            color: var(--primary-dark);
+        }
+        .code-block {
+            background: #1e1e2e; color: #cdd6f4;
+            padding: .8rem 1rem; border-radius: 6px;
+            font-family: 'Consolas', monospace; font-size: .8rem;
+            overflow-x: auto; margin: .5rem 0;
+            line-height: 1.5;
+        }
+        .code-block .hl { color: #f9e2af; }
+        .code-block .hl2 { color: #89b4fa; }
+
+        .def-list dt { font-weight: 600; margin-top: .5rem; color: var(--text); }
+        .def-list dd { margin-left: 1rem; color: var(--text2); font-size: .88rem; }
+
+        .quiz-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+        .quiz-q { font-weight: 600; margin-bottom: .7rem; font-size: .95rem; }
+        .quiz-opts { display: flex; flex-direction: column; gap: .4rem; }
+        .quiz-opt {
+            padding: .55rem .85rem;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all .15s;
+            font-size: .85rem;
+        }
+        .quiz-opt:hover { border-color: var(--primary); background: var(--primary-light); }
+        .quiz-opt.disabled { pointer-events: none; }
+        .quiz-opt.correct { border-color: var(--success); background: var(--success-light); color: #1a5e2a; }
+        .quiz-opt.wrong { border-color: var(--danger); background: var(--danger-light); color: #a52525; }
+        .quiz-exp {
+            margin-top: .6rem; padding: .6rem .85rem;
+            background: var(--surface2); border-radius: 6px;
+            font-size: .82rem; color: var(--text2);
+            display: none;
+        }
+        .quiz-exp.show { display: block; }
+
+        .score-box {
+            text-align: center; padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-light), var(--success-light));
+            border-radius: var(--radius); margin: 1rem 0;
+        }
+        .score-box .num { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+        .score-box .lbl { color: var(--text3); font-size: .82rem; }
+        .bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: .5rem 0; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); border-radius: 3px; transition: width .4s; }
+
+        .btn { display: inline-block; padding: .4rem .85rem; border: none; border-radius: 6px; cursor: pointer; font-size: .82rem; font-weight: 500; background: var(--primary); color: #fff; transition: background .15s; }
+        .btn:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+        .btn-outline:hover { background: var(--primary-light); }
+
+        .progress-track {
+            display: flex; align-items: center; gap: .5rem;
+            margin: .5rem 0; font-size: .78rem; color: var(--text3);
+        }
+        .progress-track .bar { flex: 1; }
+
+        .footer {
+            background: #1e1e2e; color: var(--text3);
+            text-align: center; padding: 1.5rem;
+            font-size: .8rem;
+        }
+
+        @media (max-width: 640px) {
+            header h1 { font-size: 1.4rem; }
+            main { padding: 1rem .5rem; }
+            .card { padding: 1rem; }
+            .grid2 { grid-template-columns: 1fr; }
+            nav .inner { padding: .3rem; }
+            nav button { font-size: .75rem; padding: .4rem .65rem; }
+        }
+
+        /* floating toc */
+        .toc-card { position: sticky; top: 4rem; }
+        .toc-card a {
+            display: block; padding: .25rem 0; font-size: .82rem;
+            color: var(--text2); text-decoration: none; transition: color .15s;
+        }
+        .toc-card a:hover { color: var(--primary); }
+
+        .kword { color: var(--primary-dark); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>網路概論 重點總複習</h1>
+    <p>基於「網路概論與實務第七版」各章節內容整理 — 重點摘要、比較表格、自我測驗</p>
+    <div class="stats">
+        <div class="stat"><strong>7</strong> 章節</div>
+        <div class="stat"><strong>514</strong> 張投影片</div>
+        <div class="stat"><strong>40</strong> 練習題</div>
+    </div>
+</header>
+
+<nav>
+    <div class="inner">
+        <button class="active" onclick="showSec('overview')">總覽</button>
+        <button onclick="showSec('ch01')">Ch1 簡介</button>
+        <button onclick="showSec('ch02')">Ch2 通訊</button>
+        <button onclick="showSec('ch03')">Ch3 設備</button>
+        <button onclick="showSec('ch04')">Ch4 協定</button>
+        <button onclick="showSec('ch05')">Ch5 乙太網路</button>
+        <button onclick="showSec('ch07')">Ch7 區域網路</button>
+        <button onclick="showSec('ch08')">Ch8 IP</button>
+        <button onclick="showSec('midterm')">期中考重點</button>
+        <button onclick="showSec('final')" style="color: #e03131; font-weight: bold;">期末考重點</button>
+        <button onclick="showSec('quiz')">練習題庫</button>
+    </div>
+</nav>
+
+<main>
+    <section id="overview" class="active">
+        <div class="sec-title">
+            <h2>總覽</h2>
+            <p>七章重點一覽 — 快速掌握各章核心</p>
+        </div>
+
+        <div class="grid2">
+            <div class="card">
+                <h3>Ch1 網路簡介</h3>
+                <p>網路定義、分類（規模/角色）、拓撲、傳輸模式、網路三要素</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">44 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch2 通訊</h3>
+                <p>資料通訊元件、類比/數位訊號、編碼方式、傳輸媒介、多工技術</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">64 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch3 設備</h3>
+                <p>L1-L7 網路設備、碰撞域與廣播域、MAC表、路由表</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">33 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch4 通訊協定</h3>
+                <p>OSI 七層、TCP/IP 四層、TCP/UDP、應用層協定、埠號</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">44 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch5 乙太網路</h3>
+                <p>Ethernet 演進、CSMA/CD、幀格式、MAC 位址、自動協商</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">74 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch7 區域網路</h3>
+                <p>IEEE 802 標準、VLAN、STP、無線 LAN、Wi-Fi 演進</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">94 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch8 網際網路協定</h3>
+                <p>IPv4 分類、子網路切割、CIDR、NAT、路由協定、IPv6</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">161 張投影片</span></div>
+            </div>
+            <div class="card" style="border: 2px solid var(--danger); background: var(--danger-light);">
+                <h3 style="border-bottom-color: var(--danger); color: var(--danger);"><i class="icon">🎯</i> 期末考必讀重點</h3>
+                <p style="color: #a52525;">包含 CSMA 比較、IP 網段計算、子網路切割/超網化、Ethernet 標頭與 Wi-Fi 標準等重點。</p>
+                <div style="margin-top:.8rem"><button class="btn" style="background: var(--danger);" onclick="showSec('final')">立即前往複習</button></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>學習進度</h3>
+            <p>點擊上方導覽按鈕開始閱讀各章重點。</p>
+            <div class="progress-track">
+                <span>已讀</span>
+                <div class="bar bar-wrap"><div class="bar-fill" id="overall-bar" style="width:0%"></div></div>
+                <span><span id="overall-pct">0</span>%</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="ch01">
+        <div class="sec-title">
+            <h2>Ch1 網路簡介</h2>
+            <p>Introduction — 網路的定義、分類、拓撲與傳輸模式</p>
+        </div>
+
+        <div class="card">
+            <h3>1.1 什麼是網路</h3>
+            <p><span class="kword">網路 (Network)</span> 是將兩台以上的電腦與設備透過傳輸媒介連接，使其能交換資料與共享資源的系統。</p>
+            <blockquote>
+                <strong>網路三要素：</strong>設備 (Devices) + 傳輸媒介 (Medium) + 通訊協定 (Protocol)
+            </blockquote>
+            <h4>網路的主要目的</h4>
+            <ul>
+                <li><strong>資源共享</strong>：印表機、儲存空間、應用程式</li>
+                <li><strong>資料交換</strong>：檔案傳輸、電子郵件、即時通訊</li>
+                <li><strong>集中管理</strong>：伺服器集中控管使用者與安全政策</li>
+                <li><strong>提高可靠性</strong>：備援機制確保服務不中斷</li>
+                <li><strong>節省成本</strong>：共享硬體設備與軟體授權</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>1.2 網路分類（依規模）</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>類型</th><th>全名</th><th>範圍</th><th>速度</th><th>範例</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="tag tag-s">PAN</span></td><td>Personal Area Network</td><td>個人周圍 1-10m</td><td>1-24 Mbps</td><td>藍牙、USB</td></tr>
+                        <tr><td><span class="tag tag-p">LAN</span></td><td>Local Area Network</td><td>建築物 ~1km</td><td>10 Mbps - 100 Gbps</td><td>校園、辦公室</td></tr>
+                        <tr><td><span class="tag tag-a">MAN</span></td><td>Metropolitan Area Network</td><td>城市 ~10km</td><td>100 Mbps - 10 Gbps</td><td>城市 Wi-Fi</td></tr>
+                        <tr><td><span class="tag tag-d">WAN</span></td><td>Wide Area Network</td><td>國家/全球</td><td>1 Mbps - 100 Gbps</td><td>網際網路</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>1.3 網路分類（依角色）</h3>
+            <div class="grid2">
+                <div>
+                    <h4>Client-Server 架構</h4>
+                    <ul>
+                        <li>伺服器集中提供服務</li>
+                        <li>客戶端提出請求</li>
+                        <li>集中管理、安全性高</li>
+                        <li>伺服器成本較高</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Peer-to-Peer 架構</h4>
+                    <ul>
+                        <li>每台設備兼任客戶端與伺服器</li>
+                        <li>無中央管理節點</li>
+                        <li>成本低、設定簡單</li>
+                        <li>安全性較低</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>1.4 網路拓撲</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>拓撲</th><th>說明</th><th>優點</th><th>缺點</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>匯流排 (Bus)</strong></td><td>所有設備共享一條主幹線</td><td>佈線簡單、成本低</td><td>主幹故障全網中斷</td><td>早期 10BASE2</td></tr>
+                        <tr><td><strong>星狀 (Star)</strong></td><td>設備連接到中央節點</td><td>易管理、除錯方便</td><td>中央設備故障全網中斷</td><td>現代乙太網路</td></tr>
+                        <tr><td><strong>環狀 (Ring)</strong></td><td>設備首尾相連成環</td><td>傳輸穩定、無碰撞</td><td>單點故障影響全網</td><td>Token Ring、FDDI</td></tr>
+                        <tr><td><strong>網狀 (Mesh)</strong></td><td>所有設備互相連接</td><td>高冗餘、高可靠</td><td>佈線成本最高</td><td>骨幹網路</td></tr>
+                        <tr><td><strong>樹狀 (Tree)</strong></td><td>星狀的層級延伸</td><td>易擴充、分層管理</td><td>根節點故障影響大</td><td>企業網路</td></tr>
+                        <tr><td><strong>混合 (Hybrid)</strong></td><td>結合多種拓撲</td><td>靈活彈性</td><td>設計管理複雜</td><td>大型網路</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote>現代乙太網路幾乎都使用 <strong>星狀拓撲 (Star)</strong>，以交換器為中央節點。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>1.5 傳輸模式</h3>
+            <div class="grid2">
+                <div>
+                    <h4>單工 (Simplex)</h4>
+                    <p>資料只能單向傳輸。如：廣播、電視、監視器。</p>
+                </div>
+                <div>
+                    <h4>半雙工 (Half-Duplex)</h4>
+                    <p>雙方可互傳，但同一時間只能單向。如：對講機。</p>
+                </div>
+                <div>
+                    <h4>全雙工 (Full-Duplex)</h4>
+                    <p>雙方可同時傳送和接收。如：電話、交換器網路。</p>
+                </div>
+            </div>
+            <blockquote class="ok">Gigabit Ethernet 以上強制使用全雙工模式。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>1.6 關鍵術語</h3>
+            <dl class="def-list">
+                <dt>頻寬 (Bandwidth)</dt><dd>單位時間內能傳輸的最大資料量，單位 bps</dd>
+                <dt>吞吐量 (Throughput)</dt><dd>實際成功傳輸的資料量</dd>
+                <dt>延遲 (Latency)</dt><dd>資料從源端到目的端的時間延遲</dd>
+                <dt>傳輸時間 (Propagation Delay)</dt><dd>訊號在媒介中傳遞的時間</dd>
+            </dl>
+        </div>
+    </section>
+
+    <section id="ch02">
+        <div class="sec-title">
+            <h2>Ch2 通訊</h2>
+            <p>Communication — 訊號、編碼、傳輸媒介與多工技術</p>
+        </div>
+
+        <div class="card">
+            <h3>2.1 資料通訊系統五大元件</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>元件</th><th>說明</th><th>範例</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>訊息 (Message)</strong></td><td>要傳送的資料內容</td><td>文字、圖片、聲音、影片</td></tr>
+                        <tr><td><strong>傳送端 (Sender)</strong></td><td>發出訊息的設備</td><td>電腦、手機</td></tr>
+                        <tr><td><strong>接收端 (Receiver)</strong></td><td>接收訊息的設備</td><td>電腦、手機</td></tr>
+                        <tr><td><strong>傳輸媒介 (Medium)</strong></td><td>訊號傳遞的通道</td><td>雙絞線、光纖、無線電波</td></tr>
+                        <tr><td><strong>協定 (Protocol)</strong></td><td>規範通訊的規則集合</td><td>TCP/IP、HTTP</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2.2 類比訊號 vs 數位訊號</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>特性</th><th>類比訊號 (Analog)</th><th>數位訊號 (Digital)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>波形</strong></td><td>連續平滑波形（正弦波）</td><td>離散階梯狀方波（0/1）</td></tr>
+                        <tr><td><strong>衰減處理</strong></td><td>使用放大器，同時放大雜訊</td><td>使用中繼器，可還原訊號</td></tr>
+                        <tr><td><strong>抗干擾</strong></td><td>較差，雜訊累積</td><td>較強，可透過編碼糾錯</td></tr>
+                        <tr><td><strong>應用</strong></td><td>傳統電話、廣播</td><td>電腦網路、數位電視</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote class="ok">數位傳輸優點：低成本、低錯誤率、易加密壓縮、可整合多種資料類型。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>2.3 資料編碼方式</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>編碼</th><th>原理</th><th>特性</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>NRZ</strong></td><td>1=高電位，0=低電位</td><td>簡單但可能失去同步</td><td>低速介面</td></tr>
+                        <tr><td><strong>Manchester</strong></td><td>每位元中間有電位轉換</td><td>內建時脈同步</td><td>早期乙太網路 (10BASE-T)</td></tr>
+                        <tr><td><strong>Differential Manchester</strong></td><td>位元開始處有無轉換</td><td>抗干擾性強</td><td>Token Ring</td></tr>
+                        <tr><td><strong>4B/5B</strong></td><td>4 位元編碼為 5 位元</td><td>保證足夠轉換</td><td>100BASE-TX</td></tr>
+                        <tr><td><strong>8B/10B</strong></td><td>8 位元編碼為 10 位元</td><td>DC 平衡</td><td>Gigabit Ethernet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2.4 傳輸媒介</h3>
+            <div class="grid2">
+                <div>
+                    <h4>有線傳輸 (Guided Media)</h4>
+                    <ul>
+                        <li><strong>雙絞線</strong>：UTP（無遮蔽）、STP（有遮蔽），最大 100m</li>
+                        <li><strong>同軸纜線</strong>：中心導體 + 絕緣層 + 金屬網，抗干擾佳</li>
+                        <li><strong>光纖</strong>：單模（雷射，極長距離）、多模（LED，較短距離）<br>高頻寬、低衰減、不受 EMI 干擾</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>無線傳輸 (Unguided Media)</h4>
+                    <ul>
+                        <li><strong>無線電波</strong>：全方向、穿透建築、Wi-Fi (2.4/5/6 GHz)</li>
+                        <li><strong>微波</strong>：方向性、需視線 LOS、衛星通訊</li>
+                        <li><strong>紅外線</strong>：短距離、無法穿透牆壁</li>
+                    </ul>
+                </div>
+            </div>
+            <blockquote>UTP 纜線依頻寬分為 Cat3 (16MHz)、Cat5 (100MHz)、Cat5e (100MHz)、Cat6 (250MHz)、Cat6a (500MHz)、Cat7 (600MHz)、Cat8 (2000MHz)。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>2.5 多工技術</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>技術</th><th>原理</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>FDM</strong> 頻分多工</td><td>不同訊號使用不同頻率</td><td>廣播電台、有線電視</td></tr>
+                        <tr><td><strong>TDM</strong> 時分多工</td><td>輪流分配時間槽</td><td>T1/E1、SONET</td></tr>
+                        <tr><td><strong>WDM</strong> 波分多工</td><td>不同波長的光在同一光纖</td><td>光纖骨幹（數十 Tbps）</td></tr>
+                        <tr><td><strong>CDMA</strong> 碼分多工</td><td>不同編碼同時同頻傳輸</td><td>3G 行動通訊</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2.6 交換技術</h3>
+            <ul>
+                <li><strong>電路交換 (Circuit Switching)</strong>：建立專用線路，如傳統電話。優點：穩定；缺點：頻寬浪費</li>
+                <li><strong>封包交換 (Packet Switching)</strong>：資料分割為封包獨立傳送。優點：高效利用頻寬；缺點：延遲不確定</li>
+                <li><strong>訊息交換 (Message Switching)</strong>：完整訊息逐跳轉送 (Store-and-Forward)</li>
+            </ul>
+            <blockquote>現代網路主要使用 <strong>封包交換</strong> 技術。</blockquote>
+        </div>
+    </section>
+
+    <section id="ch03">
+        <div class="sec-title">
+            <h2>Ch3 設備</h2>
+            <p>Equipment — L1 到 L7 網路設備功能、原理與應用</p>
+        </div>
+
+        <div class="card">
+            <h3>3.1 網路設備層級總覽</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>設備</th><th>OSI</th><th>定址</th><th>碰撞域</th><th>廣播域</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>中繼器 (Repeater)</strong></td><td>L1</td><td>無</td><td>不分割</td><td>不分割</td></tr>
+                        <tr><td><strong>集線器 (Hub)</strong></td><td>L1</td><td>無</td><td>不分割</td><td>不分割</td></tr>
+                        <tr><td><strong>橋接器 (Bridge)</strong></td><td>L2</td><td>MAC</td><td>分割</td><td>不分割</td></tr>
+                        <tr><td><strong>交換器 (Switch)</strong></td><td>L2</td><td>MAC</td><td>每埠分割</td><td>不分割</td></tr>
+                        <tr><td><strong>路由器 (Router)</strong></td><td>L3</td><td>IP</td><td>每埠分割</td><td>每埠分割</td></tr>
+                        <tr><td><strong>L3 交換器</strong></td><td>L2+L3</td><td>MAC+IP</td><td>每埠分割</td><td>可分割</td></tr>
+                        <tr><td><strong>閘道器 (Gateway)</strong></td><td>L4-L7</td><td>依協定</td><td>—</td><td>—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote>
+                <strong>碰撞域 (Collision Domain)</strong>：可能發生碰撞的區域。交換器每埠為獨立碰撞域。<br>
+                <strong>廣播域 (Broadcast Domain)</strong>：廣播封包能到達的範圍。路由器每埠為獨立廣播域。
+            </blockquote>
+        </div>
+
+        <div class="card">
+            <h3>3.2 L1 設備：中繼器與集線器</h3>
+            <div class="grid2">
+                <div>
+                    <h4>中繼器 (Repeater)</h4>
+                    <ul>
+                        <li>工作在實體層，處理位元訊號</li>
+                        <li>將衰減訊號放大後重新傳送</li>
+                        <li>延長網路傳輸距離</li>
+                        <li>2 埠設備（進/出），不具過濾功能</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>集線器 (Hub)</h4>
+                    <ul>
+                        <li>多埠中繼器（4-24 埠）</li>
+                        <li>收到的訊號複製到所有其他埠</li>
+                        <li>所有埠共享頻寬與碰撞域</li>
+                        <li>半雙工模式，已被交換器取代</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>3.3 L2 設備：橋接器與交換器</h3>
+            <h4>橋接器 (Bridge)</h4>
+            <ul>
+                <li>2-4 埠，連接兩個網路區段</li>
+                <li>根據 MAC 位址決定是否轉送</li>
+                <li>建立 MAC 學習表，可分割碰撞域</li>
+            </ul>
+            <h4>交換器 (Switch) — 現代網路核心</h4>
+            <p>交換器是多埠橋接器，透過硬體 ASIC 高速轉送：</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>功能</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>MAC 位址學習</strong></td><td>記錄來源 MAC 與對應埠號到 MAC 表</td></tr>
+                        <tr><td><strong>轉送/過濾</strong></td><td>查 MAC 表決定轉送到特定埠或泛洪 (Flooding)</td></tr>
+                        <tr><td><strong>MAC 表老化</strong></td><td>TTL 通常 300 秒，逾時自動刪除</td></tr>
+                        <tr><td><strong>Store-and-Forward</strong></td><td>完整接收後檢查 FCS 再轉送，保證正確性</td></tr>
+                        <tr><td><strong>Cut-Through</strong></td><td>僅讀取目的 MAC 立即轉送，延遲低但無錯誤檢查</td></tr>
+                        <tr><td><strong>VLAN</strong></td><td>分割為多個邏輯網路，隔離廣播域</td></tr>
+                        <tr><td><strong>STP/RSTP</strong></td><td>防止網路迴路導致廣播風暴</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>3.4 L3 設備：路由器</h3>
+            <p>路由器的核心功能：</p>
+            <ul>
+                <li><strong>路由表</strong>：記錄目的地網路、下一跳位址、輸出介面</li>
+                <li><strong>路由來源</strong>：直接連接、靜態路由、動態路由 (RIP/OSPF/BGP)</li>
+                <li><strong>路由選擇</strong>：比對目的 IP，選擇最長匹配前綴</li>
+                <li><strong>NAT</strong>：私有 IP 轉換為公有 IP</li>
+                <li><strong>ACL</strong>：存取控制串列，允許/拒絕特定流量</li>
+            </ul>
+            <blockquote class="ok">封包轉送流程：進入 → 檢查目的 IP → 查路由表 (最長匹配) → 修改 TTL 與 Checksum → 從對應介面轉送。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>3.5 交換器轉送模式比較</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>模式</th><th>延遲</th><th>錯誤檢查</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Store-and-Forward</strong></td><td>高（完整接收）</td><td>完整 CRC</td><td>企業核心交換器</td></tr>
+                        <tr><td><strong>Cut-Through</strong></td><td>低（僅讀 MAC）</td><td>無</td><td>高效能運算</td></tr>
+                        <tr><td><strong>Fragment-Free</strong></td><td>中（讀 64 bytes）</td><td>檢查衝突片段</td><td>一般用途</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="ch04">
+        <div class="sec-title">
+            <h2>Ch4 通訊協定</h2>
+            <p>Protocol — OSI 模型、TCP/IP、重要協定與埠號</p>
+        </div>
+
+        <div class="card">
+            <h3>4.1 通訊協定三要素</h3>
+            <ul>
+                <li><strong>語法 (Syntax)</strong>：資料格式與結構</li>
+                <li><strong>語意 (Semantics)</strong>：欄位意義與控制資訊</li>
+                <li><strong>時序 (Timing)</strong>：傳送時機與速度匹配</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>4.2 OSI 七層模型</h3>
+            <p>ISO 制定的標準網路架構，由上到下：</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>層級</th><th>名稱</th><th>功能</th><th>資料單位</th><th>協定/技術</th></tr></thead>
+                    <tbody>
+                        <tr><td>L7</td><td><strong>應用層</strong></td><td>使用者應用服務</td><td>資料</td><td>HTTP, FTP, SMTP, DNS</td></tr>
+                        <tr><td>L6</td><td><strong>表達層</strong></td><td>資料格式轉換、加密</td><td>資料</td><td>SSL/TLS, JPEG, ASCII</td></tr>
+                        <tr><td>L5</td><td><strong>會議層</strong></td><td>會話管理、同步</td><td>資料</td><td>NetBIOS, RPC</td></tr>
+                        <tr><td>L4</td><td><strong>傳輸層</strong></td><td>端對端傳輸、流量控制</td><td>區段 (Segment)</td><td>TCP, UDP</td></tr>
+                        <tr><td>L3</td><td><strong>網路層</strong></td><td>路由選擇、邏輯定址</td><td>封包 (Packet)</td><td>IP, ICMP, ARP</td></tr>
+                        <tr><td>L2</td><td><strong>資料連結層</strong></td><td>幀傳輸、MAC 定址</td><td>幀 (Frame)</td><td>Ethernet, PPP</td></tr>
+                        <tr><td>L1</td><td><strong>實體層</strong></td><td>位元傳輸、電氣訊號</td><td>位元 (Bit)</td><td>RS-232, RJ-45</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote class="ok"><strong>口訣：</strong>由上到下「<strong>應表會傳網資實</strong>」</blockquote>
+            <h4>封裝與解封裝</h4>
+            <p>傳送端：資料 → L7 → L6 → … → L1（逐層加上標頭）<br>接收端：L1 → L2 → … → L7（逐層移除標頭）</p>
+        </div>
+
+        <div class="card">
+            <h3>4.3 TCP/IP 模型（四層）</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>TCP/IP 層</th><th>對應 OSI</th><th>主要協定</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>應用層</strong></td><td>L5+L6+L7</td><td>HTTP, FTP, SMTP, DNS, SSH, DHCP</td></tr>
+                        <tr><td><strong>傳輸層</strong></td><td>L4</td><td>TCP (可靠)、UDP (不可靠)</td></tr>
+                        <tr><td><strong>網際網路層</strong></td><td>L3</td><td>IP, ICMP, ARP</td></tr>
+                        <tr><td><strong>網路存取層</strong></td><td>L1+L2</td><td>Ethernet, Wi-Fi, PPP</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>4.4 TCP 詳細介紹</h3>
+            <p>TCP (Transmission Control Protocol) 是 <strong>面向連線</strong>、<strong>可靠</strong> 的傳輸層協定。</p>
+            <h4>TCP 三次握手 (Three-Way Handshake)</h4>
+            <div class="code-block">
+<span class="hl2">Client</span>                          <span class="hl2">Server</span>
+   |                                |
+   |------ SYN (seq=x) ------------>|  Step 1: Client 發送 SYN
+   |                                |
+   |<--- SYN+ACK (seq=y, ack=x+1)--|  Step 2: Server 回覆 SYN+ACK
+   |                                |
+   |------ ACK (ack=y+1) ---------->|  Step 3: Client 確認，連線建立
+   |                                |
+            </div>
+            <h4>TCP 分段釋放 (Four-Way Handshake)</h4>
+            <ul>
+                <li>一方發送 FIN → 另一方回覆 ACK → 另一方發送 FIN → 原方回覆 ACK</li>
+            </ul>
+            <h4>TCP 可靠機制</h4>
+            <ul>
+                <li><strong>序號 (SN) / 確認號 (ACK)</strong>：確保資料按序送達</li>
+                <li><strong>滑動視窗 (Sliding Window)</strong>：流量控制，避免接收端 overflow</li>
+                <li><strong>擁塞控制</strong>：慢啟動 (Slow Start)、擁塞避免、快速重傳、快速恢復</li>
+                <li><strong>Checksum</strong>：檢查資料完整性</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>4.5 UDP 詳細介紹</h3>
+            <p>UDP (User Datagram Protocol) 是 <strong>無連線</strong>、<strong>不可靠</strong> 的傳輸層協定。</p>
+            <ul>
+                <li><strong>無握手</strong>：直接發送資料，延遲低</li>
+                <li><strong>無流量控制</strong>：傳送速率不受接收端限制</li>
+                <li><strong>無擁塞控制</strong>：可能導致網路壅塞</li>
+                <li><strong>無序號</strong>：封包可能亂序到達</li>
+                <li><strong>適用</strong>：即時應用（串流、VoIP、DNS、DHCP）</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>4.6 TCP vs UDP 比較</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>特性</th><th>TCP</th><th>UDP</th></tr></thead>
+                    <tbody>
+                        <tr><td>連線</td><td>面向連線（三次握手）</td><td>無連線</td></tr>
+                        <tr><td>可靠性</td><td>可靠（重傳、確認）</td><td>不可靠（盡力而為）</td></tr>
+                        <tr><td>順序</td><td>按序送達</td><td>可能亂序</td></tr>
+                        <tr><td>流量控制</td><td>有（滑動視窗）</td><td>無</td></tr>
+                        <tr><td>擁塞控制</td><td>有（慢啟動等）</td><td>無</td></tr>
+                        <tr><td>速度</td><td>較慢</td><td>較快</td></tr>
+                        <tr><td>標頭大小</td><td>20-60 bytes</td><td>8 bytes</td></tr>
+                        <tr><td>應用</td><td>網頁、郵件、檔案</td><td>串流、DNS、VoIP</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>4.7 應用層協定與埠號</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>協定</th><th>全名</th><th>傳輸層</th><th>埠號</th><th>功能</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>HTTP</code></td><td>Hypertext Transfer Protocol</td><td>TCP</td><td>80</td><td>網頁傳輸</td></tr>
+                        <tr><td><code>HTTPS</code></td><td>HTTP Secure</td><td>TCP</td><td>443</td><td>加密網頁傳輸 (TLS)</td></tr>
+                        <tr><td><code>FTP</code></td><td>File Transfer Protocol</td><td>TCP</td><td>20/21</td><td>檔案傳輸</td></tr>
+                        <tr><td><code>SMTP</code></td><td>Simple Mail Transfer Protocol</td><td>TCP</td><td>25</td><td>郵件傳送</td></tr>
+                        <tr><td><code>POP3</code></td><td>Post Office Protocol v3</td><td>TCP</td><td>110</td><td>郵件接收</td></tr>
+                        <tr><td><code>IMAP</code></td><td>Internet Message Access Protocol</td><td>TCP</td><td>143</td><td>郵件接收（保留伺服器）</td></tr>
+                        <tr><td><code>DNS</code></td><td>Domain Name System</td><td>UDP (主) / TCP</td><td>53</td><td>域名解析</td></tr>
+                        <tr><td><code>DHCP</code></td><td>Dynamic Host Configuration Protocol</td><td>UDP</td><td>67/68</td><td>自動配發 IP</td></tr>
+                        <tr><td><code>SSH</code></td><td>Secure Shell</td><td>TCP</td><td>22</td><td>安全遠端登入</td></tr>
+                        <tr><td><code>Telnet</code></td><td>Telecommunication Network</td><td>TCP</td><td>23</td><td>遠端登入（不安全）</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>4.8 ARP 與 ICMP</h3>
+            <h4>ARP (Address Resolution Protocol)</h4>
+            <ul>
+                <li>功能：將 IP 位址解析為 MAC 位址</li>
+                <li>流程：廣播 ARP Request → 目標回覆 ARP Reply</li>
+                <li>ARP Cache：暫存解析結果，減少廣播</li>
+                <li>攻擊：ARP Spoofing（偽造 ARP 回覆進行中間人攻擊）</li>
+            </ul>
+            <h4>ICMP (Internet Control Message Protocol)</h4>
+            <ul>
+                <li>功能：錯誤報告與診斷</li>
+                <li><code>ping</code>：發送 ICMP Echo Request，測試連通性</li>
+                <li><code>traceroute</code>：利用 TTL 逐跳探測路徑</li>
+                <li>類型：Destination Unreachable (3), Time Exceeded (11), Echo (8/0)</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>4.9 DHCP 運作流程</h3>
+            <div class="code-block">
+<span class="hl">D</span>iscover  - Client 廣播尋找 DHCP 伺服器
+<span class="hl">O</span>ffer     - 伺服器提議 IP 位址
+<span class="hl">R</span>equest   - Client 選擇並請求該 IP
+<span class="hl">A</span>CK       - 伺服器確認，租約生效
+            </div>
+            <p>縮寫：<strong>DORA</strong></p>
+            <blockquote class="warn">DHCP 使用 UDP，埠 67 (伺服器) / 68 (客戶端)。</blockquote>
+        </div>
+    </section>
+
+    <section id="ch05">
+        <div class="sec-title">
+            <h2>Ch5 乙太網路</h2>
+            <p>Ethernet — IEEE 802.3 標準、CSMA/CD、幀格式、MAC 位址</p>
+        </div>
+
+        <div class="card">
+            <h3>5.1 乙太網路演進</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>標準</th><th>速度</th><th>媒體</th><th>最大距離</th><th>編碼</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>10BASE5</strong></td><td>10 Mbps</td><td>粗同軸 (Thicknet)</td><td>500m</td><td>Manchester</td></tr>
+                        <tr><td><strong>10BASE2</strong></td><td>10 Mbps</td><td>細同軸 (Thinnet)</td><td>185m</td><td>Manchester</td></tr>
+                        <tr><td><strong>10BASE-T</strong></td><td>10 Mbps</td><td>UTP Cat3</td><td>100m</td><td>Manchester</td></tr>
+                        <tr><td><strong>100BASE-TX</strong></td><td>100 Mbps</td><td>UTP Cat5</td><td>100m</td><td>4B/5B + MLT-3</td></tr>
+                        <tr><td><strong>1000BASE-T</strong></td><td>1 Gbps</td><td>UTP Cat5e</td><td>100m</td><td>4D-PAM5</td></tr>
+                        <tr><td><strong>10GBASE-T</strong></td><td>10 Gbps</td><td>UTP Cat6a</td><td>100m</td><td>DSQ128</td></tr>
+                        <tr><td><strong>40GBASE-T</strong></td><td>40 Gbps</td><td>Cat8</td><td>30m</td><td>PAM16</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote><strong>命名規則：</strong>速度 + BASE + 媒介代碼。例：1000BASE-T = 1000 Mbps、基頻、雙絞線。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>5.2 CSMA/CD 存取控制</h3>
+            <p>傳統半雙工乙太網路使用 CSMA/CD 控制媒體存取：</p>
+            <div class="code-block">
+<span class="hl">Carrier Sense</span>  Multiple Access with <span class="hl">Collision Detection</span>
+            </div>
+            <ol>
+                <li><strong>載波偵聽</strong>：傳送前先偵聽線路是否空閒</li>
+                <li><strong>傳送</strong>：空閒則開始傳送資料</li>
+                <li><strong>碰撞偵測</strong>：傳送時持續監聽是否發生碰撞</li>
+                <li><strong>Jam 訊號</strong>：碰撞發生時傳送 32-bit 擁塞訊號</li>
+                <li><strong>指數退避 (Exponential Backoff)</strong>：隨機等待後重試</li>
+            </ol>
+            <blockquote class="ok">全雙工交換器網路不需要 CSMA/CD，因為發送與接收使用不同線對，不會碰撞。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>5.3 乙太網路幀格式</h3>
+            <div class="code-block">
+  Preamble  |  SFD  | Dest MAC | Src MAC | Type  |   Payload    |  FCS
+  7 bytes   | 1 B   |  6 B     |  6 B    | 2 B   | 46-1500 B   | 4 B
+            </div>
+            <ul>
+                <li><strong>前導碼 (Preamble)</strong>：7 bytes，同步訊號 (101010...)</li>
+                <li><strong>SFD</strong>：1 byte，幀起始分隔符 (10101011)</li>
+                <li><strong>目的/來源 MAC</strong>：各 6 bytes 硬體位址</li>
+                <li><strong>Type/Length</strong>：2 bytes，指定上層協定（IPv4=0x0800, ARP=0x0806）</li>
+                <li><strong>Payload</strong>：46-1500 bytes（不足需填充至 46）</li>
+                <li><strong>FCS</strong>：4 bytes，CRC-32 錯誤檢查</li>
+            </ul>
+            <blockquote><strong>最小幀：64 bytes</strong>（確保 CSMA/CD 正確偵測碰撞）<br><strong>最大幀：1518 bytes</strong>（MTU = 1500）</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>5.4 MAC 位址</h3>
+            <ul>
+                <li>48 位元 (6 bytes)，全球唯一硬體位址</li>
+                <li>前 24 位元：<strong>OUI</strong> (Organizationally Unique Identifier)，IEEE 分配給製造商</li>
+                <li>後 24 位元：製造商自行分配</li>
+                <li>表示法：<code>00:1A:2B:3C:4D:5E</code> 或 <code>00-1A-2B-3C-4D-5E</code></li>
+                <li><strong>廣播位址</strong>：<code>FF:FF:FF:FF:FF:FF</code></li>
+                <li><strong>多播位址</strong>：第 1 個 byte 最低位元為 1</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>5.5 自動協商 (Auto-Negotiation)</h3>
+            <ul>
+                <li>自動偵測對端設備的速度與雙工模式</li>
+                <li>優先順序（由高到低）：1000BASE-T Full → 1000BASE-T Half → 100BASE-TX Full → 100BASE-TX Half → 10BASE-T Full → 10BASE-T Half</li>
+                <li>使用 FLP (Fast Link Pulse) 進行協商</li>
+            </ul>
+            <blockquote class="warn">如果一端啟用自動協商而另一端固定設定，可能導致 <strong>速度/雙工不匹配</strong>，造成效能低落與錯誤。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>5.6 全雙工 vs 半雙工</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>特性</th><th>半雙工</th><th>全雙工</th></tr></thead>
+                    <tbody>
+                        <tr><td>資料流向</td><td>同一時間只能單向</td><td>可同時雙向傳輸</td></tr>
+                        <tr><td>碰撞</td><td>可能發生（需 CSMA/CD）</td><td>不會碰撞</td></tr>
+                        <tr><td>有效頻寬</td><td>= 連線速度</td><td>= 連線速度 × 2</td></tr>
+                        <tr><td>連線方式</td><td>使用同一線對</td><td>使用不同傳送/接收線對</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>5.6 無線網路架構模擬 (Ad Hoc vs Infrastructure)</h3>
+            <p>點擊按鈕切換不同架構，並按下「隨機發送封包」來觀察資料的傳輸路徑差異。Ad Hoc 為設備點對點直接連線，Infrastructure 則所有流量都必須經過中央的 AP (基地台)。</p>
+            
+            <div style="margin-top: 1rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; background: #fff;">
+                <div style="margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div style="display: flex; background: var(--surface2); border-radius: 6px; overflow: hidden; border: 1px solid var(--border);">
+                        <button id="btn-adhoc" style="padding: 0.5rem 1rem; border: none; background: var(--primary); color: white; cursor: pointer; font-weight: bold; transition: 0.2s;">Ad Hoc 模式</button>
+                        <button id="btn-infra" style="padding: 0.5rem 1rem; border: none; background: transparent; color: var(--text2); cursor: pointer; font-weight: bold; transition: 0.2s;">Infrastructure 模式</button>
+                    </div>
+                    <button id="btn-send-wifi" class="btn">隨機發送封包</button>
+                    <span id="wifi-status" style="margin-left: auto; font-weight: bold; color: var(--primary-dark); align-self: center;">狀態：待命</span>
+                </div>
+                
+                <div style="position: relative; height: 320px; background: #f8f9fa; border-radius: 8px; overflow: hidden; border: 1px solid #dee2e6;">
+                    <canvas id="wifi-canvas" width="800" height="320" style="width: 100%; height: 100%; display: block;"></canvas>
+                </div>
+            </div>
+
+            <script>
+                (function() {
+                    const canvas = document.getElementById('wifi-canvas');
+                    const ctx = canvas.getContext('2d');
+                    const btnAdHoc = document.getElementById('btn-adhoc');
+                    const btnInfra = document.getElementById('btn-infra');
+                    const btnSend = document.getElementById('btn-send-wifi');
+                    const statusText = document.getElementById('wifi-status');
+                    
+                    let mode = 'AdHoc'; // 'AdHoc' or 'Infra'
+                    let isAnimating = false;
+                    let animationFrame;
+                    let progress = 0; 
+                    let stage = 0; // 用於 Infra 模式分段
+                    
+                    let srcNode = null;
+                    let dstNode = null;
+
+                    // 節點相對座標 (0~1 之間，乘上寬高即為實際座標)
+                    const nodePos = [
+                        { id: 'A', rx: 0.15, ry: 0.2, color: '#4263eb' },
+                        { id: 'B', rx: 0.85, ry: 0.2, color: '#f59f00' },
+                        { id: 'C', rx: 0.85, ry: 0.8, color: '#e03131' },
+                        { id: 'D', rx: 0.15, ry: 0.8, color: '#7048e8' }
+                    ];
+                    const apPos = { id: 'AP', rx: 0.5, ry: 0.5, color: '#2f9e44' };
+
+                    function resizeCanvas() {
+                        const newWidth = canvas.parentElement.clientWidth;
+                        if (newWidth > 0) {
+                            canvas.width = newWidth;
+                            canvas.height = 320;
+                            if (!isAnimating) drawBase();
+                        }
+                    }
+
+                    const resizeObserver = new ResizeObserver(() => { resizeCanvas(); });
+                    resizeObserver.observe(canvas.parentElement);
+
+                    btnAdHoc.addEventListener('click', () => setMode('AdHoc'));
+                    btnInfra.addEventListener('click', () => setMode('Infra'));
+                    
+                    btnSend.addEventListener('click', () => {
+                        if (isAnimating) return;
+                        isAnimating = true;
+                        progress = 0;
+                        stage = 0;
+                        btnSend.disabled = true;
+                        btnSend.style.opacity = '0.5';
+                        
+                        // 隨機選兩個不同的節點
+                        let sIdx = Math.floor(Math.random() * 4);
+                        let dIdx;
+                        do { dIdx = Math.floor(Math.random() * 4); } while(dIdx === sIdx);
+                        
+                        srcNode = nodePos[sIdx];
+                        dstNode = nodePos[dIdx];
+                        
+                        animate();
+                    });
+
+                    function setMode(newMode) {
+                        if (isAnimating) return;
+                        mode = newMode;
+                        if (mode === 'AdHoc') {
+                            btnAdHoc.style.background = 'var(--primary)';
+                            btnAdHoc.style.color = 'white';
+                            btnInfra.style.background = 'transparent';
+                            btnInfra.style.color = 'var(--text2)';
+                        } else {
+                            btnInfra.style.background = 'var(--primary)';
+                            btnInfra.style.color = 'white';
+                            btnAdHoc.style.background = 'transparent';
+                            btnAdHoc.style.color = 'var(--text2)';
+                        }
+                        statusText.textContent = '狀態：待命';
+                        statusText.style.color = 'var(--text)';
+                        drawBase();
+                    }
+
+                    function getCoords(node) {
+                        return { x: node.rx * canvas.width, y: node.ry * canvas.height };
+                    }
+
+                    function drawCircleNode(node) {
+                        const { x, y } = getCoords(node);
+                        ctx.fillStyle = node.color;
+                        ctx.beginPath();
+                        ctx.arc(x, y, 22, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 16px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(node.id, x, y);
+                    }
+
+                    function drawDataPacket(x, y, label, color) {
+                        ctx.fillStyle = color;
+                        ctx.beginPath();
+                        ctx.roundRect(x - 30, y - 15, 60, 30, 6);
+                        ctx.fill();
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 12px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(label, x, y);
+                    }
+
+                    function drawBase() {
+                        if (canvas.width === 0) return;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        
+                        ctx.strokeStyle = 'rgba(173, 181, 189, 0.4)';
+                        ctx.lineWidth = 1.5;
+                        ctx.setLineDash([5, 5]);
+
+                        if (mode === 'AdHoc') {
+                            // 畫出網狀(Mesh)連線
+                            for (let i = 0; i < nodePos.length; i++) {
+                                for (let j = i + 1; j < nodePos.length; j++) {
+                                    const p1 = getCoords(nodePos[i]);
+                                    const p2 = getCoords(nodePos[j]);
+                                    ctx.beginPath();
+                                    ctx.moveTo(p1.x, p1.y);
+                                    ctx.lineTo(p2.x, p2.y);
+                                    ctx.stroke();
+                                }
+                            }
+                            nodePos.forEach(drawCircleNode);
+                        } else {
+                            // 畫出星狀(Star)連線，連向 AP
+                            const apC = getCoords(apPos);
+                            nodePos.forEach(node => {
+                                const p = getCoords(node);
+                                ctx.beginPath();
+                                ctx.moveTo(p.x, p.y);
+                                ctx.lineTo(apC.x, apC.y);
+                                ctx.stroke();
+                            });
+                            // 畫 AP 訊號範圍
+                            ctx.fillStyle = 'rgba(47, 158, 68, 0.05)';
+                            ctx.beginPath();
+                            ctx.arc(apC.x, apC.y, 140, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            nodePos.forEach(drawCircleNode);
+                            drawCircleNode(apPos);
+                        }
+                        ctx.setLineDash([]);
+                    }
+
+                    function animate() {
+                        drawBase();
+                        progress += 0.012; // 控制動畫速度
+
+                        const srcC = getCoords(srcNode);
+                        const dstC = getCoords(dstNode);
+                        const apC = getCoords(apPos);
+
+                        if (mode === 'AdHoc') {
+                            statusText.textContent = `狀態：${srcNode.id} 直接傳送封包給 ${dstNode.id}`;
+                            statusText.style.color = 'var(--text)';
+                            
+                            let currX = srcC.x + (dstC.x - srcC.x) * progress;
+                            let currY = srcC.y + (dstC.y - srcC.y) * progress;
+                            
+                            drawDataPacket(currX, currY, 'DATA', srcNode.color);
+
+                            if (progress >= 1) {
+                                endAnimation();
+                                return;
+                            }
+                        } else {
+                            if (stage === 0) {
+                                statusText.textContent = `狀態：[步驟 1] ${srcNode.id} 將封包送往 AP`;
+                                statusText.style.color = 'var(--text)';
+                                
+                                let currX = srcC.x + (apC.x - srcC.x) * progress;
+                                let currY = srcC.y + (apC.y - srcC.y) * progress;
+                                drawDataPacket(currX, currY, 'DATA', srcNode.color);
+                                
+                                if (progress >= 1) {
+                                    stage = 1;
+                                    progress = 0;
+                                }
+                            } else if (stage === 1) {
+                                statusText.textContent = `狀態：[步驟 2] AP 將封包轉發給目標 ${dstNode.id}`;
+                                statusText.style.color = 'var(--primary-dark)';
+                                
+                                let currX = apC.x + (dstC.x - apC.x) * progress;
+                                let currY = apC.y + (dstC.y - apC.y) * progress;
+                                drawDataPacket(currX, currY, 'DATA', srcNode.color);
+                                
+                                if (progress >= 1) {
+                                    endAnimation();
+                                    return;
+                                }
+                            }
+                        }
+
+                        if (isAnimating) {
+                            animationFrame = requestAnimationFrame(animate);
+                        }
+                    }
+
+                    function endAnimation() {
+                        isAnimating = false;
+                        btnSend.disabled = false;
+                        btnSend.style.opacity = '1';
+                        statusText.textContent = '狀態：傳輸完成！';
+                        statusText.style.color = 'var(--success)';
+                    }
+                })();
+            </script>
+        </div>
+        
+
+        <div class="card">
+            <h3>5.7 PoE (Power over Ethernet)</h3>
+            <ul>
+                <li>透過乙太網路纜線同時傳輸資料與電力</li>
+                <li><strong>IEEE 802.3af</strong>：最大 15.4W</li>
+                <li><strong>IEEE 802.3at (PoE+)</strong>：最大 30W</li>
+                <li><strong>IEEE 802.3bt (PoE++)</strong>：最大 60-100W</li>
+                <li>應用：IP Cam、無線 AP、VoIP 電話</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="ch07">
+        <div class="sec-title">
+            <h2>Ch7 區域網路</h2>
+            <p>LAN — IEEE 802 標準、VLAN、STP、無線區域網路</p>
+        </div>
+
+        <div class="card">
+            <h3>7.1 LAN 定義與特性</h3>
+            <p>區域網路 (Local Area Network) 是在有限地理範圍內連接多台設備的通訊網路。</p>
+            <ul>
+                <li><strong>範圍</strong>：單一建築或校園</li>
+                <li><strong>速度</strong>：10 Mbps ~ 100 Gbps</li>
+                <li><strong>所有權</strong>：單一組織擁有管理</li>
+                <li><strong>錯誤率</strong>：極低（傳輸品質高）</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>7.2 IEEE 802 標準家族</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>標準</th><th>說明</th><th>應用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>802.1</strong></td><td>橋接、VLAN、STP</td><td>交換器網路</td></tr>
+                        <tr><td><strong>802.3</strong></td><td>乙太網路 (CSMA/CD)</td><td>有線區域網路</td></tr>
+                        <tr><td><strong>802.11</strong></td><td>無線區域網路 (Wi-Fi)</td><td>無線上網</td></tr>
+                        <tr><td><strong>802.15</strong></td><td>無線個人網路</td><td>藍牙、ZigBee</td></tr>
+                        <tr><td><strong>802.16</strong></td><td>寬頻無線</td><td>WiMAX</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>7.3 VLAN 虛擬區域網路</h3>
+            <p>VLAN 在單一實體交換器上建立多個邏輯網路：</p>
+            <ul>
+                <li><strong>優點</strong>：安全性、減少廣播風暴、管理彈性</li>
+                <li><strong>Port-based VLAN</strong>：依據交換器埠號分配 VLAN</li>
+                <li><strong>IEEE 802.1Q</strong>：在乙太網路幀插入 4 bytes VLAN 標籤</li>
+                <li><strong>VLAN ID</strong>：12 bits，範圍 1-4094（0 和 4095 保留）</li>
+            </ul>
+            <h4>802.1Q 標籤結構</h4>
+            <div class="code-block">
+TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
+            </div>
+            <ul>
+                <li><strong>Trunk (主幹)</strong>：跨交換器傳送多個 VLAN 流量</li>
+                <li><strong>Access Port</strong>：連接到終端設備，屬於單一 VLAN</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>7.4 STP 生成樹協定</h3>
+            <ul>
+                <li><strong>目的</strong>：防止交換器網路中的實體迴路導致廣播風暴</li>
+                <li><strong>演算法</strong>：選出 Root Bridge → 選出 Root Port → 選出 Designated Port → Block 其他埠</li>
+                <li><strong>BPDU (Bridge Protocol Data Unit)</strong>：交換器之間交換的協定訊息</li>
+                <li><strong>橋接器 ID</strong>：優先權 (2B) + MAC 位址 (6B)，數值越小越優先</li>
+                <li><strong>埠狀態</strong>：Blocking → Listening → Learning → Forwarding</li>
+            </ul>
+            <h4>STP vs RSTP vs MSTP</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>協定</th><th>收斂時間</th><th>標準</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>STP</strong> (802.1D)</td><td>30-50 秒</td><td>傳統</td></tr>
+                        <tr><td><strong>RSTP</strong> (802.1w)</td><td>1-3 秒</td><td>快速收斂</td></tr>
+                        <tr><td><strong>MSTP</strong> (802.1s)</td><td>依 VLAN 分組</td><td>多實例</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>7.5 無線區域網路 (WLAN)</h3>
+            <p>WLAN 基於 IEEE 802.11 標準：</p>
+            <h4>Wi-Fi 演進</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>標準</th><th>Wi-Fi</th><th>頻段</th><th>最大速率</th><th>調變</th></tr></thead>
+                    <tbody>
+                        <tr><td>802.11b</td><td>Wi-Fi 1</td><td>2.4 GHz</td><td>11 Mbps</td><td>DSSS</td></tr>
+                        <tr><td>802.11a</td><td>Wi-Fi 2</td><td>5 GHz</td><td>54 Mbps</td><td>OFDM</td></tr>
+                        <tr><td>802.11g</td><td>Wi-Fi 3</td><td>2.4 GHz</td><td>54 Mbps</td><td>OFDM</td></tr>
+                        <tr><td>802.11n</td><td><strong>Wi-Fi 4</strong></td><td>2.4/5 GHz</td><td>600 Mbps</td><td>MIMO-OFDM</td></tr>
+                        <tr><td>802.11ac</td><td><strong>Wi-Fi 5</strong></td><td>5 GHz</td><td>6.9 Gbps</td><td>MU-MIMO</td></tr>
+                        <tr><td>802.11ax</td><td><strong>Wi-Fi 6</strong></td><td>2.4/5/6 GHz</td><td>9.6 Gbps</td><td>OFDMA</td></tr>
+                        <tr><td>802.11be</td><td><strong>Wi-Fi 7</strong></td><td>2.4/5/6 GHz</td><td>46 Gbps</td><td>4096-QAM, 320MHz</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>WLAN 運作模式</h4>
+            <ul>
+                <li><strong>基礎架構模式 (Infrastructure)</strong>：透過 AP (Access Point) 連接，最常見</li>
+                <li><strong>臨時模式 (Ad-hoc)</strong>：設備直接互連，無需 AP</li>
+            </ul>
+            <h4>CSMA/CA</h4>
+            <ul>
+                <li>無線網路使用 CSMA/CA（碰撞避免），而非 CSMA/CD</li>
+                <li>原因：無線環境無法偵測碰撞（隱藏節點問題）</li>
+                <li>機制：DIFS 等待 → 隨機退避 → RTS/CTS（選擇性）→ 傳送 → ACK</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>7.6 Link Aggregation</h3>
+            <ul>
+                <li>將多條實體鏈路合併為一條邏輯鏈路</li>
+                <li>標準：IEEE 802.3ad (LACP)</li>
+                <li>優點：增加頻寬、提供備援</li>
+                <li>最多可聚合 8 條鏈路</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>7.7 CSMA/CD 與 CSMA/CA 運作機制互動模擬</h3>
+            <p>透過下方按鈕切換協定並點擊「觸發傳輸」，觀察兩者在處理多節點同時傳輸時的根本差異。</p>
+            
+            <div style="margin-top: 1rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; background: #fff;">
+                <div style="margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div style="display: flex; background: var(--surface2); border-radius: 6px; overflow: hidden; border: 1px solid var(--border);">
+                        <button id="btn-csmacd" style="padding: 0.5rem 1rem; border: none; background: var(--primary); color: white; cursor: pointer; font-weight: bold; transition: 0.2s;">CSMA/CD (有線)</button>
+                        <button id="btn-csmaca" style="padding: 0.5rem 1rem; border: none; background: transparent; color: var(--text2); cursor: pointer; font-weight: bold; transition: 0.2s;">CSMA/CA (無線)</button>
+                    </div>
+                    <button id="btn-trigger" class="btn">觸發傳輸</button>
+                    <span id="sim-status" style="margin-left: auto; font-weight: bold; color: var(--primary-dark); align-self: center;">狀態：待命</span>
+                </div>
+                
+                <div style="position: relative; height: 250px; background: #f8f9fa; border-radius: 8px; overflow: hidden; border: 1px solid #dee2e6;">
+                    <canvas id="csma-canvas" width="800" height="250" style="width: 100%; height: 100%; display: block;"></canvas>
+                </div>
+            </div>
+
+<script>
+                (function() {
+                    const canvas = document.getElementById('csma-canvas');
+                    const ctx = canvas.getContext('2d');
+                    const btnCD = document.getElementById('btn-csmacd');
+                    const btnCA = document.getElementById('btn-csmaca');
+                    const btnTrigger = document.getElementById('btn-trigger');
+                    const statusText = document.getElementById('sim-status');
+                    
+                    let mode = 'CD'; // 'CD' or 'CA'
+                    let isAnimating = false;
+                    let animationFrame;
+                    let progress = 0; 
+                    let stage = 0;
+
+                    // 【修正點】：解決 display: none 導致寬度為 0 的問題
+                    function resizeCanvas() {
+                        const newWidth = canvas.parentElement.clientWidth;
+                        // 只有當寬度大於 0（也就是區塊顯示出來時），才重新設定並畫圖
+                        if (newWidth > 0) {
+                            canvas.width = newWidth;
+                            canvas.height = 250;
+                            if (!isAnimating) drawBase();
+                        }
+                    }
+
+                    // 【修正點】：使用 ResizeObserver 監聽父元素的尺寸變化（包含從隱藏變顯示的那一刻）
+                    const resizeObserver = new ResizeObserver(() => {
+                        resizeCanvas();
+                    });
+                    resizeObserver.observe(canvas.parentElement);
+
+                    btnCD.addEventListener('click', () => setMode('CD'));
+                    btnCA.addEventListener('click', () => setMode('CA'));
+                    
+                    btnTrigger.addEventListener('click', () => {
+                        if (isAnimating) return;
+                        isAnimating = true;
+                        progress = 0;
+                        stage = 0;
+                        btnTrigger.disabled = true;
+                        btnTrigger.style.opacity = '0.5';
+                        animate();
+                    });
+
+                    function setMode(newMode) {
+                        if (isAnimating) return;
+                        mode = newMode;
+                        if (mode === 'CD') {
+                            btnCD.style.background = 'var(--primary)';
+                            btnCD.style.color = 'white';
+                            btnCA.style.background = 'transparent';
+                            btnCA.style.color = 'var(--text2)';
+                        } else {
+                            btnCA.style.background = 'var(--primary)';
+                            btnCA.style.color = 'white';
+                            btnCD.style.background = 'transparent';
+                            btnCD.style.color = 'var(--text2)';
+                        }
+                        statusText.textContent = '狀態：待命';
+                        statusText.style.color = 'var(--text)';
+                        drawBase();
+                    }
+
+                    function drawNode(x, y, label, color) {
+                        ctx.fillStyle = color;
+                        ctx.beginPath();
+                        ctx.arc(x, y, 20, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 16px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(label, x, y);
+                    }
+
+                    function drawPacket(x, y, label, color, width=60) {
+                        ctx.fillStyle = color;
+                        ctx.fillRect(x - width/2, y - 15, width, 30);
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 12px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(label, x, y);
+                    }
+
+                    function drawBase() {
+                        if (canvas.width === 0) return; // 保護機制，寬度為 0 時不執行
+                        
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        const w = canvas.width;
+                        const h = canvas.height;
+                        const midY = h / 2;
+
+                        if (mode === 'CD') {
+                            // 畫實體線路 (Bus)
+                            ctx.strokeStyle = '#adb5bd';
+                            ctx.lineWidth = 4;
+                            ctx.beginPath();
+                            ctx.moveTo(50, midY);
+                            ctx.lineTo(w - 50, midY);
+                            ctx.stroke();
+
+                            // 畫節點
+                            drawNode(100, midY, 'A', '#4263eb');
+                            drawNode(w - 100, midY, 'B', '#f59f00');
+                        } else {
+                            // 畫基地台 (AP) 和節點
+                            drawNode(100, midY, 'A', '#4263eb');
+                            drawNode(w / 2, midY, 'AP', '#2f9e44');
+                            drawNode(w - 100, midY, 'C', '#e03131');
+                            
+                            // 畫隱形的無線電波範圍示意
+                            ctx.strokeStyle = 'rgba(173, 181, 189, 0.3)';
+                            ctx.lineWidth = 2;
+                            ctx.setLineDash([5, 5]);
+                            ctx.beginPath();
+                            ctx.arc(100, midY, 150, -Math.PI/2, Math.PI/2);
+                            ctx.stroke();
+                            ctx.beginPath();
+                            ctx.arc(w-100, midY, 150, Math.PI/2, 3*Math.PI/2);
+                            ctx.stroke();
+                            ctx.setLineDash([]);
+                        }
+                    }
+
+                    function animate() {
+                        const w = canvas.width;
+                        const h = canvas.height;
+                        const midY = h / 2;
+                        
+                        drawBase();
+                        progress += 0.015;
+
+                        if (mode === 'CD') {
+                            // CSMA/CD 動畫邏輯
+                            if (stage === 0) {
+                                statusText.textContent = '狀態：兩端同時偵測為空閒，開始傳送';
+                                statusText.style.color = 'var(--text)';
+                                let xA = 100 + (w/2 - 100) * progress;
+                                let xB = (w - 100) - (w/2 - 100) * progress;
+                                
+                                drawPacket(xA, midY - 25, 'Data A', '#4263eb');
+                                drawPacket(xB, midY + 25, 'Data B', '#f59f00');
+
+                                if (progress >= 1) {
+                                    stage = 1; progress = 0;
+                                }
+                            } else if (stage === 1) {
+                                statusText.textContent = '狀態：發生碰撞！發送 Jam 訊號並退避';
+                                statusText.style.color = 'var(--danger)';
+                                
+                                // 爆炸特效
+                                ctx.fillStyle = 'rgba(224, 49, 49, ' + (1 - progress) + ')';
+                                ctx.beginPath();
+                                ctx.arc(w/2, midY, 30 + progress*50, 0, Math.PI*2);
+                                ctx.fill();
+                                
+                                ctx.fillStyle = 'red';
+                                ctx.font = 'bold 20px sans-serif';
+                                ctx.fillText('BOOM!', w/2, midY - 40 - progress*20);
+
+                                if (progress >= 1) {
+                                    isAnimating = false;
+                                    btnTrigger.disabled = false;
+                                    btnTrigger.style.opacity = '1';
+                                    statusText.textContent = '狀態：等待隨機時間後重試';
+                                    statusText.style.color = 'var(--text3)';
+                                }
+                            }
+                        } else {
+                            // CSMA/CA 動畫邏輯 (4-Way Handshake)
+                            let startX_A = 100; let apX = w/2; let startX_C = w-100;
+                            
+                            if (stage === 0) {
+                                statusText.textContent = '狀態：A 發送 RTS 請求';
+                                let currX = startX_A + (apX - startX_A) * progress;
+                                drawPacket(currX, midY - 25, 'RTS', '#4263eb', 40);
+                                if (progress >= 1) { stage = 1; progress = 0; }
+                            } else if (stage === 1) {
+                                statusText.textContent = '狀態：AP 廣播 CTS，C 收到後進入等待 (NAV)';
+                                let currX_A = apX - (apX - startX_A) * progress;
+                                let currX_C = apX + (startX_C - apX) * progress;
+                                drawPacket(currX_A, midY - 25, 'CTS', '#2f9e44', 40);
+                                drawPacket(currX_C, midY - 25, 'CTS', '#2f9e44', 40);
+                                if (progress >= 1) { stage = 2; progress = 0; }
+                            } else if (stage === 2) {
+                                statusText.textContent = '狀態：A 傳送資料 (C 保持靜默)';
+                                // C 的 NAV 狀態
+                                ctx.fillStyle = '#e03131';
+                                ctx.font = '12px sans-serif';
+                                ctx.fillText('NAV 等待中', startX_C, midY - 35);
+                                
+                                let currX = startX_A + (apX - startX_A) * progress;
+                                drawPacket(currX, midY - 25, 'DATA', '#4263eb', 60);
+                                if (progress >= 1) { stage = 3; progress = 0; }
+                            } else if (stage === 3) {
+                                statusText.textContent = '狀態：AP 回傳 ACK 確認收到';
+                                let currX = apX - (apX - startX_A) * progress;
+                                drawPacket(currX, midY - 25, 'ACK', '#2f9e44', 40);
+                                if (progress >= 1) {
+                                    isAnimating = false;
+                                    btnTrigger.disabled = false;
+                                    btnTrigger.style.opacity = '1';
+                                    statusText.textContent = '狀態：傳輸成功完成！';
+                                    statusText.style.color = 'var(--success)';
+                                }
+                            }
+                        }
+
+                        if (isAnimating) {
+                            animationFrame = requestAnimationFrame(animate);
+                        }
+                    }
+                })();
+            </script>
+        </div>
+    </section>
+
+    <section id="ch08">
+        <div class="sec-title">
+            <h2>Ch8 網際網路協定</h2>
+            <p>IP — IPv4、子網路切割、CIDR、NAT、路由協定、IPv6</p>
+        </div>
+
+        <div class="card">
+            <h3>8.1 IPv4 定址</h3>
+            <p>IPv4 位址為 <strong>32 位元</strong>，以點分十進制表示，分為網路部分與主機部分。</p>
+            
+            <div style="margin: 1rem 0; padding: 1rem 1.2rem; background: var(--surface2); border-left: 4px solid var(--primary); border-radius: 4px;">
+                <strong style="color: var(--text); font-size: 1.05rem;">💡 快速判斷 Class 類別的秘訣：</strong>
+                <p style="margin-top: 0.4rem; font-size: 0.9rem; color: var(--text2);">先將 IP 位址的第一個數字（起始位元）換算成二進位，然後觀察它的開頭：</p>
+                <ul style="margin-top: 0.5rem; list-style-type: none; padding-left: 0; font-family: 'Consolas', monospace; font-size: 0.95rem;">
+                    <li style="margin-bottom: 0.3rem;"><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">A 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">0</span> <span style="color: var(--text3);">xxxxxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 0 ~ 127)</span></li>
+                    <li style="margin-bottom: 0.3rem;"><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">B 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">10</span> <span style="color: var(--text3);">xxxxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 128 ~ 191)</span></li>
+                    <li style="margin-bottom: 0.3rem;"><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">C 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">110</span> <span style="color: var(--text3);">xxxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 192 ~ 223)</span></li>
+                    <li style="margin-bottom: 0.3rem;"><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">D 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">1110</span> <span style="color: var(--text3);">xxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 224 ~ 239)</span></li>
+                    <li><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">E 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">1111</span> <span style="color: var(--text3);">xxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 240 ~ 255)</span></li>
+                </ul>
+            </div>
+
+            <h4>類別式定址 (Classful Addressing)</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Class</th><th>首位</th><th>範圍</th><th>預設遮罩</th><th>網路數</th><th>主機數/網路</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>A</strong></td><td>0</td><td>1.0.0.0 - 126.255.255.255</td><td>/8 (255.0.0.0)</td><td>126</td><td>16,777,214</td></tr>
+                        <tr><td><strong>B</strong></td><td>10</td><td>128.0.0.0 - 191.255.255.255</td><td>/16 (255.255.0.0)</td><td>16,384</td><td>65,534</td></tr>
+                        <tr><td><strong>C</strong></td><td>110</td><td>192.0.0.0 - 223.255.255.255</td><td>/24 (255.255.255.0)</td><td>2,097,152</td><td>254</td></tr>
+                        <tr><td><strong>D</strong></td><td>1110</td><td>224.0.0.0 - 239.255.255.255</td><td>N/A</td><td colspan="2">多播 (Multicast)</td></tr>
+                        <tr><td><strong>E</strong></td><td>1111</td><td>240.0.0.0 - 255.255.255.255</td><td>N/A</td><td colspan="2">實驗保留</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote class="warn">127.0.0.0/8 保留為 Loopback（本機回送測試）。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>8.2 私有 IP 位址 (RFC 1918)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>範圍</th><th>CIDR</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>10.0.0.0 - 10.255.255.255</code></td><td>10.0.0.0/8</td><td>大型企業內部網路</td></tr>
+                        <tr><td><code>172.16.0.0 - 172.31.255.255</code></td><td>172.16.0.0/12</td><td>中型企業</td></tr>
+                        <tr><td><code>192.168.0.0 - 192.168.255.255</code></td><td>192.168.0.0/16</td><td>家庭/小型辦公室</td></tr>
+                        <tr><td><code>169.254.0.0 - 169.254.255.255</code></td><td>169.254.0.0/16</td><td>APIPA（DHCP 失敗時自動配發）</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>8.3 子網路切割 (Subnetting) &amp; CIDR</h3>
+            <p>將一個大網路劃分為多個小網路，提高位址利用率。</p>
+            <ul>
+                <li>子網路數 = 2<sup>借用位元數</sup></li>
+                <li>可用主機數 = 2<sup>剩餘主機位元數</sup> - 2</li>
+                <li>減 2 原因：網路位址（全 0）和廣播位址（全 1）不可分配給主機</li>
+            </ul>
+            <blockquote><strong>CIDR 表示法：</strong>IP 位址 / 前綴長度，如 <code>192.168.1.0/24</code> 表示前 24 位元為網路部分。</blockquote>
+            <h4>VLSM (Variable Length Subnet Mask)</h4>
+            <p>可變長度子網路遮罩，允許在同一個網路中使用不同的子網路遮罩長度，更靈活地分配 IP。</p>
+        </div>
+
+        <div class="card">
+            <h3>8.4 IPv4 封包結構</h3>
+            <p>IPv4 標頭最小 20 bytes，最大 60 bytes（含 Options）：</p>
+            <div class="code-block">
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Version|  IHL  |   DSCP   | ECN |       Total Length          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|         Identification        |Flags|    Fragment Offset      |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Time to Live  |   Protocol   |       Header Checksum       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                       Source IP Address                      |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Destination IP Address                    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                        Options (if IHL > 5)                  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>欄位</th><th>大小</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Version</strong></td><td>4 bits</td><td>IP 版本（IPv4 = 4）</td></tr>
+                        <tr><td><strong>IHL</strong></td><td>4 bits</td><td>標頭長度（單位 4 bytes，最小 5）</td></tr>
+                        <tr><td><strong>Total Length</strong></td><td>16 bits</td><td>封包總長（含標頭），最大 65535 bytes</td></tr>
+                        <tr><td><strong>TTL</strong></td><td>8 bits</td><td>存活時間，每經過一個路由器減 1，歸零丟棄</td></tr>
+                        <tr><td><strong>Protocol</strong></td><td>8 bits</td><td>上層協定：TCP=6, UDP=17, ICMP=1</td></tr>
+                        <tr><td><strong>Header Checksum</strong></td><td>16 bits</td><td>標頭錯誤檢查（每次 TTL 改變需重新計算）</td></tr>
+                        <tr><td><strong>Source / Dest IP</strong></td><td>各 32 bits</td><td>來源與目的 IP 位址</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>8.5 NAT 網路位址轉譯</h3>
+            <ul>
+                <li><strong>靜態 NAT (Static NAT)</strong>：一對一映射，一個私有 IP 對應一個公有 IP</li>
+                <li><strong>動態 NAT (Dynamic NAT)</strong>：從公有 IP 池中動態取用</li>
+                <li><strong>PAT (Port Address Translation) / NAPT</strong>：多對一映射，使用埠號區分不同連線，家用路由器最常用</li>
+            </ul>
+            <blockquote class="ok">PAT 優點：節省公有 IP 位址；缺點：無法從外部主動連入內部主機（需埠轉發）。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>8.6 路由協定</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>協定</th><th>類型</th><th>度量</th><th>適用範圍</th><th>AD 值</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>RIP</strong></td><td>距離向量 (Distance Vector)</td><td>跳數 (Hop Count)</td><td>小型網路（最大 15 跳）</td><td>120</td></tr>
+                        <tr><td><strong>OSPF</strong></td><td>鏈路狀態 (Link State)</td><td>成本 (Cost)</td><td>中大型網路</td><td>110</td></tr>
+                        <tr><td><strong>EIGRP</strong></td><td>混合型</td><td>複合度量（頻寬+延遲）</td><td>Cisco 網路</td><td>90</td></tr>
+                        <tr><td><strong>BGP</strong></td><td>路徑向量 (Path Vector)</td><td>AS 路徑長度</td><td>網際網路骨幹</td><td>20 (eBGP)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote><strong>AD (Administrative Distance)</strong>：管理距離，數值越小越可信。<br>直接連接 = 0 &gt; 靜態 = 1 &gt; eBGP = 20 &gt; OSPF = 110 &gt; RIP = 120</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>8.7 IPv6 簡介</h3>
+            <ul>
+                <li><strong>128 位元</strong>位址空間（IPv4 的 2<sup>96</sup> 倍）</li>
+                <li>表示法：冒號十六進制，如 <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>
+                <li>前導零可省略，連續的 0 區段可用 <code>::</code> 代替（限一次）</li>
+                <li>內建 <strong>IPSec</strong> 安全機制</li>
+                <li><strong>SLAAC</strong> (Stateless Address Auto-Configuration)：無狀態自動設定 IP</li>
+                <li>無廣播位址，使用 <strong>多播 (Multicast)</strong> 取代</li>
+                <li>無需 NAT（位址充足）</li>
+            </ul>
+            <h4>IPv6 位址類型</h4>
+            <ul>
+                <li><strong>單播 (Unicast)</strong>：一對一通訊</li>
+                <li><strong>多播 (Multicast)</strong>：一對多，取代 IPv4 廣播</li>
+                <li><strong>任播 (Anycast)</strong>：一對最近的一個</li>
+            </ul>
+            <h4>IPv4 → IPv6 過渡技術</h4>
+            <ul>
+                <li><strong>雙堆疊 (Dual Stack)</strong>：同時執行 IPv4 與 IPv6</li>
+                <li><strong>通道 (Tunneling)</strong>：IPv6 封包封裝在 IPv4 中傳送</li>
+                <li><strong>轉譯 (Translation)</strong>：NAT64 / DNS64</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>8.8 IP 子網路計算範例</h3>
+            <p><strong>範例：</strong>將 <code>192.168.1.0/24</code> 切割為 4 個等大小的子網路。</p>
+            <ul>
+                <li>需借用 2 位元（2<sup>2</sup> = 4 個子網路）</li>
+                <li>新遮罩：/26 (255.255.255.192)</li>
+                <li>每個子網路主機數：2<sup>6</sup> - 2 = 62 台</li>
+            </ul>
+            <div class="code-block">
+子網路 1: 192.168.1.0/26   (192.168.1.1 - 192.168.1.62)
+子網路 2: 192.168.1.64/26  (192.168.1.65 - 192.168.1.126)
+子網路 3: 192.168.1.128/26 (192.168.1.129 - 192.168.1.190)
+子網路 4: 192.168.1.192/26 (192.168.1.193 - 192.168.1.254)
+            </div>
+        </div>
+    </section>
+
+    <section id="midterm">
+        <div class="sec-title">
+            <h2>期中考重點整理</h2>
+            <p>期中考範圍：Ch1 區域網路基礎與訊號編碼、Ch2 通訊、Ch3 設備、Ch4 OSI 模型</p>
+        </div>
+
+        <div class="card">
+            <h3>數位訊號編碼方式 (Line Coding)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>編碼方式</th><th>規則</th><th>特點</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>NRZ-L</strong></td><td>正電壓 = 0，負電壓 = 1 (依電壓位準)</td><td>非歸零，需時脈同步</td></tr>
+                        <tr><td><strong>NRZ-I</strong></td><td>0: keep (保持), 1: invert (反轉)</td><td>非歸零，遇 1 反轉</td></tr>
+                        <tr><td><strong>Manchester</strong></td><td>0: ┌┐ (高轉低), 1: └┘ (低轉高)</td><td>位元中間有電壓轉換，內建同步</td></tr>
+                        <tr><td><strong>Differential Manchester</strong></td><td>0: keep (維持), 1: invert (反轉)</td><td>差動，抗干擾性強</td></tr>
+                        <tr><td><strong>MLT-3</strong></td><td>0: same state (維持), 1: next state (切換)</td><td>三種電壓狀態：+V, 0, -V</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>互動式波形模擬器 (Line Coding Simulator)</h3>
+            <p>在下方輸入 0 或 1 來觀察不同數位編碼方式的波形變化（預設為筆記上的 01001100011）。</p>
+            <div style="margin-top: 1rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; background: #fff; overflow-x: auto;">
+                <div style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <label for="binary-input" style="font-weight: 600;">輸入二進位字串:</label>
+                    <input type="text" id="binary-input" value="01001100011" style="padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; font-family: monospace; letter-spacing: 2px; width: 250px;">
+                    <span id="input-error" style="color: var(--danger); font-size: 0.85rem; display: none;">只能輸入 0 或 1 喔！</span>
+                </div>
+                <canvas id="waveform-canvas" width="800" height="600" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"></canvas>
+            </div>
+            
+            <script>
+                const canvasWf = document.getElementById('waveform-canvas');
+                const ctxWf = canvasWf.getContext('2d');
+                const input = document.getElementById('binary-input');
+                const errorMsg = document.getElementById('input-error');
+
+                const width = canvasWf.width;
+                const height = canvasWf.height;
+                const padding = 80; 
+                const topPadding = 40;
+                const chartHeight = 80;
+                const chartSpacing = 30;
+
+                const encodings = [
+                    { name: '1. NRZ-L', method: drawNRZL },
+                    { name: '2. NRZ-I', method: drawNRZI },
+                    { name: '3. Manchester', method: drawManchester },
+                    { name: '4. Diff. Manchester', method: drawDiffManchester },
+                    { name: '5. MLT-3', method: drawMLT3 }
+                ];
+
+                function drawWf() {
+                    let binaryString = input.value;
+                    
+                    if (!/^[01]*$/.test(binaryString)) {
+                        errorMsg.style.display = 'inline';
+                        return;
+                    }
+                    errorMsg.style.display = 'none';
+                    if (binaryString.length === 0) {
+                        ctxWf.clearRect(0, 0, width, height);
+                        return;
+                    }
+
+                    ctxWf.clearRect(0, 0, width, height);
+                    const bitWidth = (width - padding - 20) / binaryString.length;
+
+                    ctxWf.font = 'bold 18px monospace';
+                    ctxWf.fillStyle = '#212529';
+                    ctxWf.textAlign = 'center';
+                    ctxWf.textBaseline = 'bottom';
+                    
+                    for (let i = 0; i < binaryString.length; i++) {
+                        let x = padding + (i * bitWidth) + (bitWidth / 2);
+                        ctxWf.fillText(binaryString[i], x, topPadding - 10);
+
+                        ctxWf.beginPath();
+                        ctxWf.strokeStyle = '#e9ecef';
+                        ctxWf.setLineDash([5, 5]);
+                        ctxWf.moveTo(padding + i * bitWidth, topPadding);
+                        ctxWf.lineTo(padding + i * bitWidth, height);
+                        ctxWf.stroke();
+                    }
+                    ctxWf.beginPath();
+                    ctxWf.moveTo(padding + binaryString.length * bitWidth, topPadding);
+                    ctxWf.lineTo(padding + binaryString.length * bitWidth, height);
+                    ctxWf.stroke();
+                    ctxWf.setLineDash([]);
+
+                    encodings.forEach((encoding, index) => {
+                        const startY = topPadding + index * (chartHeight + chartSpacing);
+                        drawChartBase(encoding.name, startY, bitWidth, binaryString.length);
+                        
+                        ctxWf.beginPath();
+                        ctxWf.strokeStyle = '#4263eb'; 
+                        ctxWf.lineWidth = 2.5;
+                        ctxWf.lineJoin = 'round';
+                        encoding.method(binaryString, padding, startY, bitWidth, chartHeight);
+                        ctxWf.stroke();
+                    });
+                }
+
+                function drawChartBase(title, startY, bitWidth, numBits) {
+                    ctxWf.font = 'bold 14px sans-serif';
+                    ctxWf.fillStyle = '#495057';
+                    ctxWf.textAlign = 'left';
+                    ctxWf.textBaseline = 'top';
+                    ctxWf.fillText(title, 10, startY - 20);
+
+                    const zeroY = startY + chartHeight / 2;
+                    ctxWf.beginPath();
+                    ctxWf.strokeStyle = '#dee2e6';
+                    ctxWf.lineWidth = 1;
+                    ctxWf.moveTo(padding, zeroY);
+                    ctxWf.lineTo(padding + numBits * bitWidth, zeroY);
+                    ctxWf.stroke();
+                    
+                    ctxWf.font = '12px sans-serif';
+                    ctxWf.fillStyle = '#868e96';
+                    ctxWf.textAlign = 'right';
+                    ctxWf.textBaseline = 'middle';
+                    ctxWf.fillText('+V', padding - 8, startY + 10);
+                    ctxWf.fillText('0', padding - 8, startY + chartHeight / 2);
+                    ctxWf.fillText('-V', padding - 8, startY + chartHeight - 10);
+                }
+
+                function drawNRZL(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    for (let i = 0; i < bits.length; i++) {
+                        let y = bits[i] === '0' ? startY + 10 : startY + h - 10;
+                        if (i === 0) ctxWf.moveTo(currentX, y);
+                        else ctxWf.lineTo(currentX, y);
+                        ctxWf.lineTo(currentX + bitWidth, y);
+                        currentX += bitWidth;
+                    }
+                }
+
+                function drawNRZI(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    let currentLevel = 'HIGH'; 
+                    for (let i = 0; i < bits.length; i++) {
+                        if (bits[i] === '1') {
+                            currentLevel = currentLevel === 'HIGH' ? 'LOW' : 'HIGH';
+                        }
+                        let y = currentLevel === 'HIGH' ? startY + 10 : startY + h - 10;
+                        if (i === 0) ctxWf.moveTo(currentX, y);
+                        else ctxWf.lineTo(currentX, y);
+                        ctxWf.lineTo(currentX + bitWidth, y);
+                        currentX += bitWidth;
+                    }
+                }
+
+                function drawManchester(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    for (let i = 0; i < bits.length; i++) {
+                        let y1 = bits[i] === '0' ? startY + 10 : startY + h - 10;
+                        let y2 = bits[i] === '0' ? startY + h - 10 : startY + 10;
+                        if (i === 0) ctxWf.moveTo(currentX, y1);
+                        else ctxWf.lineTo(currentX, y1);
+                        ctxWf.lineTo(currentX + bitWidth / 2, y1);
+                        ctxWf.lineTo(currentX + bitWidth / 2, y2);
+                        ctxWf.lineTo(currentX + bitWidth, y2);
+                        currentX += bitWidth;
+                    }
+                }
+
+                function drawDiffManchester(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    let currentLevel = 'HIGH'; 
+                    for (let i = 0; i < bits.length; i++) {
+                        if (bits[i] === '0') {
+                            currentLevel = currentLevel === 'HIGH' ? 'LOW' : 'HIGH';
+                        }
+                        let y1 = currentLevel === 'HIGH' ? startY + 10 : startY + h - 10;
+                        let y2 = currentLevel === 'HIGH' ? startY + h - 10 : startY + 10;
+                        if (i === 0) ctxWf.moveTo(currentX, y1);
+                        else ctxWf.lineTo(currentX, y1);
+                        ctxWf.lineTo(currentX + bitWidth / 2, y1);
+                        ctxWf.lineTo(currentX + bitWidth / 2, y2);
+                        ctxWf.lineTo(currentX + bitWidth, y2);
+                        currentLevel = currentLevel === 'HIGH' ? 'LOW' : 'HIGH'; 
+                        currentX += bitWidth;
+                    }
+                }
+
+                function drawMLT3(bits, startX, startY, bitWidth, h) {
+                    let currentX = startX;
+                    let cycle = ['0', '-V', '0', '+V']; 
+                    let cycleIdx = 0; 
+                    for (let i = 0; i < bits.length; i++) {
+                        if (bits[i] === '1') {
+                            cycleIdx = (cycleIdx + 1) % 4;
+                        }
+                        let y;
+                        if (cycle[cycleIdx] === '+V') y = startY + 10;
+                        else if (cycle[cycleIdx] === '0') y = startY + h / 2;
+                        else if (cycle[cycleIdx] === '-V') y = startY + h - 10;
+
+                        if (i === 0) ctxWf.moveTo(currentX, y);
+                        else ctxWf.lineTo(currentX, y);
+                        ctxWf.lineTo(currentX + bitWidth, y);
+                        currentX += bitWidth;
+                    }
+                }
+
+                input.addEventListener('input', drawWf);
+                drawWf();
+            </script>
+        </div>
+
+        <div class="card">
+            <h3>網路類型與拓樸</h3>
+            <div class="grid2">
+                <div>
+                    <h4>網路類型 (依範圍)</h4>
+                    <ul>
+                        <li><strong>PAN</strong>：個人網路 (~10m)，如藍牙</li>
+                        <li><strong>LAN</strong>：區域網路 (~2km)，如家中 Wi-Fi</li>
+                        <li><strong>MAN</strong>：都會網路 (Metropolitan)</li>
+                        <li><strong>WAN</strong>：廣域網路 (跨國、Internet)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>網路拓樸 (Topology)</h4>
+                    <ul>
+                        <li><strong>星型 (Star)</strong>：所有設備連到中央 Switch/Hub</li>
+                        <li><strong>匯流排型 (Bus)</strong>：所有設備在一條主幹上</li>
+                        <li><strong>環狀型 (Ring)</strong>：頭尾相連成圓環</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>網路作業環境</h3>
+            <div class="grid2">
+                <div>
+                    <h4>對等式 (Peer-to-Peer)</h4>
+                    <ul>
+                        <li>每台電腦平起平坐，是 Client 也是 Server</li>
+                        <li>分散式管理，各節點自行維護資源</li>
+                        <li>建置成本低，無須專門伺服器</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>主從式 (Client-Server)</h4>
+                    <ul>
+                        <li>專用伺服器提供資源，客戶端發出請求</li>
+                        <li>集中式管理，安全性、備份容易</li>
+                        <li>效能穩定，擴充性強</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>通訊傳輸模式</h3>
+            <div class="grid2">
+                <div>
+                    <h4>單工 (Simplex)</h4>
+                    <p>只能單向傳播。如：電視廣播。</p>
+                </div>
+                <div>
+                    <h4>半雙工 (Half-Duplex)</h4>
+                    <p>雙向但不能同時。如：對講機。</p>
+                </div>
+                <div>
+                    <h4>全雙工 (Full-Duplex)</h4>
+                    <p>可同時雙向傳播。如：電話、現代交換器。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>訊號、調變與多工</h3>
+            <div class="grid2">
+                <div>
+                    <h4>訊號三要素</h4>
+                    <ul>
+                        <li><strong>振幅 (Amplitude)</strong></li>
+                        <li><strong>頻率 (Frequency)</strong></li>
+                        <li><strong>相位 (Phase)</strong></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>調變 (Modulation)</h4>
+                    <p><strong>數位調變：</strong>ASK (振幅鍵移)、FSK (頻率鍵移)、PSK (相位鍵移)</p>
+                    <p><strong>類比調變：</strong>AM (調幅)、FM (調頻)、PM (調相)</p>
+                </div>
+                <div>
+                    <h4>多工處理 (MUX)</h4>
+                    <ul>
+                        <li><strong>FDM</strong>：分頻多工，如廣播電台</li>
+                        <li><strong>TDM</strong>：分時多工，分配時間片段</li>
+                        <li><strong>CDM</strong>：分碼多工，獨特編碼解碼</li>
+                        <li><strong>WDM</strong>：分波多工，專用於光纖</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>類比轉數位訊號 (ADC)</h3>
+            <ol>
+                <li><strong>抽樣 (Sampling)</strong>：取樣類比訊號</li>
+                <li><strong>量化 (Quantization)</strong>：將樣本對應到離散數值</li>
+                <li><strong>編碼 (Encoding)</strong>：轉換為數位資料儲存</li>
+            </ol>
+        </div>
+
+        <div class="card">
+            <h3>OSI 七層 vs TCP/IP 四層</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>OSI 七層</th><th>TCP/IP 四層</th><th>功能 / 協定</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>應用層 (Application)</strong></td><td rowspan="3">應用層</td><td rowspan="3">HTTP, FTP, DNS</td></tr>
+                        <tr><td><strong>表示層 (Presentation)</strong></td></tr>
+                        <tr><td><strong>會議層 (Session)</strong></td></tr>
+                        <tr><td><strong>傳輸層 (Transport)</strong></td><td>傳輸層</td><td>TCP, UDP</td></tr>
+                        <tr><td><strong>網路層 (Network)</strong></td><td>網路互聯層</td><td>IP (路由 + IP 定址)</td></tr>
+                        <tr><td><strong>資料連結層 (Data Link)</strong></td><td rowspan="2">網路存取層</td><td>MAC 定址</td></tr>
+                        <tr><td><strong>實體層 (Physical)</strong></td><td>位元傳輸</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>OSI 七層與網路設備</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>層級</th><th>資料單位</th><th>設備</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>L1 實體層</strong></td><td>Bit (位元)</td><td>集線器 (Hub)、中繼器 (Repeater)、網路線</td></tr>
+                        <tr><td><strong>L2 資料連結層</strong></td><td>Frame (訊框)</td><td>交換器 (Switch)、橋接器 (Bridge)、網路卡</td></tr>
+                        <tr><td><strong>L3 網路層</strong></td><td>Packet (封包)</td><td>路由器 (Router)、L3 交換器</td></tr>
+                        <tr><td><strong>L4 傳輸層</strong></td><td>Segment</td><td>確保資料可靠傳送 (TCP)</td></tr>
+                        <tr><td><strong>L5 會議層</strong></td><td>資料</td><td>建立、管理、終止連線會話</td></tr>
+                        <tr><td><strong>L6 表示層</strong></td><td>資料</td><td>資料格式、加密、壓縮</td></tr>
+                        <tr><td><strong>L7 應用層</strong></td><td>資料</td><td>HTTP, FTP, DNS</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Switch vs Hub 比較</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>比較項目</th><th>Switch (交換器)</th><th>Hub (集線器)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>OSI 層級</strong></td><td>L2 (資料連結層)</td><td>L1 (實體層)</td></tr>
+                        <tr><td><strong>傳輸模式</strong></td><td>單播 (Unicast)</td><td>廣播 (Broadcast)</td></tr>
+                        <tr><td><strong>通訊模式</strong></td><td>全雙工 (Full-Duplex)</td><td>半雙工 (Half-Duplex)</td></tr>
+                        <tr><td><strong>辨識方式</strong></td><td>認 MAC 位址，有 MAC 表</td><td>不認 MAC，只傳遞訊號</td></tr>
+                        <tr><td><strong>效率</strong></td><td>高 (專屬通道，互不干擾)</td><td>低 (太多人容易碰撞)</td></tr>
+                        <tr><td><strong>價格</strong></td><td>較貴，現代網路主流</td><td>便宜，幾乎消失</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>碰撞網域 vs 廣播網域</h4>
+            <ul>
+                <li><strong>碰撞網域 (Collision Domain)</strong>：Hub 所有埠在同一網域（會碰撞）；Switch 每埠獨立（不碰撞）</li>
+                <li><strong>廣播網域 (Broadcast Domain)</strong>：兩者都會將廣播封包傳給所有人（除發送者外）</li>
+            </ul>
+            <h4>運作邏輯</h4>
+            <ul>
+                <li><strong>Hub</strong>：A 傳給 B 時，複製訊號轉發到所有埠，安全性差且效率低</li>
+                <li><strong>Switch</strong>：查 MAC 位址表，針對目標直接傳送，效率高</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ==================== FINAL EXAM ==================== -->
+    <section id="final">
+        <div class="sec-title">
+            <h2>期末考重點總整理</h2>
+            <p>涵蓋期末測驗必考重點：CSMA、子網路/超網化、Ethernet 標頭、Wi-Fi 標準</p>
+        </div>
+
+        <div class="card">
+            <h3>1. CSMA/CD vs CSMA/CA 碰撞處理機制(7.7有互動式圖表) <span class="tag tag-d"> </span></h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>比較項目</th><th>CSMA/CD (碰撞偵測)</th><th>CSMA/CA (碰撞避免)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>適用網路</strong></td><td>有線網路 (IEEE 802.3 乙太網路)</td><td>無線網路 (IEEE 802.11 Wi-Fi)</td></tr>
+                        <tr><td><strong>核心口訣</strong></td><td>邊講邊聽，撞了就停</td><td>講話前先舉手，沒人才開口</td></tr>
+                        <tr><td><strong>運作方式</strong></td><td>傳送前先聽，空了就傳，且邊傳邊聽。</td><td>傳送前先聽，空了也不馬上傳，先等一段隨機時間確認沒人搶。</td></tr>
+                        <tr><td><strong>碰撞處理</strong></td><td>遇到碰撞停止傳送，發送 <strong>Jam Signal (干擾訊號)</strong>。</td><td>事前避免，使用 <strong>RTS/CTS</strong> 機制解決隱藏節點問題 (Hidden Node Problem)。</td></tr>
+                        <tr><td><strong>後續動作</strong></td><td>雙方等待 <strong>隨機退避時間 (Random Backoff Time)</strong> 後再次傳送。</td><td>接收端回傳 <strong>ACK (確認訊號)</strong>，若沒收到 ACK 視為資料遺失，重傳一次。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2. IP 位址與廣播位置 <span class="tag tag-d"> </span></h3>
+            <ul>
+                <li><strong>IPv4 位元數：</strong> 32 bits (4 bytes)</li>
+                <li><strong>IPv6 位元數：</strong> 128 bits (16 bytes)</li>
+            </ul>
+            <h4 style="margin-top: 1rem;">L2 與 L3 廣播位址</h4>
+            <ul>
+                <li><strong>第二層 (L2, MAC) 廣播位址：</strong> <code>FF-FF-FF-FF-FF-FF</code></li>
+                <li><strong>第三層 (L3, IP) 廣播位址：</strong> <code>255.255.255.255</code></li>
+            </ul>
+            <blockquote class="ok">💡 <strong>A-E 類 IP 判斷</strong>：請參考上方 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">Ch8 網際網路協定</a> 的詳細表格與二進位速記法。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>3. IP 網段計算 (Network Mask) <span class="tag tag-d"> </span></h3>
+            <p><strong>範例：</strong> <code>128.1.2.3 /16</code></p>
+            <div class="code-block">
+1. 網路遮罩 (Network Mask):
+   /16 代表前 16 位元是「網路區段」，後 16 位元是「主機區段」
+   二進位: 11111111.11111111.00000000.00000000
+   十進位: 255.255.0.0
+
+2. 網路位址 (Network Address):
+   代表網段的「起點」。規則：保留網路區段不變，主機區段全部補 0。
+   => 128.1.0.0
+
+3. 廣播位址 (Broadcast Address):
+   代表網段的「終點」。規則：網路區段不變，主機區段全部填滿 1。
+   => 128.1.255.255
+
+4. 可用主機 IP 範圍 (Host IP Range):
+   Min = 網路位址 + 1  => 128.1.0.1
+   Max = 廣播位址 - 1  => 128.1.255.254
+   範圍: 128.1.0.1 ~ 128.1.255.254
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>4. 子網路切割 (Subnetting) 與 超網化 (Supernetting) <span class="tag tag-d"> </span></h3>
+            <div class="grid2">
+                <div>
+                    <h4>子網路切割 (Subnetting)</h4>
+                    <p>將大網段切小。<strong>作法：向主機借位元 (Host bit) 當作網路位元。</strong></p>
+                    <p>範例：<code>192.168.20.0 /24</code> 借 1 個 bit 切割。</p>
+                    <ul>
+                        <li>借 1 bit (0 或 1)，可切成 2<sup>1</sup> = 2 個網段。</li>
+                        <li>新遮罩變成 <code>/25</code> (255.255.255.128)。</li>
+                        <li>網段1 (bit=0): <code>192.168.20.0 ~ 127</code></li>
+                        <li>網段2 (bit=1): <code>192.168.20.128 ~ 255</code></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>超網化 (Supernetting / 路由匯總)</h4>
+                    <p>將多個小網段合併。<strong>作法：找出共同的網路位元，將遮罩縮短。</strong></p>
+                    <p>範例：合併 <code>192.168.20.0/24</code> 與 <code>192.168.21.0/24</code>。</p>
+                    <ul>
+                        <li>20: <code>0001010<span style="color:var(--danger)">0</span></code></li>
+                        <li>21: <code>0001010<span style="color:var(--danger)">1</span></code></li>
+                        <li>前面 23 bits 相同，所以合併後遮罩變成 <code>/23</code>。</li>
+                        <li>結果：<code>192.168.20.0 /23</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>5. Ethernet 2.0 標頭格式 <span class="tag tag-d"> </span></h3>
+            <p><strong>畫圖重點：</strong>Ethernet 訊框 (Frame) 的最小長度為 <strong>64 Bytes</strong>，最大長度為 <strong>1518 Bytes</strong>。</p>
+            
+            <div style="margin: 1.5rem 0; text-align: center; font-family: sans-serif; overflow-x: auto;">
+                <div style="display: inline-flex; border: 2px solid var(--text); border-radius: 4px; overflow: hidden; min-width: 700px;">
+                    <!-- Preamble -->
+                    <div style="background: #e3f2fd; padding: 1rem; border-right: 2px solid var(--text); flex: 1;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">8 Bytes</div>
+                        <div style="font-weight: bold; color: var(--primary-dark);">Preamble<br><span style="font-size: 0.75rem; font-weight: normal;">(含 SFD)</span></div>
+                    </div>
+                    <!-- Dest MAC -->
+                    <div style="background: #e8f5e9; padding: 1rem; border-right: 2px solid var(--text); flex: 1;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">6 Bytes</div>
+                        <div style="font-weight: bold; color: #2b8a3e;">Destination<br>MAC Address</div>
+                    </div>
+                    <!-- Src MAC -->
+                    <div style="background: #e8f5e9; padding: 1rem; border-right: 2px solid var(--text); flex: 1;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">6 Bytes</div>
+                        <div style="font-weight: bold; color: #2b8a3e;">Source<br>MAC Address</div>
+                    </div>
+                    <!-- Type -->
+                    <div style="background: #f3e5f5; padding: 1rem; border-right: 2px solid var(--text); flex: 0.8;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">2 Bytes</div>
+                        <div style="font-weight: bold; color: #862e9c;">Type<br><span style="font-size: 0.75rem; font-weight: normal;">(Etype)</span></div>
+                    </div>
+                    <!-- Data -->
+                    <div style="background: #fff3e0; padding: 1rem; border-right: 2px solid var(--text); flex: 2;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">46 ~ 1500 Bytes</div>
+                        <div style="font-weight: bold; color: #e67700;">Data / Payload</div>
+                    </div>
+                    <!-- FCS -->
+                    <div style="background: #e0e0e0; padding: 1rem; flex: 0.8;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">4 Bytes</div>
+                        <div style="font-weight: bold; color: #495057;">FCS<br><span style="font-size: 0.75rem; font-weight: normal;">(CRC)</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <ul style="margin-top: 1rem;">
+                <li><strong>Preamble (前導碼)</strong>：用於接收端時脈同步 (101010... 結尾是 1011)。</li>
+                <li><strong>Type (類型)</strong>：標示上層網路層協定。常見數值：
+                    <ul>
+                        <li><code style="color:var(--danger)">0x0800</code>：IPv4</li>
+                        <li><code style="color:var(--danger)">0x0806</code>：ARP</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>6. 無線網路標準 (Wi-Fi, Bluetooth, ZigBee)</h3>
+            <h4>Wi-Fi (IEEE 802.11) 世代標準</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>俗稱</th><th>IEEE 標準</th><th>特點簡述</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Wi-Fi 4</strong></td><td>802.11n</td><td>支援 2.4G/5GHz, MIMO-OFDM</td></tr>
+                        <tr><td><strong>Wi-Fi 5</strong></td><td>802.11ac</td><td>5GHz 專用, 速率可達 6.9Gbps</td></tr>
+                        <tr><td><strong>Wi-Fi 6 / 6E</strong></td><td>802.11ax</td><td>支援 2.4/5/6GHz, 導入 OFDMA 高併發</td></tr>
+                        <tr><td><strong>Wi-Fi 7</strong></td><td>802.11be</td><td>極高吞吐量 (EHT), 最高可達 46.4Gbps</td></tr>
+                        <tr><td><strong>Wi-Fi 8</strong></td><td>802.11bn</td><td>(未來標準) 超高可靠性 (UHR)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4 style="margin-top: 1rem;">其他個人區域網路 (PAN) 標準</h4>
+            <ul>
+                <li><strong>藍牙 (Bluetooth)</strong>：IEEE 802.15.1</li>
+                <li><strong>ZigBee</strong>：IEEE 802.15.4 (低功耗、低速率、物聯網感測器常用)</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h3>7. 網路規劃與佈置 <span class="tag tag-d"> </span></h3>
+            <p>這部分通常為申論題或實作題，需綜合考量以下原則：</p>
+            <ul>
+                <li><strong>網路規劃 </strong>：評估需求（頻寬、人數）、選擇適當的拓樸結構（通常為星狀或樹狀）、IP 網段與 VLAN 切割、設備選型（L2/L3 Switch, Router）。</li>
+                <li><strong>網路佈置 </strong>：實體佈線考量，如 UTP 線材等級 (Cat5e/Cat6)、走線美觀與防護、機房溫濕度與電力備援 (PoE 規劃)。</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ==================== QUIZ ==================== -->
+    <section id="quiz">
+        <div class="sec-title">
+            <h2>練習題庫</h2>
+            <p>測試你對網路概論各章節的理解程度（共 40 題）</p>
+        </div>
+        <div id="quiz-container"></div>
+        <div class="score-box" id="score-display" style="display:none">
+            <div class="num" id="score-value">0/40</div>
+            <div class="lbl">正確率</div>
+            <div class="bar-wrap" style="max-width:240px;margin:.5rem auto"><div class="bar-fill" id="score-bar" style="width:0%"></div></div>
+            <button class="btn" onclick="resetQuiz()">重新測驗</button>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <p>網路概論 重點總複習 | 整理自「網路概論與實務第七版」</p>
+</footer>
+
+<script>
+    function showSec(id) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        // Match the nav button to add active class
+        const targetBtn = Array.from(document.querySelectorAll('nav button')).find(b => b.getAttribute('onclick') === `showSec('${id}')`);
+        if (targetBtn) targetBtn.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','midterm','final'];
+        let viewed = 0;
+        chapters.forEach(id => {
+            if (document.getElementById(id) && document.getElementById(id).classList.contains('active')) viewed++;
+        });
+        const pct = Math.round(viewed / 9 * 100);
+        document.getElementById('overall-pct').textContent = pct;
+        document.getElementById('overall-bar').style.width = pct + '%';
+    }
+
+    const quizData = [
+        { q: "OSI 參考模型共分幾層？", opts: ["4", "5", "6", "7"], ans: 3, exp: "OSI 模型分為七層：應用、表達、會議、傳輸、網路、資料連結、實體。" },
+        { q: "TCP/IP 模型分為幾層？", opts: ["3", "4", "5", "7"], ans: 1, exp: "TCP/IP 模型分為四層：應用層、傳輸層、網際網路層、網路存取層。" },
+        { q: "TCP 協定使用哪個機制建立連線？", opts: ["二次握手", "三次握手", "四次握手", "隨機連線"], ans: 1, exp: "TCP 使用三次握手 (SYN, SYN+ACK, ACK) 建立連線。" },
+        { q: "下列哪個協定是無連線的？", opts: ["TCP", "UDP", "FTP", "HTTP"], ans: 1, exp: "UDP 是無連線的傳輸層協定，不建立連線就直接傳送資料。" },
+        { q: "DNS 預設使用哪個傳輸層協定？", opts: ["TCP 為主", "UDP 為主", "兩者皆可", "純 TCP"], ans: 1, exp: "DNS 查詢主要使用 UDP 埠 53，只有在區域傳輸 (Zone Transfer) 時使用 TCP。" },
+        { q: "ARP 的功能是什麼？", opts: ["IP 轉 MAC", "MAC 轉 IP", "域名解析", "路由選擇"], ans: 0, exp: "ARP (Address Resolution Protocol) 將 IP 位址解析為 MAC 位址。" },
+        { q: "ping 指令使用哪個協定？", opts: ["TCP", "UDP", "ICMP", "ARP"], ans: 2, exp: "ping 使用 ICMP (Internet Control Message Protocol) 的 Echo Request/Echo Reply。" },
+        { q: "TCP 標頭的最小大小是多少？", opts: ["8 bytes", "20 bytes", "32 bytes", "60 bytes"], ans: 1, exp: "TCP 標頭最小 20 bytes，最大 60 bytes（含 Options 欄位）。" },
+        { q: "UDP 標頭大小是多少？", opts: ["8 bytes", "20 bytes", "32 bytes", "64 bytes"], ans: 0, exp: "UDP 標頭固定為 8 bytes，包含來源埠、目的埠、長度、Checksum。" },
+        { q: "乙太網路幀的最小大小（不含 Preamble）？", opts: ["32 bytes", "46 bytes", "64 bytes", "128 bytes"], ans: 2, exp: "乙太網路最小幀為 64 bytes，確保 CSMA/CD 能正確偵測碰撞。" },
+        { q: "乙太網路幀的 MTU 是多少？", opts: ["576", "1000", "1500", "9000"], ans: 2, exp: "標準乙太網路 MTU 為 1500 bytes，Jumbo Frame 可達 9000 bytes。" },
+        { q: "MAC 位址長度是多少？", opts: ["32 bits", "48 bits", "64 bits", "128 bits"], ans: 1, exp: "MAC 位址為 48 bits (6 bytes)，前 24 bits 為 OUI，後 24 bits 為製造商分配。" },
+        { q: "IPv4 位址長度是多少？", opts: ["16 bits", "32 bits", "64 bits", "128 bits"], ans: 1, exp: "IPv4 位址為 32 bits，以點分十進制表示。" },
+        { q: "IPv6 位址長度是多少？", opts: ["32 bits", "64 bits", "128 bits", "256 bits"], ans: 2, exp: "IPv6 位址為 128 bits，以冒號十六進制表示。" },
+        { q: "路由器的 AD 值中，哪個協定最可信？", opts: ["RIP (120)", "OSPF (110)", "靜態路由 (1)", "直接連接 (0)"], ans: 3, exp: "AD 值越小越可信，直接連接的 AD 為 0，最高優先。" },
+        { q: "STP 的主要功能是什麼？", opts: ["增加頻寬", "防止網路迴路", "加密傳輸", "負載平衡"], ans: 1, exp: "STP (Spanning Tree Protocol) 防止交換器網路中的實體迴路，避免廣播風暴。" },
+        { q: "VLAN 標籤 (802.1Q) 佔用多少 bytes？", opts: ["2", "4", "6", "8"], ans: 1, exp: "802.1Q VLAN 標籤佔 4 bytes，插入在 Source MAC 與 Type 之間。" },
+        { q: "VLAN ID 有效範圍？", opts: ["0-255", "1-4094", "0-4095", "1-1024"], ans: 1, exp: "VLAN ID 使用 12 bits，有效範圍 1-4094，0 和 4095 保留。" },
+        { q: "下列哪個不是私有 IP？", opts: ["10.0.0.1", "172.16.0.1", "192.168.1.1", "8.8.8.8"], ans: 3, exp: "8.8.8.8 是 Google 的公有 DNS 伺服器，非私有 IP。" },
+        { q: "子網路 192.168.1.0/26 有多少可用主機？", opts: ["30", "62", "126", "254"], ans: 1, exp: "/26 表示主機部分 6 bits，2^6 - 2 = 62 台可用主機。" },
+        { q: "哪個設備可以分割廣播域？", opts: ["Hub", "Switch", "Bridge", "Router"], ans: 3, exp: "Router (路由器) 可以分割廣播域，每個介面為獨立廣播域。" },
+        { q: "交換器採用哪種轉送方式最可靠？", opts: ["Cut-Through", "Fragment-Free", "Store-and-Forward", "Fast-Forward"], ans: 2, exp: "Store-and-Forward 完整接收後檢查 FCS 再轉送，最可靠但延遲較高。" },
+        { q: "1000BASE-T 使用哪種纜線？", opts: ["Cat3", "Cat5", "Cat5e", "Cat6a"], ans: 2, exp: "1000BASE-T 使用 Cat5e (或更好) 的 UTP 纜線，最大 100m。" },
+        { q: "Wi-Fi 6 對應的 IEEE 標準？", opts: ["802.11ac", "802.11ax", "802.11be", "802.11n"], ans: 1, exp: "Wi-Fi 6 = IEEE 802.11ax，引入 OFDMA 技術。" },
+        { q: "CSMA/CA 中的 CA 代表？", opts: ["Collision Avoidance", "Collision Access", "Carrier Access", "Code Avoidance"], ans: 0, exp: "CA = Collision Avoidance（碰撞避免），用於無線網路。" },
+        { q: "全雙工 1 Gbps 連線的理論總吞吐量？", opts: ["500 Mbps", "1 Gbps", "2 Gbps", "4 Gbps"], ans: 2, exp: "全雙工可同時傳送與接收，1 Gbps 全雙工 = 2 Gbps 總吞吐量。" },
+        { q: "PoE (802.3af) 最大供電功率？", opts: ["7.5W", "15.4W", "30W", "60W"], ans: 1, exp: "802.3af (PoE) 最大 15.4W，802.3at (PoE+) 最大 30W。" },
+        { q: "NAT 中多對一映射的技術名稱？", opts: ["靜態 NAT", "動態 NAT", "PAT/NAPT", "雙向 NAT"], ans: 2, exp: "PAT (Port Address Translation) 使用不同埠號區分多個內部主機的連線。" },
+        { q: "OSPF 屬於哪種路由協定？", opts: ["距離向量", "鏈路狀態", "路徑向量", "混合型"], ans: 1, exp: "OSPF 是鏈路狀態 (Link State) 路由協定，使用 SPF 演算法計算最短路徑。" },
+        { q: "BGP 主要用在哪裡？", opts: ["家庭網路", "企業內部", "ISP 骨幹", "資料中心內部"], ans: 2, exp: "BGP 是網際網路的核心路由協定，用於 ISP 與 ISP 之間交換路由資訊。" },
+        { q: "DHCP 的四個步驟簡稱？", opts: ["ABCD", "DORA", "ROAD", "HAND"], ans: 1, exp: "DHCP 流程：Discover → Offer → Request → ACK，簡稱 DORA。" },
+        { q: "通訊協定的三要素不包括哪個？", opts: ["語法", "語意", "時序", "語音"], ans: 3, exp: "三要素：語法 (Syntax)、語意 (Semantics)、時序 (Timing)。" },
+        { q: "IEEE 802.11 使用哪種存取控制？", opts: ["CSMA/CD", "CSMA/CA", "Token Passing", "FDMA"], ans: 1, exp: "無線網路使用 CSMA/CA (碰撞避免)，因為無線環境無法有效偵測碰撞。" },
+        { q: "traceroute 利用哪個 IP 標頭欄位？", opts: ["Protocol", "TTL", "Checksum", "Fragment Offset"], ans: 1, exp: "traceroute 利用 TTL (Time to Live) 欄位，每次遞增 TTL 以逐跳探測路徑。" },
+        { q: "RIP 路由協定的最大跳數？", opts: ["15", "16", "32", "255"], ans: 0, exp: "RIP 最大 15 跳，16 跳表示不可達。因此 RIP 僅適用於小型網路。" },
+        { q: "LACP 的標準編號？", opts: ["802.1D", "802.1Q", "802.3ad", "802.11ax"], ans: 2, exp: "LACP (Link Aggregation Control Protocol) 定義在 IEEE 802.3ad。" },
+        { q: "IPSec 是 IPv6 的哪種特性？", opts: ["選配", "內建", "不支援", "需額外安裝"], ans: 1, exp: "IPSec 是 IPv6 的內建安全機制，提供認證與加密。" },
+        { q: "SLAAC 的功能是什麼？", opts: ["自動分配 VLAN", "自動設定 IP", "自動路由", "自動加密"], ans: 1, exp: "SLAAC (Stateless Address Auto-Configuration) 讓 IPv6 設備自動取得 IP 位址。" },
+        { q: "Cat6 纜線支援的最高頻寬？", opts: ["100 MHz", "250 MHz", "500 MHz", "600 MHz"], ans: 1, exp: "Cat6 支援 250 MHz，55m 內可達 10 Gbps。" },
+        { q: "哪種網路拓撲具有最高可靠性？", opts: ["匯流排", "星狀", "環狀", "網狀"], ans: 3, exp: "網狀拓撲 (Mesh) 的每個設備與所有其他設備互連，冗餘度最高，可靠性也最高。" },
+    ];
+
+    let score = 0, answered = 0;
+
+    function initQuiz() {
+        const c = document.getElementById('quiz-container');
+        c.innerHTML = '';
+        score = 0; answered = 0;
+        document.getElementById('score-display').style.display = 'none';
+        quizData.forEach((q, i) => {
+            const card = document.createElement('div');
+            card.className = 'quiz-card';
+            card.id = 'q-' + i;
+            card.innerHTML = `
+                <div class="quiz-q">${i+1}. ${q.q}</div>
+                <div class="quiz-opts">
+                    ${q.opts.map((o, j) => `<div class="quiz-opt" onclick="check(${i},${j})">${o}</div>`).join('')}
+                </div>
+                <div class="quiz-exp" id="exp-${i}"><strong>解答：</strong>${q.exp}</div>
+            `;
+            c.appendChild(card);
+        });
+    }
+
+    function check(qi, sel) {
+        const card = document.getElementById('q-' + qi);
+        if (card.dataset.done) return;
+        card.dataset.done = '1';
+        const opts = card.querySelectorAll('.quiz-opt');
+        const q = quizData[qi];
+        opts.forEach((o, i) => {
+            o.classList.add('disabled');
+            if (i === q.ans) o.classList.add('correct');
+            else if (i === sel && sel !== q.ans) o.classList.add('wrong');
+        });
+        if (sel === q.ans) score++;
+        answered++;
+        document.getElementById('exp-' + qi).classList.add('show');
+        if (answered === quizData.length) showScore();
+    }
+
+    function showScore() {
+        const d = document.getElementById('score-display');
+        d.style.display = 'block';
+        document.getElementById('score-value').textContent = score + '/' + quizData.length;
+        document.getElementById('score-bar').style.width = Math.round(score / quizData.length * 100) + '%';
+        d.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetQuiz() { initQuiz(); document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' }); }
+
+    initQuiz();
+</script>
+</body>
+</html>
