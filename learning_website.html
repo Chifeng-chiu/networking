@@ -305,6 +305,7 @@
         <button onclick="showSec('ch07')">Ch7 區域網路</button>
         <button onclick="showSec('ch08')">Ch8 IP</button>
         <button onclick="showSec('midterm')">期中考重點</button>
+        <button onclick="showSec('final')" style="color: #e03131; font-weight: bold;">期末考重點</button>
         <button onclick="showSec('quiz')">練習題庫</button>
     </div>
 </nav>
@@ -351,6 +352,11 @@
                 <h3>Ch8 網際網路協定</h3>
                 <p>IPv4 分類、子網路切割、CIDR、NAT、路由協定、IPv6</p>
                 <div style="margin-top:.5rem"><span class="tag tag-p">161 張投影片</span></div>
+            </div>
+            <div class="card" style="border: 2px solid var(--danger); background: var(--danger-light);">
+                <h3 style="border-bottom-color: var(--danger); color: var(--danger);"><i class="icon">🎯</i> 期末考必讀重點</h3>
+                <p style="color: #a52525;">包含 CSMA 比較、IP 網段計算、子網路切割/超網化、Ethernet 標頭與 Wi-Fi 標準等重點。</p>
+                <div style="margin-top:.8rem"><button class="btn" style="background: var(--danger);" onclick="showSec('final')">立即前往複習</button></div>
             </div>
         </div>
 
@@ -941,6 +947,243 @@
         </div>
 
         <div class="card">
+            <h3>5.6 無線網路架構模擬 (Ad Hoc vs Infrastructure)</h3>
+            <p>點擊按鈕切換不同架構，並按下「隨機發送封包」來觀察資料的傳輸路徑差異。Ad Hoc 為設備點對點直接連線，Infrastructure 則所有流量都必須經過中央的 AP (基地台)。</p>
+            
+            <div style="margin-top: 1rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; background: #fff;">
+                <div style="margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div style="display: flex; background: var(--surface2); border-radius: 6px; overflow: hidden; border: 1px solid var(--border);">
+                        <button id="btn-adhoc" style="padding: 0.5rem 1rem; border: none; background: var(--primary); color: white; cursor: pointer; font-weight: bold; transition: 0.2s;">Ad Hoc 模式</button>
+                        <button id="btn-infra" style="padding: 0.5rem 1rem; border: none; background: transparent; color: var(--text2); cursor: pointer; font-weight: bold; transition: 0.2s;">Infrastructure 模式</button>
+                    </div>
+                    <button id="btn-send-wifi" class="btn">隨機發送封包</button>
+                    <span id="wifi-status" style="margin-left: auto; font-weight: bold; color: var(--primary-dark); align-self: center;">狀態：待命</span>
+                </div>
+                
+                <div style="position: relative; height: 320px; background: #f8f9fa; border-radius: 8px; overflow: hidden; border: 1px solid #dee2e6;">
+                    <canvas id="wifi-canvas" width="800" height="320" style="width: 100%; height: 100%; display: block;"></canvas>
+                </div>
+            </div>
+
+            <script>
+                (function() {
+                    const canvas = document.getElementById('wifi-canvas');
+                    const ctx = canvas.getContext('2d');
+                    const btnAdHoc = document.getElementById('btn-adhoc');
+                    const btnInfra = document.getElementById('btn-infra');
+                    const btnSend = document.getElementById('btn-send-wifi');
+                    const statusText = document.getElementById('wifi-status');
+                    
+                    let mode = 'AdHoc'; // 'AdHoc' or 'Infra'
+                    let isAnimating = false;
+                    let animationFrame;
+                    let progress = 0; 
+                    let stage = 0; // 用於 Infra 模式分段
+                    
+                    let srcNode = null;
+                    let dstNode = null;
+
+                    // 節點相對座標 (0~1 之間，乘上寬高即為實際座標)
+                    const nodePos = [
+                        { id: 'A', rx: 0.15, ry: 0.2, color: '#4263eb' },
+                        { id: 'B', rx: 0.85, ry: 0.2, color: '#f59f00' },
+                        { id: 'C', rx: 0.85, ry: 0.8, color: '#e03131' },
+                        { id: 'D', rx: 0.15, ry: 0.8, color: '#7048e8' }
+                    ];
+                    const apPos = { id: 'AP', rx: 0.5, ry: 0.5, color: '#2f9e44' };
+
+                    function resizeCanvas() {
+                        const newWidth = canvas.parentElement.clientWidth;
+                        if (newWidth > 0) {
+                            canvas.width = newWidth;
+                            canvas.height = 320;
+                            if (!isAnimating) drawBase();
+                        }
+                    }
+
+                    const resizeObserver = new ResizeObserver(() => { resizeCanvas(); });
+                    resizeObserver.observe(canvas.parentElement);
+
+                    btnAdHoc.addEventListener('click', () => setMode('AdHoc'));
+                    btnInfra.addEventListener('click', () => setMode('Infra'));
+                    
+                    btnSend.addEventListener('click', () => {
+                        if (isAnimating) return;
+                        isAnimating = true;
+                        progress = 0;
+                        stage = 0;
+                        btnSend.disabled = true;
+                        btnSend.style.opacity = '0.5';
+                        
+                        // 隨機選兩個不同的節點
+                        let sIdx = Math.floor(Math.random() * 4);
+                        let dIdx;
+                        do { dIdx = Math.floor(Math.random() * 4); } while(dIdx === sIdx);
+                        
+                        srcNode = nodePos[sIdx];
+                        dstNode = nodePos[dIdx];
+                        
+                        animate();
+                    });
+
+                    function setMode(newMode) {
+                        if (isAnimating) return;
+                        mode = newMode;
+                        if (mode === 'AdHoc') {
+                            btnAdHoc.style.background = 'var(--primary)';
+                            btnAdHoc.style.color = 'white';
+                            btnInfra.style.background = 'transparent';
+                            btnInfra.style.color = 'var(--text2)';
+                        } else {
+                            btnInfra.style.background = 'var(--primary)';
+                            btnInfra.style.color = 'white';
+                            btnAdHoc.style.background = 'transparent';
+                            btnAdHoc.style.color = 'var(--text2)';
+                        }
+                        statusText.textContent = '狀態：待命';
+                        statusText.style.color = 'var(--text)';
+                        drawBase();
+                    }
+
+                    function getCoords(node) {
+                        return { x: node.rx * canvas.width, y: node.ry * canvas.height };
+                    }
+
+                    function drawCircleNode(node) {
+                        const { x, y } = getCoords(node);
+                        ctx.fillStyle = node.color;
+                        ctx.beginPath();
+                        ctx.arc(x, y, 22, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 16px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(node.id, x, y);
+                    }
+
+                    function drawDataPacket(x, y, label, color) {
+                        ctx.fillStyle = color;
+                        ctx.beginPath();
+                        ctx.roundRect(x - 30, y - 15, 60, 30, 6);
+                        ctx.fill();
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 12px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(label, x, y);
+                    }
+
+                    function drawBase() {
+                        if (canvas.width === 0) return;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        
+                        ctx.strokeStyle = 'rgba(173, 181, 189, 0.4)';
+                        ctx.lineWidth = 1.5;
+                        ctx.setLineDash([5, 5]);
+
+                        if (mode === 'AdHoc') {
+                            // 畫出網狀(Mesh)連線
+                            for (let i = 0; i < nodePos.length; i++) {
+                                for (let j = i + 1; j < nodePos.length; j++) {
+                                    const p1 = getCoords(nodePos[i]);
+                                    const p2 = getCoords(nodePos[j]);
+                                    ctx.beginPath();
+                                    ctx.moveTo(p1.x, p1.y);
+                                    ctx.lineTo(p2.x, p2.y);
+                                    ctx.stroke();
+                                }
+                            }
+                            nodePos.forEach(drawCircleNode);
+                        } else {
+                            // 畫出星狀(Star)連線，連向 AP
+                            const apC = getCoords(apPos);
+                            nodePos.forEach(node => {
+                                const p = getCoords(node);
+                                ctx.beginPath();
+                                ctx.moveTo(p.x, p.y);
+                                ctx.lineTo(apC.x, apC.y);
+                                ctx.stroke();
+                            });
+                            // 畫 AP 訊號範圍
+                            ctx.fillStyle = 'rgba(47, 158, 68, 0.05)';
+                            ctx.beginPath();
+                            ctx.arc(apC.x, apC.y, 140, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            nodePos.forEach(drawCircleNode);
+                            drawCircleNode(apPos);
+                        }
+                        ctx.setLineDash([]);
+                    }
+
+                    function animate() {
+                        drawBase();
+                        progress += 0.012; // 控制動畫速度
+
+                        const srcC = getCoords(srcNode);
+                        const dstC = getCoords(dstNode);
+                        const apC = getCoords(apPos);
+
+                        if (mode === 'AdHoc') {
+                            statusText.textContent = `狀態：${srcNode.id} 直接傳送封包給 ${dstNode.id}`;
+                            statusText.style.color = 'var(--text)';
+                            
+                            let currX = srcC.x + (dstC.x - srcC.x) * progress;
+                            let currY = srcC.y + (dstC.y - srcC.y) * progress;
+                            
+                            drawDataPacket(currX, currY, 'DATA', srcNode.color);
+
+                            if (progress >= 1) {
+                                endAnimation();
+                                return;
+                            }
+                        } else {
+                            if (stage === 0) {
+                                statusText.textContent = `狀態：[步驟 1] ${srcNode.id} 將封包送往 AP`;
+                                statusText.style.color = 'var(--text)';
+                                
+                                let currX = srcC.x + (apC.x - srcC.x) * progress;
+                                let currY = srcC.y + (apC.y - srcC.y) * progress;
+                                drawDataPacket(currX, currY, 'DATA', srcNode.color);
+                                
+                                if (progress >= 1) {
+                                    stage = 1;
+                                    progress = 0;
+                                }
+                            } else if (stage === 1) {
+                                statusText.textContent = `狀態：[步驟 2] AP 將封包轉發給目標 ${dstNode.id}`;
+                                statusText.style.color = 'var(--primary-dark)';
+                                
+                                let currX = apC.x + (dstC.x - apC.x) * progress;
+                                let currY = apC.y + (dstC.y - apC.y) * progress;
+                                drawDataPacket(currX, currY, 'DATA', srcNode.color);
+                                
+                                if (progress >= 1) {
+                                    endAnimation();
+                                    return;
+                                }
+                            }
+                        }
+
+                        if (isAnimating) {
+                            animationFrame = requestAnimationFrame(animate);
+                        }
+                    }
+
+                    function endAnimation() {
+                        isAnimating = false;
+                        btnSend.disabled = false;
+                        btnSend.style.opacity = '1';
+                        statusText.textContent = '狀態：傳輸完成！';
+                        statusText.style.color = 'var(--success)';
+                    }
+                })();
+            </script>
+        </div>
+        
+
+        <div class="card">
             <h3>5.7 PoE (Power over Ethernet)</h3>
             <ul>
                 <li>透過乙太網路纜線同時傳輸資料與電力</li>
@@ -1066,6 +1309,243 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li>最多可聚合 8 條鏈路</li>
             </ul>
         </div>
+
+        <div class="card">
+            <h3>7.7 CSMA/CD 與 CSMA/CA 運作機制互動模擬</h3>
+            <p>透過下方按鈕切換協定並點擊「觸發傳輸」，觀察兩者在處理多節點同時傳輸時的根本差異。</p>
+            
+            <div style="margin-top: 1rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; background: #fff;">
+                <div style="margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div style="display: flex; background: var(--surface2); border-radius: 6px; overflow: hidden; border: 1px solid var(--border);">
+                        <button id="btn-csmacd" style="padding: 0.5rem 1rem; border: none; background: var(--primary); color: white; cursor: pointer; font-weight: bold; transition: 0.2s;">CSMA/CD (有線)</button>
+                        <button id="btn-csmaca" style="padding: 0.5rem 1rem; border: none; background: transparent; color: var(--text2); cursor: pointer; font-weight: bold; transition: 0.2s;">CSMA/CA (無線)</button>
+                    </div>
+                    <button id="btn-trigger" class="btn">觸發傳輸</button>
+                    <span id="sim-status" style="margin-left: auto; font-weight: bold; color: var(--primary-dark); align-self: center;">狀態：待命</span>
+                </div>
+                
+                <div style="position: relative; height: 250px; background: #f8f9fa; border-radius: 8px; overflow: hidden; border: 1px solid #dee2e6;">
+                    <canvas id="csma-canvas" width="800" height="250" style="width: 100%; height: 100%; display: block;"></canvas>
+                </div>
+            </div>
+
+<script>
+                (function() {
+                    const canvas = document.getElementById('csma-canvas');
+                    const ctx = canvas.getContext('2d');
+                    const btnCD = document.getElementById('btn-csmacd');
+                    const btnCA = document.getElementById('btn-csmaca');
+                    const btnTrigger = document.getElementById('btn-trigger');
+                    const statusText = document.getElementById('sim-status');
+                    
+                    let mode = 'CD'; // 'CD' or 'CA'
+                    let isAnimating = false;
+                    let animationFrame;
+                    let progress = 0; 
+                    let stage = 0;
+
+                    // 【修正點】：解決 display: none 導致寬度為 0 的問題
+                    function resizeCanvas() {
+                        const newWidth = canvas.parentElement.clientWidth;
+                        // 只有當寬度大於 0（也就是區塊顯示出來時），才重新設定並畫圖
+                        if (newWidth > 0) {
+                            canvas.width = newWidth;
+                            canvas.height = 250;
+                            if (!isAnimating) drawBase();
+                        }
+                    }
+
+                    // 【修正點】：使用 ResizeObserver 監聽父元素的尺寸變化（包含從隱藏變顯示的那一刻）
+                    const resizeObserver = new ResizeObserver(() => {
+                        resizeCanvas();
+                    });
+                    resizeObserver.observe(canvas.parentElement);
+
+                    btnCD.addEventListener('click', () => setMode('CD'));
+                    btnCA.addEventListener('click', () => setMode('CA'));
+                    
+                    btnTrigger.addEventListener('click', () => {
+                        if (isAnimating) return;
+                        isAnimating = true;
+                        progress = 0;
+                        stage = 0;
+                        btnTrigger.disabled = true;
+                        btnTrigger.style.opacity = '0.5';
+                        animate();
+                    });
+
+                    function setMode(newMode) {
+                        if (isAnimating) return;
+                        mode = newMode;
+                        if (mode === 'CD') {
+                            btnCD.style.background = 'var(--primary)';
+                            btnCD.style.color = 'white';
+                            btnCA.style.background = 'transparent';
+                            btnCA.style.color = 'var(--text2)';
+                        } else {
+                            btnCA.style.background = 'var(--primary)';
+                            btnCA.style.color = 'white';
+                            btnCD.style.background = 'transparent';
+                            btnCD.style.color = 'var(--text2)';
+                        }
+                        statusText.textContent = '狀態：待命';
+                        statusText.style.color = 'var(--text)';
+                        drawBase();
+                    }
+
+                    function drawNode(x, y, label, color) {
+                        ctx.fillStyle = color;
+                        ctx.beginPath();
+                        ctx.arc(x, y, 20, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 16px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(label, x, y);
+                    }
+
+                    function drawPacket(x, y, label, color, width=60) {
+                        ctx.fillStyle = color;
+                        ctx.fillRect(x - width/2, y - 15, width, 30);
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 12px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(label, x, y);
+                    }
+
+                    function drawBase() {
+                        if (canvas.width === 0) return; // 保護機制，寬度為 0 時不執行
+                        
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        const w = canvas.width;
+                        const h = canvas.height;
+                        const midY = h / 2;
+
+                        if (mode === 'CD') {
+                            // 畫實體線路 (Bus)
+                            ctx.strokeStyle = '#adb5bd';
+                            ctx.lineWidth = 4;
+                            ctx.beginPath();
+                            ctx.moveTo(50, midY);
+                            ctx.lineTo(w - 50, midY);
+                            ctx.stroke();
+
+                            // 畫節點
+                            drawNode(100, midY, 'A', '#4263eb');
+                            drawNode(w - 100, midY, 'B', '#f59f00');
+                        } else {
+                            // 畫基地台 (AP) 和節點
+                            drawNode(100, midY, 'A', '#4263eb');
+                            drawNode(w / 2, midY, 'AP', '#2f9e44');
+                            drawNode(w - 100, midY, 'C', '#e03131');
+                            
+                            // 畫隱形的無線電波範圍示意
+                            ctx.strokeStyle = 'rgba(173, 181, 189, 0.3)';
+                            ctx.lineWidth = 2;
+                            ctx.setLineDash([5, 5]);
+                            ctx.beginPath();
+                            ctx.arc(100, midY, 150, -Math.PI/2, Math.PI/2);
+                            ctx.stroke();
+                            ctx.beginPath();
+                            ctx.arc(w-100, midY, 150, Math.PI/2, 3*Math.PI/2);
+                            ctx.stroke();
+                            ctx.setLineDash([]);
+                        }
+                    }
+
+                    function animate() {
+                        const w = canvas.width;
+                        const h = canvas.height;
+                        const midY = h / 2;
+                        
+                        drawBase();
+                        progress += 0.015;
+
+                        if (mode === 'CD') {
+                            // CSMA/CD 動畫邏輯
+                            if (stage === 0) {
+                                statusText.textContent = '狀態：兩端同時偵測為空閒，開始傳送';
+                                statusText.style.color = 'var(--text)';
+                                let xA = 100 + (w/2 - 100) * progress;
+                                let xB = (w - 100) - (w/2 - 100) * progress;
+                                
+                                drawPacket(xA, midY - 25, 'Data A', '#4263eb');
+                                drawPacket(xB, midY + 25, 'Data B', '#f59f00');
+
+                                if (progress >= 1) {
+                                    stage = 1; progress = 0;
+                                }
+                            } else if (stage === 1) {
+                                statusText.textContent = '狀態：發生碰撞！發送 Jam 訊號並退避';
+                                statusText.style.color = 'var(--danger)';
+                                
+                                // 爆炸特效
+                                ctx.fillStyle = 'rgba(224, 49, 49, ' + (1 - progress) + ')';
+                                ctx.beginPath();
+                                ctx.arc(w/2, midY, 30 + progress*50, 0, Math.PI*2);
+                                ctx.fill();
+                                
+                                ctx.fillStyle = 'red';
+                                ctx.font = 'bold 20px sans-serif';
+                                ctx.fillText('BOOM!', w/2, midY - 40 - progress*20);
+
+                                if (progress >= 1) {
+                                    isAnimating = false;
+                                    btnTrigger.disabled = false;
+                                    btnTrigger.style.opacity = '1';
+                                    statusText.textContent = '狀態：等待隨機時間後重試';
+                                    statusText.style.color = 'var(--text3)';
+                                }
+                            }
+                        } else {
+                            // CSMA/CA 動畫邏輯 (4-Way Handshake)
+                            let startX_A = 100; let apX = w/2; let startX_C = w-100;
+                            
+                            if (stage === 0) {
+                                statusText.textContent = '狀態：A 發送 RTS 請求';
+                                let currX = startX_A + (apX - startX_A) * progress;
+                                drawPacket(currX, midY - 25, 'RTS', '#4263eb', 40);
+                                if (progress >= 1) { stage = 1; progress = 0; }
+                            } else if (stage === 1) {
+                                statusText.textContent = '狀態：AP 廣播 CTS，C 收到後進入等待 (NAV)';
+                                let currX_A = apX - (apX - startX_A) * progress;
+                                let currX_C = apX + (startX_C - apX) * progress;
+                                drawPacket(currX_A, midY - 25, 'CTS', '#2f9e44', 40);
+                                drawPacket(currX_C, midY - 25, 'CTS', '#2f9e44', 40);
+                                if (progress >= 1) { stage = 2; progress = 0; }
+                            } else if (stage === 2) {
+                                statusText.textContent = '狀態：A 傳送資料 (C 保持靜默)';
+                                // C 的 NAV 狀態
+                                ctx.fillStyle = '#e03131';
+                                ctx.font = '12px sans-serif';
+                                ctx.fillText('NAV 等待中', startX_C, midY - 35);
+                                
+                                let currX = startX_A + (apX - startX_A) * progress;
+                                drawPacket(currX, midY - 25, 'DATA', '#4263eb', 60);
+                                if (progress >= 1) { stage = 3; progress = 0; }
+                            } else if (stage === 3) {
+                                statusText.textContent = '狀態：AP 回傳 ACK 確認收到';
+                                let currX = apX - (apX - startX_A) * progress;
+                                drawPacket(currX, midY - 25, 'ACK', '#2f9e44', 40);
+                                if (progress >= 1) {
+                                    isAnimating = false;
+                                    btnTrigger.disabled = false;
+                                    btnTrigger.style.opacity = '1';
+                                    statusText.textContent = '狀態：傳輸成功完成！';
+                                    statusText.style.color = 'var(--success)';
+                                }
+                            }
+                        }
+
+                        if (isAnimating) {
+                            animationFrame = requestAnimationFrame(animate);
+                        }
+                    }
+                })();
+            </script>
+        </div>
     </section>
 
     <section id="ch08">
@@ -1077,6 +1557,19 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         <div class="card">
             <h3>8.1 IPv4 定址</h3>
             <p>IPv4 位址為 <strong>32 位元</strong>，以點分十進制表示，分為網路部分與主機部分。</p>
+            
+            <div style="margin: 1rem 0; padding: 1rem 1.2rem; background: var(--surface2); border-left: 4px solid var(--primary); border-radius: 4px;">
+                <strong style="color: var(--text); font-size: 1.05rem;">💡 快速判斷 Class 類別的秘訣：</strong>
+                <p style="margin-top: 0.4rem; font-size: 0.9rem; color: var(--text2);">先將 IP 位址的第一個數字（起始位元）換算成二進位，然後觀察它的開頭：</p>
+                <ul style="margin-top: 0.5rem; list-style-type: none; padding-left: 0; font-family: 'Consolas', monospace; font-size: 0.95rem;">
+                    <li style="margin-bottom: 0.3rem;"><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">A 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">0</span> <span style="color: var(--text3);">xxxxxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 0 ~ 127)</span></li>
+                    <li style="margin-bottom: 0.3rem;"><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">B 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">10</span> <span style="color: var(--text3);">xxxxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 128 ~ 191)</span></li>
+                    <li style="margin-bottom: 0.3rem;"><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">C 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">110</span> <span style="color: var(--text3);">xxxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 192 ~ 223)</span></li>
+                    <li style="margin-bottom: 0.3rem;"><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">D 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">1110</span> <span style="color: var(--text3);">xxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 224 ~ 239)</span></li>
+                    <li><span style="color: var(--primary-dark); font-weight: bold; display: inline-block; width: 60px;">E 類：</span> 開頭為 <span style="color: var(--danger); font-weight: bold;">1111</span> <span style="color: var(--text3);">xxxx</span> <span style="color: var(--text2); font-size: 0.85rem; margin-left: 10px;">(對應十進位 240 ~ 255)</span></li>
+                </ul>
+            </div>
+
             <h4>類別式定址 (Classful Addressing)</h4>
             <div class="table-wrap">
                 <table>
@@ -1260,13 +1753,13 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             </div>
             
             <script>
-                const canvas = document.getElementById('waveform-canvas');
-                const ctx = canvas.getContext('2d');
+                const canvasWf = document.getElementById('waveform-canvas');
+                const ctxWf = canvasWf.getContext('2d');
                 const input = document.getElementById('binary-input');
                 const errorMsg = document.getElementById('input-error');
 
-                const width = canvas.width;
-                const height = canvas.height;
+                const width = canvasWf.width;
+                const height = canvasWf.height;
                 const padding = 80; 
                 const topPadding = 40;
                 const chartHeight = 80;
@@ -1280,7 +1773,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                     { name: '5. MLT-3', method: drawMLT3 }
                 ];
 
-                function draw() {
+                function drawWf() {
                     let binaryString = input.value;
                     
                     if (!/^[01]*$/.test(binaryString)) {
@@ -1289,79 +1782,79 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                     }
                     errorMsg.style.display = 'none';
                     if (binaryString.length === 0) {
-                        ctx.clearRect(0, 0, width, height);
+                        ctxWf.clearRect(0, 0, width, height);
                         return;
                     }
 
-                    ctx.clearRect(0, 0, width, height);
+                    ctxWf.clearRect(0, 0, width, height);
                     const bitWidth = (width - padding - 20) / binaryString.length;
 
-                    ctx.font = 'bold 18px monospace';
-                    ctx.fillStyle = '#212529';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'bottom';
+                    ctxWf.font = 'bold 18px monospace';
+                    ctxWf.fillStyle = '#212529';
+                    ctxWf.textAlign = 'center';
+                    ctxWf.textBaseline = 'bottom';
                     
                     for (let i = 0; i < binaryString.length; i++) {
                         let x = padding + (i * bitWidth) + (bitWidth / 2);
-                        ctx.fillText(binaryString[i], x, topPadding - 10);
+                        ctxWf.fillText(binaryString[i], x, topPadding - 10);
 
-                        ctx.beginPath();
-                        ctx.strokeStyle = '#e9ecef';
-                        ctx.setLineDash([5, 5]);
-                        ctx.moveTo(padding + i * bitWidth, topPadding);
-                        ctx.lineTo(padding + i * bitWidth, height);
-                        ctx.stroke();
+                        ctxWf.beginPath();
+                        ctxWf.strokeStyle = '#e9ecef';
+                        ctxWf.setLineDash([5, 5]);
+                        ctxWf.moveTo(padding + i * bitWidth, topPadding);
+                        ctxWf.lineTo(padding + i * bitWidth, height);
+                        ctxWf.stroke();
                     }
-                    ctx.beginPath();
-                    ctx.moveTo(padding + binaryString.length * bitWidth, topPadding);
-                    ctx.lineTo(padding + binaryString.length * bitWidth, height);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
+                    ctxWf.beginPath();
+                    ctxWf.moveTo(padding + binaryString.length * bitWidth, topPadding);
+                    ctxWf.lineTo(padding + binaryString.length * bitWidth, height);
+                    ctxWf.stroke();
+                    ctxWf.setLineDash([]);
 
                     encodings.forEach((encoding, index) => {
                         const startY = topPadding + index * (chartHeight + chartSpacing);
                         drawChartBase(encoding.name, startY, bitWidth, binaryString.length);
                         
-                        ctx.beginPath();
-                        ctx.strokeStyle = '#4263eb'; 
-                        ctx.lineWidth = 2.5;
-                        ctx.lineJoin = 'round';
+                        ctxWf.beginPath();
+                        ctxWf.strokeStyle = '#4263eb'; 
+                        ctxWf.lineWidth = 2.5;
+                        ctxWf.lineJoin = 'round';
                         encoding.method(binaryString, padding, startY, bitWidth, chartHeight);
-                        ctx.stroke();
+                        ctxWf.stroke();
                     });
                 }
 
                 function drawChartBase(title, startY, bitWidth, numBits) {
-                    ctx.font = 'bold 14px sans-serif';
-                    ctx.fillStyle = '#495057';
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'top';
-                    ctx.fillText(title, 10, startY - 20);
+                    ctxWf.font = 'bold 14px sans-serif';
+                    ctxWf.fillStyle = '#495057';
+                    ctxWf.textAlign = 'left';
+                    ctxWf.textBaseline = 'top';
+                    ctxWf.fillText(title, 10, startY - 20);
 
                     const zeroY = startY + chartHeight / 2;
-                    ctx.beginPath();
-                    ctx.strokeStyle = '#dee2e6';
-                    ctx.lineWidth = 1;
-                    ctx.moveTo(padding, zeroY);
-                    ctx.lineTo(padding + numBits * bitWidth, zeroY);
-                    ctx.stroke();
+                    ctxWf.beginPath();
+                    ctxWf.strokeStyle = '#dee2e6';
+                    ctxWf.lineWidth = 1;
+                    ctxWf.moveTo(padding, zeroY);
+                    ctxWf.lineTo(padding + numBits * bitWidth, zeroY);
+                    ctxWf.stroke();
                     
-                    ctx.font = '12px sans-serif';
-                    ctx.fillStyle = '#868e96';
-                    ctx.textAlign = 'right';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('+V', padding - 8, startY + 10);
-                    ctx.fillText('0', padding - 8, startY + chartHeight / 2);
-                    ctx.fillText('-V', padding - 8, startY + chartHeight - 10);
+                    ctxWf.font = '12px sans-serif';
+                    ctxWf.fillStyle = '#868e96';
+                    ctxWf.textAlign = 'right';
+                    ctxWf.textBaseline = 'middle';
+                    ctxWf.fillText('+V', padding - 8, startY + 10);
+                    ctxWf.fillText('0', padding - 8, startY + chartHeight / 2);
+                    ctxWf.fillText('-V', padding - 8, startY + chartHeight - 10);
                 }
 
                 function drawNRZL(bits, startX, startY, bitWidth, h) {
                     let currentX = startX;
                     for (let i = 0; i < bits.length; i++) {
                         let y = bits[i] === '0' ? startY + 10 : startY + h - 10;
-                        if (i === 0) ctx.moveTo(currentX, y);
-                        else ctx.lineTo(currentX, y);
-                        ctx.lineTo(currentX + bitWidth, y);
+                        if (i === 0) ctxWf.moveTo(currentX, y);
+                        else ctxWf.lineTo(currentX, y);
+                        ctxWf.lineTo(currentX + bitWidth, y);
                         currentX += bitWidth;
                     }
                 }
@@ -1374,9 +1867,9 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                             currentLevel = currentLevel === 'HIGH' ? 'LOW' : 'HIGH';
                         }
                         let y = currentLevel === 'HIGH' ? startY + 10 : startY + h - 10;
-                        if (i === 0) ctx.moveTo(currentX, y);
-                        else ctx.lineTo(currentX, y);
-                        ctx.lineTo(currentX + bitWidth, y);
+                        if (i === 0) ctxWf.moveTo(currentX, y);
+                        else ctxWf.lineTo(currentX, y);
+                        ctxWf.lineTo(currentX + bitWidth, y);
                         currentX += bitWidth;
                     }
                 }
@@ -1386,11 +1879,11 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                     for (let i = 0; i < bits.length; i++) {
                         let y1 = bits[i] === '0' ? startY + 10 : startY + h - 10;
                         let y2 = bits[i] === '0' ? startY + h - 10 : startY + 10;
-                        if (i === 0) ctx.moveTo(currentX, y1);
-                        else ctx.lineTo(currentX, y1);
-                        ctx.lineTo(currentX + bitWidth / 2, y1);
-                        ctx.lineTo(currentX + bitWidth / 2, y2);
-                        ctx.lineTo(currentX + bitWidth, y2);
+                        if (i === 0) ctxWf.moveTo(currentX, y1);
+                        else ctxWf.lineTo(currentX, y1);
+                        ctxWf.lineTo(currentX + bitWidth / 2, y1);
+                        ctxWf.lineTo(currentX + bitWidth / 2, y2);
+                        ctxWf.lineTo(currentX + bitWidth, y2);
                         currentX += bitWidth;
                     }
                 }
@@ -1404,11 +1897,11 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                         }
                         let y1 = currentLevel === 'HIGH' ? startY + 10 : startY + h - 10;
                         let y2 = currentLevel === 'HIGH' ? startY + h - 10 : startY + 10;
-                        if (i === 0) ctx.moveTo(currentX, y1);
-                        else ctx.lineTo(currentX, y1);
-                        ctx.lineTo(currentX + bitWidth / 2, y1);
-                        ctx.lineTo(currentX + bitWidth / 2, y2);
-                        ctx.lineTo(currentX + bitWidth, y2);
+                        if (i === 0) ctxWf.moveTo(currentX, y1);
+                        else ctxWf.lineTo(currentX, y1);
+                        ctxWf.lineTo(currentX + bitWidth / 2, y1);
+                        ctxWf.lineTo(currentX + bitWidth / 2, y2);
+                        ctxWf.lineTo(currentX + bitWidth, y2);
                         currentLevel = currentLevel === 'HIGH' ? 'LOW' : 'HIGH'; 
                         currentX += bitWidth;
                     }
@@ -1427,17 +1920,18 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                         else if (cycle[cycleIdx] === '0') y = startY + h / 2;
                         else if (cycle[cycleIdx] === '-V') y = startY + h - 10;
 
-                        if (i === 0) ctx.moveTo(currentX, y);
-                        else ctx.lineTo(currentX, y);
-                        ctx.lineTo(currentX + bitWidth, y);
+                        if (i === 0) ctxWf.moveTo(currentX, y);
+                        else ctxWf.lineTo(currentX, y);
+                        ctxWf.lineTo(currentX + bitWidth, y);
                         currentX += bitWidth;
                     }
                 }
 
-                input.addEventListener('input', draw);
-                draw();
+                input.addEventListener('input', drawWf);
+                drawWf();
             </script>
         </div>
+
         <div class="card">
             <h3>網路類型與拓樸</h3>
             <div class="grid2">
@@ -1602,6 +2096,178 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
     </section>
 
+    <!-- ==================== FINAL EXAM ==================== -->
+    <section id="final">
+        <div class="sec-title">
+            <h2>期末考重點總整理</h2>
+            <p>涵蓋期末測驗必考重點：CSMA、子網路/超網化、Ethernet 標頭、Wi-Fi 標準</p>
+        </div>
+
+        <div class="card">
+            <h3>1. CSMA/CD vs CSMA/CA 碰撞處理機制(7.7有互動式圖表) <span class="tag tag-d"> </span></h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>比較項目</th><th>CSMA/CD (碰撞偵測)</th><th>CSMA/CA (碰撞避免)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>適用網路</strong></td><td>有線網路 (IEEE 802.3 乙太網路)</td><td>無線網路 (IEEE 802.11 Wi-Fi)</td></tr>
+                        <tr><td><strong>核心口訣</strong></td><td>邊講邊聽，撞了就停</td><td>講話前先舉手，沒人才開口</td></tr>
+                        <tr><td><strong>運作方式</strong></td><td>傳送前先聽，空了就傳，且邊傳邊聽。</td><td>傳送前先聽，空了也不馬上傳，先等一段隨機時間確認沒人搶。</td></tr>
+                        <tr><td><strong>碰撞處理</strong></td><td>遇到碰撞停止傳送，發送 <strong>Jam Signal (干擾訊號)</strong>。</td><td>事前避免，使用 <strong>RTS/CTS</strong> 機制解決隱藏節點問題 (Hidden Node Problem)。</td></tr>
+                        <tr><td><strong>後續動作</strong></td><td>雙方等待 <strong>隨機退避時間 (Random Backoff Time)</strong> 後再次傳送。</td><td>接收端回傳 <strong>ACK (確認訊號)</strong>，若沒收到 ACK 視為資料遺失，重傳一次。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2. IP 位址與廣播位置 <span class="tag tag-d"> </span></h3>
+            <ul>
+                <li><strong>IPv4 位元數：</strong> 32 bits (4 bytes)</li>
+                <li><strong>IPv6 位元數：</strong> 128 bits (16 bytes)</li>
+            </ul>
+            <h4 style="margin-top: 1rem;">L2 與 L3 廣播位址</h4>
+            <ul>
+                <li><strong>第二層 (L2, MAC) 廣播位址：</strong> <code>FF-FF-FF-FF-FF-FF</code></li>
+                <li><strong>第三層 (L3, IP) 廣播位址：</strong> <code>255.255.255.255</code></li>
+            </ul>
+            <blockquote class="ok">💡 <strong>A-E 類 IP 判斷</strong>：請參考上方 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">Ch8 網際網路協定</a> 的詳細表格與二進位速記法。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>3. IP 網段計算 (Network Mask) <span class="tag tag-d"> </span></h3>
+            <p><strong>範例：</strong> <code>128.1.2.3 /16</code></p>
+            <div class="code-block">
+1. 網路遮罩 (Network Mask):
+   /16 代表前 16 位元是「網路區段」，後 16 位元是「主機區段」
+   二進位: 11111111.11111111.00000000.00000000
+   十進位: 255.255.0.0
+
+2. 網路位址 (Network Address):
+   代表網段的「起點」。規則：保留網路區段不變，主機區段全部補 0。
+   => 128.1.0.0
+
+3. 廣播位址 (Broadcast Address):
+   代表網段的「終點」。規則：網路區段不變，主機區段全部填滿 1。
+   => 128.1.255.255
+
+4. 可用主機 IP 範圍 (Host IP Range):
+   Min = 網路位址 + 1  => 128.1.0.1
+   Max = 廣播位址 - 1  => 128.1.255.254
+   範圍: 128.1.0.1 ~ 128.1.255.254
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>4. 子網路切割 (Subnetting) 與 超網化 (Supernetting) <span class="tag tag-d"> </span></h3>
+            <div class="grid2">
+                <div>
+                    <h4>子網路切割 (Subnetting)</h4>
+                    <p>將大網段切小。<strong>作法：向主機借位元 (Host bit) 當作網路位元。</strong></p>
+                    <p>範例：<code>192.168.20.0 /24</code> 借 1 個 bit 切割。</p>
+                    <ul>
+                        <li>借 1 bit (0 或 1)，可切成 2<sup>1</sup> = 2 個網段。</li>
+                        <li>新遮罩變成 <code>/25</code> (255.255.255.128)。</li>
+                        <li>網段1 (bit=0): <code>192.168.20.0 ~ 127</code></li>
+                        <li>網段2 (bit=1): <code>192.168.20.128 ~ 255</code></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>超網化 (Supernetting / 路由匯總)</h4>
+                    <p>將多個小網段合併。<strong>作法：找出共同的網路位元，將遮罩縮短。</strong></p>
+                    <p>範例：合併 <code>192.168.20.0/24</code> 與 <code>192.168.21.0/24</code>。</p>
+                    <ul>
+                        <li>20: <code>0001010<span style="color:var(--danger)">0</span></code></li>
+                        <li>21: <code>0001010<span style="color:var(--danger)">1</span></code></li>
+                        <li>前面 23 bits 相同，所以合併後遮罩變成 <code>/23</code>。</li>
+                        <li>結果：<code>192.168.20.0 /23</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>5. Ethernet 2.0 標頭格式 <span class="tag tag-d"> </span></h3>
+            <p><strong>畫圖重點：</strong>Ethernet 訊框 (Frame) 的最小長度為 <strong>64 Bytes</strong>，最大長度為 <strong>1518 Bytes</strong>。</p>
+            
+            <div style="margin: 1.5rem 0; text-align: center; font-family: sans-serif; overflow-x: auto;">
+                <div style="display: inline-flex; border: 2px solid var(--text); border-radius: 4px; overflow: hidden; min-width: 700px;">
+                    <!-- Preamble -->
+                    <div style="background: #e3f2fd; padding: 1rem; border-right: 2px solid var(--text); flex: 1;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">8 Bytes</div>
+                        <div style="font-weight: bold; color: var(--primary-dark);">Preamble<br><span style="font-size: 0.75rem; font-weight: normal;">(含 SFD)</span></div>
+                    </div>
+                    <!-- Dest MAC -->
+                    <div style="background: #e8f5e9; padding: 1rem; border-right: 2px solid var(--text); flex: 1;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">6 Bytes</div>
+                        <div style="font-weight: bold; color: #2b8a3e;">Destination<br>MAC Address</div>
+                    </div>
+                    <!-- Src MAC -->
+                    <div style="background: #e8f5e9; padding: 1rem; border-right: 2px solid var(--text); flex: 1;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">6 Bytes</div>
+                        <div style="font-weight: bold; color: #2b8a3e;">Source<br>MAC Address</div>
+                    </div>
+                    <!-- Type -->
+                    <div style="background: #f3e5f5; padding: 1rem; border-right: 2px solid var(--text); flex: 0.8;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">2 Bytes</div>
+                        <div style="font-weight: bold; color: #862e9c;">Type<br><span style="font-size: 0.75rem; font-weight: normal;">(Etype)</span></div>
+                    </div>
+                    <!-- Data -->
+                    <div style="background: #fff3e0; padding: 1rem; border-right: 2px solid var(--text); flex: 2;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">46 ~ 1500 Bytes</div>
+                        <div style="font-weight: bold; color: #e67700;">Data / Payload</div>
+                    </div>
+                    <!-- FCS -->
+                    <div style="background: #e0e0e0; padding: 1rem; flex: 0.8;">
+                        <div style="font-size: 0.8rem; color: var(--text3); margin-bottom: 0.2rem;">4 Bytes</div>
+                        <div style="font-weight: bold; color: #495057;">FCS<br><span style="font-size: 0.75rem; font-weight: normal;">(CRC)</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <ul style="margin-top: 1rem;">
+                <li><strong>Preamble (前導碼)</strong>：用於接收端時脈同步 (101010... 結尾是 1011)。</li>
+                <li><strong>Type (類型)</strong>：標示上層網路層協定。常見數值：
+                    <ul>
+                        <li><code style="color:var(--danger)">0x0800</code>：IPv4</li>
+                        <li><code style="color:var(--danger)">0x0806</code>：ARP</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>6. 無線網路標準 (Wi-Fi, Bluetooth, ZigBee)</h3>
+            <h4>Wi-Fi (IEEE 802.11) 世代標準</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>俗稱</th><th>IEEE 標準</th><th>特點簡述</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Wi-Fi 4</strong></td><td>802.11n</td><td>支援 2.4G/5GHz, MIMO-OFDM</td></tr>
+                        <tr><td><strong>Wi-Fi 5</strong></td><td>802.11ac</td><td>5GHz 專用, 速率可達 6.9Gbps</td></tr>
+                        <tr><td><strong>Wi-Fi 6 / 6E</strong></td><td>802.11ax</td><td>支援 2.4/5/6GHz, 導入 OFDMA 高併發</td></tr>
+                        <tr><td><strong>Wi-Fi 7</strong></td><td>802.11be</td><td>極高吞吐量 (EHT), 最高可達 46.4Gbps</td></tr>
+                        <tr><td><strong>Wi-Fi 8</strong></td><td>802.11bn</td><td>(未來標準) 超高可靠性 (UHR)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4 style="margin-top: 1rem;">其他個人區域網路 (PAN) 標準</h4>
+            <ul>
+                <li><strong>藍牙 (Bluetooth)</strong>：IEEE 802.15.1</li>
+                <li><strong>ZigBee</strong>：IEEE 802.15.4 (低功耗、低速率、物聯網感測器常用)</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h3>7. 網路規劃與佈置 <span class="tag tag-d"> </span></h3>
+            <p>這部分通常為申論題或實作題，需綜合考量以下原則：</p>
+            <ul>
+                <li><strong>網路規劃 </strong>：評估需求（頻寬、人數）、選擇適當的拓樸結構（通常為星狀或樹狀）、IP 網段與 VLAN 切割、設備選型（L2/L3 Switch, Router）。</li>
+                <li><strong>網路佈置 </strong>：實體佈線考量，如 UTP 線材等級 (Cat5e/Cat6)、走線美觀與防護、機房溫濕度與電力備援 (PoE 規劃)。</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ==================== QUIZ ==================== -->
     <section id="quiz">
         <div class="sec-title">
             <h2>練習題庫</h2>
@@ -1626,18 +2292,20 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        event.target.classList.add('active');
+        // Match the nav button to add active class
+        const targetBtn = Array.from(document.querySelectorAll('nav button')).find(b => b.getAttribute('onclick') === `showSec('${id}')`);
+        if (targetBtn) targetBtn.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
         updateProgress();
     }
 
     function updateProgress() {
-        const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08'];
+        const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','midterm','final'];
         let viewed = 0;
         chapters.forEach(id => {
-            if (document.getElementById(id).classList.contains('active')) viewed++;
+            if (document.getElementById(id) && document.getElementById(id).classList.contains('active')) viewed++;
         });
-        const pct = Math.round(viewed / 7 * 100);
+        const pct = Math.round(viewed / 9 * 100);
         document.getElementById('overall-pct').textContent = pct;
         document.getElementById('overall-bar').style.width = pct + '%';
     }
