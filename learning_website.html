@@ -288,9 +288,9 @@
     <h1>網路概論 重點總複習</h1>
     <p>基於「網路概論與實務第七版」各章節內容整理 — 重點摘要、比較表格、自我測驗</p>
     <div class="stats">
-        <div class="stat"><strong>7</strong> 章節</div>
-        <div class="stat"><strong>514</strong> 張投影片</div>
-        <div class="stat"><strong>40</strong> 練習題</div>
+        <div class="stat"><strong>11</strong> 章節</div>
+        <div class="stat"><strong>740</strong> 張投影片</div>
+        <div class="stat"><strong>56</strong> 練習題</div>
     </div>
 </header>
 
@@ -304,6 +304,10 @@
         <button onclick="showSec('ch05')">Ch5 乙太網路</button>
         <button onclick="showSec('ch07')">Ch7 區域網路</button>
         <button onclick="showSec('ch08')">Ch8 IP</button>
+        <button onclick="showSec('ch09')">Ch9 傳輸層</button>
+        <button onclick="showSec('ch10')">Ch10 ARP/ICMP</button>
+        <button onclick="showSec('ch11')">Ch11 尋徑</button>
+        <button onclick="showSec('ch12')">Ch12 安全</button>
         <button onclick="showSec('midterm')">期中考重點</button>
         <button onclick="showSec('final')" style="color: #e03131; font-weight: bold;">期末考重點</button>
         <button onclick="showSec('quiz')">練習題庫</button>
@@ -314,7 +318,7 @@
     <section id="overview" class="active">
         <div class="sec-title">
             <h2>總覽</h2>
-            <p>七章重點一覽 — 快速掌握各章核心</p>
+            <p>十一章重點一覽 — 快速掌握各章核心</p>
         </div>
 
         <div class="grid2">
@@ -353,10 +357,30 @@
                 <p>IPv4 分類、子網路切割、CIDR、NAT、路由協定、IPv6</p>
                 <div style="margin-top:.5rem"><span class="tag tag-p">161 張投影片</span></div>
             </div>
-            <div class="card" style="border: 2px solid var(--danger); background: var(--danger-light);">
+<div class="card" style="border: 2px solid var(--danger); background: var(--danger-light);">
                 <h3 style="border-bottom-color: var(--danger); color: var(--danger);"><i class="icon">🎯</i> 期末考必讀重點</h3>
                 <p style="color: #a52525;">包含 CSMA 比較、IP 網段計算、子網路切割/超網化、Ethernet 標頭與 Wi-Fi 標準等重點。</p>
                 <div style="margin-top:.8rem"><button class="btn" style="background: var(--danger);" onclick="showSec('final')">立即前往複習</button></div>
+            </div>
+            <div class="card">
+                <h3>Ch9 傳輸層協定</h3>
+                <p>TCP/UDP、埠編號、序列號碼、滑動視窗、TCP 標頭、三向交握、選擇項</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">69 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch10 ARP / RARP / ICMP</h3>
+                <p>位址解析、RARP 反向解析、網路控制訊息協定、ping/tracert</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">46 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch11 尋徑協定</h3>
+                <p>靜態/動態尋徑、距離向量、連線狀態、RIP/OSPF/BGP、自律系統</p>
+                <div style="margin-top:.5rem"><span class="tag tag-p">35 張投影片</span></div>
+            </div>
+            <div class="card">
+                <h3>Ch12 網路安全</h3>
+                <p>防火牆、加密、認證、數位簽章/憑證、IDS、駭客入侵方式</p>
+<div style="margin-top:.5rem"><span class="tag tag-p">76 張投影片</span></div>
             </div>
         </div>
 
@@ -1718,6 +1742,476 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
     </section>
 
+    <section id="ch09">
+        <div class="sec-title">
+            <h2>Ch9 傳輸層協定</h2>
+            <p>Transport Layer — TCP、UDP、埠編號、滑動視窗、TCP 標頭與三向交握</p>
+        </div>
+
+        <div class="card">
+            <h3>9.1 簡介：TCP vs UDP</h3>
+            <p>傳輸層介於網路層與會議層之間，傳輸層協定標頭位於網路層協定標頭之後。</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>特性</th><th>TCP</th><th>UDP</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>全名</strong></td><td>Transmission Control Protocol（傳輸控制協定）</td><td>User Datagram Protocol（使用者資料報協定）</td></tr>
+                        <tr><td><strong>IP 協定編號</strong></td><td>6</td><td>17</td></tr>
+                        <tr><td><strong>可靠度</strong></td><td>高可靠、會確認重傳</td><td>非可靠、不檢測是否送達</td></tr>
+                        <tr><td><strong>處理時間</strong></td><td>較長</td><td>較短</td></tr>
+                        <tr><td><strong>套用</strong></td><td>FTP、Telnet、SMTP、POP3、HTTP</td><td>音/視訊、DNS、SNMP、NFS、BOOTP</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>9.2 埠編號（Port Number）</h3>
+            <p>在網路層定址之外，以 <span class="kword">埠編號（16 位元）</span> 辨識同一節點上的不同通訊服務；由 <span class="kword">ICANN 的 IANA</span>（網際網路名稱與數字位址分配機構）管轄。</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>類型</th><th>範圍</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="tag tag-p">公認埠</span></td><td>0 ~ 1023</td><td>公共/常用服務：21 FTP、23 Telnet、25 SMTP、53 DNS、80 HTTP、110 POP3、443 HTTPS</td></tr>
+                        <tr><td><span class="tag tag-s">註冊埠</span></td><td>1024 ~ 49151</td><td>一般應用程式向 IANA 註冊後使用</td></tr>
+                        <tr><td><span class="tag tag-a">動態埠</span></td><td>49152 ~ 65535</td><td>不註冊佔用，自由運用（客戶端常隨機使用 1024~4096）</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote>埠編號規範針對 <strong>伺服端</strong>；客戶端埠與伺服端埠分開、互不衝突。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>9.3 UDP 協定</h3>
+            <p>非可靠傳輸模式，不檢測資料是否成功送達。標頭僅 4 欄位（32 位元為單位）：</p>
+            <ul>
+                <li><strong>來源埠編號 (16)</strong> / <strong>目的埠編號 (16)</strong></li>
+                <li><strong>訊息長度 (16)</strong>：UDP 標頭 + 資料的總位元組數</li>
+                <li><strong>檢驗和 Checksum (16)</strong>：與 IP 虛擬標頭（來源/目的 IP、訊息長度、Protocol=17）以 16 位元 1 補數演算法加總再取 1 的補數</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>9.4 序列號碼與回應號碼</h3>
+            <ul>
+                <li><strong>序列號碼（Sequence Number）</strong>：隨傳送完成的位元組數循環累加（早期以封包數為單位，目前以位元組數為單位）。</li>
+                <li><strong>回應號碼（Acknowledge Number）</strong>：與序列號碼一起運作，表示「期望下次收到對方資料」的序列號碼；收到回覆即代表資料順利送達。</li>
+            </ul>
+            <h4>傳送錯誤處理</h4>
+            <ul>
+                <li>逾時計時器（Timer）→ <strong>重傳</strong> → 取消計時器；分為 (a) 封包遺失、(b) 回覆遺失兩種情況。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>9.5 緩衝區與滑動視窗（Sliding Window）</h3>
+            <ul>
+                <li>一般通訊「送一包等一回覆」效率差；緩衝區可讓接收端<strong>合併回應</strong>、連續傳送多個封包。</li>
+                <li>緩衝區又稱「訊窗（Window）」；HDLC/X.25 以封包數計、<strong>TCP 以位元組數計</strong>。</li>
+                <li>整體可用訊窗大小固定，<strong>剩餘容量記錄在標頭 Window 欄位</strong>。</li>
+                <li>「滑動」：收到 Ack 後視窗向前推進；逾時未收到回應則重傳。</li>
+            </ul>
+            <blockquote>滑動視窗兼具<strong>流量控制</strong>功能，避免接收端緩衝區溢滿。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>9.6 TCP 標頭欄位定義</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>欄位</th><th>大小</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td>來源 / 目的埠編號</td><td>各 16</td><td>Source / Destination Port Number</td></tr>
+                        <tr><td>序列號碼 / 回應號碼</td><td>各 32</td><td>Sequence / Acknowledge Number</td></tr>
+                        <tr><td>HLEN（資料位移）</td><td>4</td><td>以 4 位元組為單位；無選擇項時=5 → 20 位元組</td></tr>
+                        <tr><td>保留位元</td><td>4</td><td>未使用，設為 0</td></tr>
+                        <tr><td>控制旗標</td><td>8</td><td>CWR、ECE、URG、ACK、PSH、RST、SYN、FIN</td></tr>
+                        <tr><td>Window</td><td>16</td><td>緩衝區剩餘資料空間</td></tr>
+                        <tr><td>Checksum</td><td>16</td><td>TCP 標頭+資料+虛擬標頭（Protocol=6）的 1 補數檢驗和</td></tr>
+                        <tr><td>Urgent Pointer</td><td>16</td><td>URG=1 時描述緊急資料位置</td></tr>
+                        <tr><td>Options / Padding</td><td>可變</td><td>必須為 32 位元整數倍，不足補 Padding</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>控制旗標說明</h4>
+            <ul>
+                <li><strong>CWR / ECE</strong>：擁塞視窗已降低 / 明確擁塞通知回聲（壅塞控制）</li>
+                <li><strong>URG</strong>：緊急資料須立即處理（如 Ctrl-C）</li>
+                <li><strong>ACK</strong>：回應確認訊息，一般 TCP 封包通常為 1</li>
+                <li><strong>PSH</strong>：直接送往上層應用程式（如按 Enter）</li>
+                <li><strong>RST</strong>：重設 TCP 連線</li>
+                <li><strong>SYN</strong>：連線建立之初同步溝通</li>
+                <li><strong>FIN</strong>：連線結束訊息</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>9.7 TCP 連線的啟動與結束</h3>
+            <h4>啟動（三向交握）</h4>
+            <ol>
+                <li>A → B：<code>Seq=x, SYN</code></li>
+                <li>B → A：<code>Seq=y, ACK=x+1, SYN</code></li>
+                <li>A → B：<code>Seq=x+1, ACK=y+1</code> → 進入資料傳送</li>
+            </ol>
+            <h4>結束（四段式）</h4>
+            <ol>
+                <li>A → B：<code>FIN (Seq=x)</code></li>
+                <li>B → A：<code>ACK=y+1</code></li>
+                <li>B → A：<code>FIN (Seq=y+1)</code></li>
+                <li>A → B：<code>ACK=y+2</code></li>
+            </ol>
+            <blockquote>口訣：啟動是 <strong>SYN → SYN+ACK → ACK</strong>；結束由一方 <strong>FIN</strong> 起頭，兩次來回完成。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>9.8 TCP 協定選擇項（Options）</h3>
+            <p>選擇性欄位，整體長度須為 32 位元整數倍，不足補 Padding；最早定義於 RFC793，後有 RFC1323、RFC2018 改良。</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>選擇項</th><th>Kind</th><th>長度</th><th>功能</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>MSS</strong>（最大資料片段大小）</td><td>2</td><td>4</td><td>連線啟動時宣告；乙太網路 MSS=1460（1500−20 IP−20 TCP）</td></tr>
+                        <tr><td><strong>No-operation</strong>（無操作）</td><td>1</td><td>1</td><td>對齊用，放在某些選擇項之前</td></tr>
+                        <tr><td><strong>End of Option List</strong>（選擇項末端）</td><td>0</td><td>1</td><td>宣告選擇項結束</td></tr>
+                        <tr><td><strong>SACK Permitted</strong>（選擇性回應允許）</td><td>4</td><td>2</td><td>啟動 SACK 機制，連線啟動時宣告</td></tr>
+                        <tr><td><strong>SACK</strong>（選擇性回應）</td><td>5</td><td>可變</td><td>以區塊左/右緣（Left/Right Edge）描述已收到的不連續資料，只重傳遺失部分</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="ch10">
+        <div class="sec-title">
+            <h2>Ch10 ARP / RARP / ICMP</h2>
+            <p>Address Resolution Protocol、Reversed ARP、Internet Control Message Protocol</p>
+        </div>
+
+        <div class="card">
+            <h3>10.1 ARP 與 RARP：位址互換</h3>
+            <ul>
+                <li><strong>ARP</strong>（Address Resolution Protocol，位址解析協定）：<strong>IP 位址 → 實體位址（MAC）</strong></li>
+                <li><strong>RARP</strong>（Reversed Address Resolution Protocol，反向位址解析協定）：<strong>實體位址 → IP 位址</strong></li>
+                <li>在資料連結層所屬的 EtherType 為 <code>0806</code>。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>10.2 ARP 運作流程</h3>
+            <p>傳送資料前先查對照表（ARP 快取）；查無符合的 IP 位址才進行 ARP 運作：</p>
+            <ol>
+                <li>來源端<strong>廣播 ARP 請求（Request）</strong>，目的端 MAC = <code>FF-FF-FF-FF-FF-FF</code>，內容含來源 IP/MAC 與目的 IP。</li>
+                <li>目的端回傳<strong>單播 ARP 回覆（Reply）</strong>。</li>
+                <li>之後直接以對方 MAC 傳送資料。</li>
+            </ol>
+            <blockquote>ARP 請求時 Target HA 欄位為 <code>00-00-00-00-00-00</code>。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>10.3 RARP 運作</h3>
+            <ul>
+                <li>適用於<strong>沒有磁碟機 / 終端機</strong>的場合——電腦無硬碟，無法儲存 IP 位址。</li>
+                <li>必須倚賴 <span class="kword">RARP 伺服器</span> 執行查詢，回覆該來源端的 IP 位址。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>10.4 ARP / RARP 標頭欄位</h3>
+            <p>兩者標頭定義相同，共 9 個欄位：</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>欄位</th><th>大小</th><th>值 / 說明</th></tr></thead>
+                    <tbody>
+                        <tr><td>Hardware Type（硬體類型）</td><td>16</td><td>乙太網路 = 1</td></tr>
+                        <tr><td>Protocol Type（協定類型）</td><td>16</td><td>IP = 0800</td></tr>
+                        <tr><td>HLEN（硬體位址長度）</td><td>8</td><td>乙太網路 = 06</td></tr>
+                        <tr><td>PLEN（協定位址長度）</td><td>8</td><td>IP = 04</td></tr>
+                        <tr><td>Operation（操作型態）</td><td>16</td><td>ARP 請求=1、ARP 回覆=2、RARP 請求=3、RARP 回覆=4</td></tr>
+                        <tr><td>Sender HA（發送端硬體位址）</td><td>48</td><td>—</td></tr>
+                        <tr><td>Sender LP（發送端邏輯位址）</td><td>32</td><td>—</td></tr>
+                        <tr><td>Target HA（目的端硬體位址）</td><td>48</td><td>ARP 請求時為全 0</td></tr>
+                        <tr><td>Target LP（目的端邏輯位址）</td><td>32</td><td>—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>10.5 ICMP 網路控制訊息協定</h3>
+            <ul>
+                <li>用途：處理網路上傳送過程的困難與問題——<strong>網路擁塞、主機故障、主機未開</strong>等。</li>
+                <li>供使用者/路由器<strong>偵錯與控制</strong>：ping、tracert。</li>
+                <li>屬網路層協定，<strong>必須搭配 IP 標頭</strong>（IP Protocol = <code>1</code>），無法單獨運作。</li>
+            </ul>
+            <h4>標頭公用格式（前 32 位元）</h4>
+            <ul>
+                <li><strong>Type（8）</strong> → <strong>Code（8）</strong>：說明發生原因 → <strong>Checksum（16）</strong></li>
+                <li>查詢訊息：後接識別碼(16)、序列碼(16)、依類型的資料</li>
+                <li>錯誤訊息：後接未定義欄位(32) → <strong>原封包 IP 標頭 + 64 位元原始資料</strong>（辨識是哪個封包出錯）</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>10.6 ICMP 訊息類型表</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Type</th><th>訊息</th><th>類別</th></tr></thead>
+                    <tbody>
+                        <tr><td>0</td><td>Echo Reply 回聲回覆</td><td>查詢</td></tr>
+                        <tr><td>3</td><td>Destination Unreachable 目的端無法抵達</td><td>錯誤</td></tr>
+                        <tr><td>4</td><td>Source Quench 來源端抑制（流量控制）</td><td>錯誤</td></tr>
+                        <tr><td>5</td><td>Redirect 路徑重新定向</td><td>錯誤</td></tr>
+                        <tr><td>8</td><td>Echo Request 回聲請求</td><td>查詢</td></tr>
+                        <tr><td>11</td><td>Time Exceeded 傳輸逾時</td><td>錯誤</td></tr>
+                        <tr><td>12</td><td>Parameter Problem 參數問題</td><td>錯誤</td></tr>
+                        <tr><td>13/14</td><td>Timestamp Request/Reply 時戳請求/回覆</td><td>查詢</td></tr>
+                        <tr><td>15/16</td><td>Information Request/Reply（已為 RARP/BOOTP 取代）</td><td>查詢</td></tr>
+                        <tr><td>17/18</td><td>Address Mask Request/Reply 位址遮罩請求/回覆</td><td>查詢</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>10.7 查詢訊息：ping 與 tracert</h3>
+            <ul>
+                <li><strong>ping</strong>：發送 ICMP <strong>Echo Request（Type 8）</strong>，對方回 <strong>Echo Reply（Type 0）</strong>；測試節點是否連通，每次通常送出 32 位元組資料、執行 4 次。</li>
+                <li><strong>tracert</strong>：利用 TTL 逐跳探測，了解連線路徑、回應時程。</li>
+                <li><strong>Timestamp（Type 13/14）</strong>：以毫秒（格林威治時間）為單位，主機間時間同步或量測傳輸延遲；單趟延遲 = ((接收時戳 − 原傳送時戳) + (回應時戳 − 自己的時戳)) / 2。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>10.8 錯誤訊息重點</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Type</th><th>訊息</th><th>Code 與說明</th></tr></thead>
+                    <tbody>
+                        <tr><td>3</td><td>Destination Unreachable</td><td>Code 0~15：0 目的網路不可達、1 主機不可達、2 協定不存在、3 埠不存在、4 需分割但 DF 已設……</td></tr>
+                        <tr><td>4</td><td>Source Quench</td><td>Code 0：網路壅塞時要求降低傳送速率</td></tr>
+                        <tr><td>5</td><td>Redirect</td><td>路由器告知改用新閘道 IP 的較佳路徑</td></tr>
+                        <tr><td>11</td><td>Time Exceeded</td><td>Code 0：TTL 迴圈逾時；Code 1：封包重組逾時</td></tr>
+                        <tr><td>12</td><td>Parameter Problem</td><td>Code 0：欄位值錯誤，以 Pointer 指出出錯位元組；Code 1：缺少資料選項</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="ch11">
+        <div class="sec-title">
+            <h2>Ch11 尋徑協定</h2>
+            <p>Routing — 靜態/動態尋徑、距離向量、連線狀態、RIP/OSPF/BGP</p>
+        </div>
+
+        <div class="card">
+            <h3>11.1 簡介</h3>
+            <p><span class="kword">路由器（Router）</span> 依據內部記憶體中的 <span class="kword">尋徑表（Routing Table）</span>，運用 <span class="kword">尋徑協定（Routing Protocol）</span>，在來源端與目的端之間進行路徑（Route）的尋徑（Routing）。</p>
+            <h4>路徑距離的衡量</h4>
+            <ul>
+                <li>單純以「路程數 Hop Count」為唯一考量：方式簡單但不嚴謹。</li>
+                <li>綜合因素：時間延遲（Propagation Delay）、頻寬（Bandwidth）、負載（Loading）、可靠度（Reliability）、路程計數、時脈計數、相對價格。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>11.2 靜態 vs 動態尋徑</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>比較</th><th>靜態尋徑</th><th>動態尋徑</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>建置方式</strong></td><td>人工輸入，缺乏彈性</td><td>路由器間交換路徑資訊</td></tr>
+                        <tr><td><strong>適用場合</strong></td><td>系統不大、架構固定（如「預設閘道」）</td><td>大部分網路系統</td></tr>
+                        <tr><td><strong>交換時機</strong></td><td>—</td><td>距離向量（週期交換）/ 連線狀態（變動才交換）/ 混合式</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>11.3 三種動態尋徑方法</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>方法</th><th>運作</th><th>特性</th><th>範例</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>距離向量</strong></td><td>週期性與相鄰路由器交換整個尋徑表</td><td>設定簡單耗資源低；收斂慢、佔頻寬、只掌握距離</td><td>RIP</td></tr>
+                        <tr><td><strong>連線狀態</strong></td><td>以 LSA 泛播（Flooding）傳送，用 SPF 演算法計算最佳路徑</td><td>掌握完整拓撲；初期耗資源但收斂快、僅變動才更新</td><td>OSPF</td></tr>
+                        <tr><td><strong>混合式</strong></td><td>距離向量建立路徑表 + 連線狀態變動才更新</td><td>有彈性、有效率的架構</td><td>IS-IS、EIGRP</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>11.4 尋徑的問題及解決方式</h3>
+            <h4>問題</h4>
+            <ul>
+                <li><strong>迴圈問題</strong>：封包沿錯誤路徑來回傳送，距離被反覆累加。</li>
+                <li><strong>無窮計數（Counting to Infinity）</strong>：路由器彼此交換錯誤距離，造成計數無限增加。</li>
+            </ul>
+            <h4>解決方法</h4>
+            <ol>
+                <li><strong>定義最大數值</strong>：超過最大距離視為不可到達（RIP 最大 15，16 = 不可達）。</li>
+                <li><strong>分離界線（Split Horizon）</strong>。</li>
+                <li><strong>計時裝置（Timers）</strong>。</li>
+                <li><strong>觸發更新（Triggered Update）</strong>：路徑一變動立刻送出更新，加速收斂避免迴圈。</li>
+            </ol>
+        </div>
+
+        <div class="card">
+            <h3>11.5 自律系統（AS）與內外尋徑</h3>
+            <ul>
+                <li><span class="kword">自律系統（Autonomous System）</span>以 <strong>16 位元 AS 編碼</strong>辨識（後擴充為 32 位元）；例：TANet=1659、HiNet=3462。</li>
+                <li><strong>內部尋徑協定（IGP）</strong>：同一 AS 內，如 RIP、OSPF、IGRP、EIGRP。</li>
+                <li><strong>外部尋徑協定（EGP）</strong>：AS 之間，如 BGP、EGP。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>11.6 各協定重點</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>協定</th><th>類型</th><th>度量</th><th>重點</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>RIP</strong></td><td>距離向量 / IGP</td><td>跳數 Hop Count</td><td>最大 15 跳（16=不可達）；每 30 秒交換路徑；180 秒未更新無效、270 秒刪除；RIP2 改群播、加子網路遮罩</td></tr>
+                        <tr><td><strong>OSPF</strong></td><td>連線狀態 / IGP</td><td>頻寬、可靠度、延遲</td><td>具區域（Area）概念；區域內變化只在區域內吸收；適合大型網路</td></tr>
+                        <tr><td><strong>EGP</strong></td><td>外部</td><td>—</td><td>早期 ARPANet 骨幹協定，不適合現今 Internet</td></tr>
+                        <tr><td><strong>BGP</strong></td><td>外部 / 路徑向量</td><td>AS 路徑</td><td><strong>透過 TCP 傳送</strong>；記錄經過的 AS 名單偵測迴圈（同一 AS 出現兩次刪除）；可加權重過濾路徑</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="ch12">
+        <div class="sec-title">
+            <h2>Ch12 網路安全</h2>
+            <p>Security — 防火牆、加密、認證、IDS 與駭客入侵方式</p>
+        </div>
+
+        <div class="card">
+            <h3>12.1 資訊安全的目標</h3>
+            <p>三要素（CIA）：<strong>機密性（Confidentiality）</strong>、<strong>完整性（Integrity）</strong>、<strong>可用性（Availability）</strong>。</p>
+            <blockquote>比喻：資訊系統 = 保險櫃，內容 = 保險櫃物品；安全價值無法以金錢衡量。</blockquote>
+            <ul>
+                <li>資訊安全範圍：實體、軟體、人員、系統、網路安全。</li>
+                <li>主要成因（依序）：網路、火災、地震、人員操作不良、實體、資訊犯罪、電力、雷擊、軟體。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>12.2 網路威脅與對策</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>威脅對象</th><th>方式</th><th>對策</th></tr></thead>
+                    <tbody>
+                        <tr><td>資源中斷</td><td>系統入侵、惡意破壞、病毒感染</td><td>防火牆、入侵偵測系統（IDS）</td></tr>
+                        <tr><td>傳輸資料</td><td>資料竊取</td><td>加密（Encryption）</td></tr>
+                        <tr><td>身份資料</td><td>資料篡改、身份冒用</td><td>認證（Authentication）</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>12.3 防火牆（Firewall）</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>種類</th><th>運作層級</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>封包過濾式（Packet Filter）</strong></td><td>網路層 / 傳輸層</td><td>依存取控制規則過濾：來源/目的 IP、封包類型、TCP/UDP 埠；實作於路由器、作業系統或伺服程式</td></tr>
+                        <tr><td><strong>應用閘道器（Application Gateway）</strong></td><td>應用層</td><td>切斷內外網通道、建立虛擬連結、負責代理與轉送；又稱<strong>代理伺服器（Proxy）</strong>；外界無法直接攻擊網內主機</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>12.4 加密（Encryption）</h3>
+            <ul>
+                <li>要件：<strong>私密性、完整性、不可否認性</strong>；明文（Plaintext）→ 加密 → 密文（Ciphertext）→ 解密。</li>
+                <li><strong>金鑰（Key）</strong>：加解密轉換的運算規則；加密是函數、解密是逆函數。</li>
+            </ul>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>比較</th><th>秘密金鑰（對稱式）</th><th>公開金鑰（非對稱式）</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>金鑰</strong></td><td>加解密同一把</td><td>公鑰 + 私鑰兩把</td></tr>
+                        <tr><td><strong>金鑰數</strong></td><td>n 人需 n(n−1)/2 把</td><td>n 人只需 2n 把</td></tr>
+                        <tr><td><strong>優點</strong></td><td>運算簡單、速度快</td><td>金鑰管理負擔輕、公鑰可公開</td></tr>
+                        <tr><td><strong>缺點</strong></td><td>金鑰安全交付困難</td><td>計算複雜、大量資料負擔大</td></tr>
+                        <tr><td><strong>常見</strong></td><td>DES、FEAL、IDEA、SKIPJACK</td><td>RSA、DSA、SHA</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote>生活類比：汽車開關鎖 = 秘密金鑰；喇叭鎖 = 公開金鑰（鎖門公開、開門需私鑰）。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>12.5 雜湊函數（Hash Function）</h3>
+            <ul>
+                <li>又稱 <span class="kword">訊息摘要（Message Digest）</span>；將任意長度訊息轉成固定長度值（如 128 位元）。</li>
+                <li>內容不同 → 雜湊值不同；<strong>單向</strong>——無法由雜湊值還原訊息，可保障安全性。</li>
+                <li>驗證方式：雜湊值與訊息一起送出，接收端用相同函數計算比對；不同即訊息遭干擾/篡改。</li>
+                <li>位元數愈多、重複機率愈低；常見演算法：<strong>MD4、MD5、SHA</strong>。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>12.6 認證（Authentication）</h3>
+            <h4>金鑰系統（三種組合）</h4>
+            <ul>
+                <li>(a) A 私鑰加密 → B 公鑰解密：可確認發送者（<strong>不可否認性</strong>），但無私密性。</li>
+                <li>(b) B 公鑰加密 → B 私鑰解密：保障<strong>私密性</strong>，但無法確認發送者。</li>
+                <li>(c) 結合兩者：既保私密性又滿足不可否認性（計算複雜、負擔重）。</li>
+            </ul>
+            <h4>數位簽章（Digital Signature）</h4>
+            <ul>
+                <li>雜湊函數 + 公開金鑰系統：先算訊息雜湊值，再以<strong>發送者私鑰加密</strong>該雜湊值即成簽章。</li>
+                <li>接收端以<strong>發送者公鑰解密</strong>驗證完整性與不可否認性；訊息本身仍以明文傳送，要私密性再加密。</li>
+            </ul>
+            <h4>數位憑證（Digital Certificate）</h4>
+            <ul>
+                <li>證明「公鑰所有者」身份，如<strong>網路身份證</strong>；由公正的<strong>認證機構（CA）</strong>簽發。</li>
+                <li>內容：序號、使用者、使用者公鑰、有效日期、發證者（CA）名稱、演算法；以 CA 私鑰簽章、以 CA 公鑰驗證。</li>
+                <li>實際應用：<strong>SSL</strong> → <code>https://</code>，瀏覽器鎖頭圖案可查閱網站憑證。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>12.7 入侵偵測系統（IDS）</h3>
+            <p>與防火牆不同：防火牆<strong>阻擋</strong>可能的駭客；駭客通過防火牆後，靠 IDS<strong>偵測</strong>入侵行為。需建立已知攻擊模式資料庫。</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>類型</th><th>優點</th><th>缺點</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>主機型 IDS</strong><br>裝在保護的主機上</td><td>可偵測網路型偵不到的入侵、可在加密/交換式網路運作</td><td>每台都要安裝維護、主機被入侵可能失效、佔主機資源</td></tr>
+                        <tr><td><strong>網路型 IDS</strong><br>裝在可監聽的節點上</td><td>不易被察覺、可同時監聽多台、平均成本低</td><td>大量資料會漏包、無法在加密/交換式網路運作</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>功能流程：<strong>資料收集 → 特徵選擇 → 資料分析（核心）→ 回報機制</strong>。</p>
+        </div>
+
+        <div class="card">
+            <h3>12.8 駭客入侵方式</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>方式</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>1. 惡意程式</strong></td><td>病毒（病毒，附檔複製，潛伏期+發作期）、蠕蟲（Worm，獨立自我複製，網路快速散播）、特洛伊木馬（表面正常背後危害，不複製）、間諜軟體（Spyware，未同意執行：側錄鍵盤/追蹤紀錄）</td></tr>
+                        <tr><td><strong>2. 密碼破解</strong></td><td>字典攻擊、鍵盤監聽、記憶體下載密碼檔；<strong>定期更換密碼</strong>是重要守則</td></tr>
+                        <tr><td><strong>3. 封包監聽</strong></td><td>混亂模式（Promiscuous Mode）關閉位址過濾，Sniffer / Wireshark 可竊聽明文密碼資料</td></tr>
+                        <tr><td><strong>4. 阻斷服務（DoS）</strong></td><td>SYN Flood（啟動溢滿，大量 SYN 不完成連線）、Ping of Death（大量資料使堆疊溢滿）、DDoS（多節點同時攻擊）、實體阻斷</td></tr>
+                        <tr><td><strong>5. 網路釣魚（Phishing）</strong></td><td>偽裝金融機構 Email 誘騙帳號密碼，製作疑似真站的假網站；= Phone + Fishing</td></tr>
+                        <tr><td><strong>6. 網址嫁接（Pharming）</strong></td><td>把正確網址重新導向到冒牌網站，不需誘餌；方法為 DNS 快取毒化、修改 hosts 檔</td></tr>
+                        <tr><td><strong>7. ARP 欺騙</strong></td><td>偽造 ARP 回覆塞滿記憶體使交換器降級為集線器，或偽造 ARP Table 達成中間人監聽</td></tr>
+                        <tr><td><strong>8. 連線劫持（Session Hijacking）</strong></td><td>A、B 建立連線後，C 冒充 A 與 B 通訊並中斷 A 的連線</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
     <section id="midterm">
         <div class="sec-title">
             <h2>期中考重點整理</h2>
@@ -2271,7 +2765,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
     <section id="quiz">
         <div class="sec-title">
             <h2>練習題庫</h2>
-            <p>測試你對網路概論各章節的理解程度（共 40 題）</p>
+            <p>測試你對網路概論各章節的理解程度（共 56 題）</p>
         </div>
         <div id="quiz-container"></div>
         <div class="score-box" id="score-display" style="display:none">
@@ -2300,12 +2794,12 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
     }
 
     function updateProgress() {
-        const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','midterm','final'];
+const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10','ch11','ch12','midterm','final'];
         let viewed = 0;
         chapters.forEach(id => {
             if (document.getElementById(id) && document.getElementById(id).classList.contains('active')) viewed++;
         });
-        const pct = Math.round(viewed / 9 * 100);
+        const pct = Math.round(viewed / 13 * 100);
         document.getElementById('overall-pct').textContent = pct;
         document.getElementById('overall-bar').style.width = pct + '%';
     }
@@ -2351,6 +2845,22 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         { q: "SLAAC 的功能是什麼？", opts: ["自動分配 VLAN", "自動設定 IP", "自動路由", "自動加密"], ans: 1, exp: "SLAAC (Stateless Address Auto-Configuration) 讓 IPv6 設備自動取得 IP 位址。" },
         { q: "Cat6 纜線支援的最高頻寬？", opts: ["100 MHz", "250 MHz", "500 MHz", "600 MHz"], ans: 1, exp: "Cat6 支援 250 MHz，55m 內可達 10 Gbps。" },
         { q: "哪種網路拓撲具有最高可靠性？", opts: ["匯流排", "星狀", "環狀", "網狀"], ans: 3, exp: "網狀拓撲 (Mesh) 的每個設備與所有其他設備互連，冗餘度最高，可靠性也最高。" },
+        { q: "TCP 協定的 IP 協定編號 (Protocol Number) 是多少？", opts: ["6", "17", "1", "80"], ans: 0, exp: "TCP 的 IP 協定編號為 6，UDP 為 17。" },
+        { q: "乙太網路上 TCP 的 MSS (最大資料片段大小) 預設值是多少？", opts: ["1400", "1460", "1500", "1518"], ans: 1, exp: "MSS = 1500 − 20 (IP) − 20 (TCP) = 1460。" },
+        { q: "TCP 連線結束時，由哪個旗標啟動？", opts: ["SYN", "ACK", "FIN", "RST"], ans: 2, exp: "FIN (Final) 表示連線結束訊息。" },
+        { q: "埠編號 49152 ~ 65535 屬於哪一種類型？", opts: ["公認埠", "註冊埠", "動態埠", "保留埠"], ans: 2, exp: "動態埠提供自由運用，不註冊佔用。" },
+        { q: "RARP (反向位址解析協定) 的功能是什麼？", opts: ["IP 轉 MAC", "MAC 轉 IP", "域名解析", "路由選擇"], ans: 1, exp: "RARP 將實體位址 (MAC) 解析回 IP 位址，用於無磁碟機場合。" },
+        { q: "ICMP 中「目的端無法抵達」的 Type 值是多少？", opts: ["0", "3", "5", "8"], ans: 1, exp: "Type 3 = Destination Unreachable，以 Code 0~15 描述原因。" },
+        { q: "ARP 請求 (Request) 封包的目的端 MAC 位址為？", opts: ["00:00:00:00:00:00", "FF:FF:FF:FF:FF:FF", "目的端 MAC", "來源端 MAC"], ans: 1, exp: "ARP 請求以廣播位址 FF-FF-FF-FF-FF-FF 送出。" },
+        { q: "ICMP 錯誤訊息會附帶原始封包的前幾個位元組資料？", opts: ["32", "64", "128", "256"], ans: 1, exp: "錯誤訊息後接原始封包的 IP 標頭 + 64 位元資料，以辨識出錯封包。" },
+        { q: "RIP 屬於下列哪一種尋徑協定？", opts: ["連線狀態", "距離向量", "路徑向量", "混合式"], ans: 1, exp: "RIP 為距離向量尋徑協定，以 Hop Count 衡量距離。" },
+        { q: "OSPF 使用哪種演算法計算最短路徑？", opts: ["SPF (Dijkstra)", "Bellman-Ford", "泛播 Flooding", "隨機漫步"], ans: 0, exp: "OSPF 用 SPF (Shortest Path First) 以自己為根節點計算最佳路徑。" },
+        { q: "BGP 透過哪個傳輸層協定交換路由資訊？", opts: ["UDP", "TCP", "ICMP", "ARP"], ans: 1, exp: "BGP 透過 TCP 傳送，確保路由資訊不致遺失。" },
+        { q: "解決尋徑「無窮計數」問題的方法不包括下列何者？", opts: ["定義最大數值", "分離界線", "計時裝置", "擴大封包大小"], ans: 3, exp: "解決方式：定義最大數值、分離界線 (Split Horizon)、計時裝置、觸發更新。" },
+        { q: "資訊安全三要素 (CIA) 不包括下列何者？", opts: ["機密性", "完整性", "可用性", "可攜性"], ans: 3, exp: "CIA：機密性 (Confidentiality)、完整性 (Integrity)、可用性 (Availability)。" },
+        { q: "對稱式加密在 n 人通訊時需要多少把金鑰？", opts: ["n", "2n", "n(n−1)/2", "n²"], ans: 2, exp: "秘密金鑰密碼系統需 n(n−1)/2 把金鑰，是公開金鑰系統 (2n) 的數倍。" },
+        { q: "數位簽章是以哪一把金鑰加密雜湊值？", opts: ["接收者公鑰", "接收者私鑰", "發送者公鑰", "發送者私鑰"], ans: 3, exp: "以發送者私鑰加密雜湊值，接收者以發送者公鑰解密驗證身份。" },
+        { q: "送出大量 TCP SYN 但不完成交握以癱瘓主機，屬於哪種攻擊？", opts: ["SYN Flood", "Ping of Death", "ARP Spoofing", "網路釣魚"], ans: 0, exp: "SYN Flood (啟動溢滿) 是常見的 DoS 阻斷服務攻擊。" },
     ];
 
     let score = 0, answered = 0;
