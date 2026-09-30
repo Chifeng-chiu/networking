@@ -388,6 +388,22 @@
         .toc-card a:hover { color: var(--primary); }
 
         .kword { color: var(--primary-dark); font-weight: 600; }
+
+        /* textbook slide images */
+        .slide-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin-top: .5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface2);
+        }
+        .slide-cap {
+            font-size: .78rem;
+            color: var(--text3);
+            margin-top: .35rem;
+        }
     </style>
 </head>
 <body class="has-sidebar">
@@ -1844,6 +1860,21 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 子網路 3: 192.168.1.128/26 (192.168.1.129 - 192.168.1.190)
 子網路 4: 192.168.1.192/26 (192.168.1.193 - 192.168.1.254)
             </div>
+        </div>
+
+        <div class="card">
+            <h3>8.9 教材投影片圖解</h3>
+            <p>以下為「網路概論與實務第七版」Ch8 投影片（<code>Net7_08IP.ppt</code>）的原文圖解，可搭配上方重點複習。</p>
+
+            <h4>投影片第 78 頁</h4>
+            <img class="slide-img" src="images/ch08-slide78.jpg" width="1920" height="1080"
+                 alt="Ch8 教材投影片第 78 頁圖解" loading="lazy">
+            <div class="slide-cap">來源：Net7_08IP.ppt — 投影片第 78 頁</div>
+
+            <h4>投影片第 84 頁</h4>
+            <img class="slide-img" src="images/ch08-slide84.jpg" width="1920" height="1080"
+                 alt="Ch8 教材投影片第 84 頁圖解" loading="lazy">
+            <div class="slide-cap">來源：Net7_08IP.ppt — 投影片第 84 頁</div>
         </div>
     </section>
 
