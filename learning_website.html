@@ -1868,20 +1868,17 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 
             <h4>投影片第 78 頁：遞迴查詢與反覆查詢（DNS）</h4>
             <p>這張圖說明 <strong>DNS（網域名稱系統）</strong>尋找網址 IP 時的兩種運作模式。可以把 DNS 想像成網路世界的查號台。</p>
-            <img class="slide-img" src="images/ch08-slide78.jpg" width="1920" height="1080"
-                 alt="Ch8 教材投影片第 78 頁圖解：遞迴查詢與反覆查詢" loading="lazy">
-            <div class="slide-cap">來源：Net7_08IP.ppt — 投影片第 78 頁</div>
             <ul>
                 <li><strong>遞迴查詢 (Recursive Query)</strong>：圖左「客戶端」到第一台「伺服器」之間的紅色部分。客戶端直接問當地 DNS 伺服器「請告訴我這個網址的 IP 是多少？」，對方必須負責把最終答案找出來再交回來，客戶端只要等結果就好，不用自己到處去問。</li>
                 <li><strong>反覆查詢 (Iterative Query)</strong>：圖右紫色虛線圈起、含藍／綠／橘箭頭的部分。第一台伺服器收到要求後代替客戶端去網路上找答案：先問伺服器 A（藍線），A 不知道就回「去問伺服器 B」；再問伺服器 B（綠線），B 又叫它去問伺服器 C（橘線），如此不斷反覆詢問不同伺服器，直到找到最終答案。</li>
             </ul>
             <blockquote class="ok">記憶法：<strong>遞迴</strong>是「交給一台伺服器查到底」；<strong>反覆</strong>是「被一台台伺服器指去下一台」。</blockquote>
+            <img class="slide-img" src="images/ch08-slide78.jpg" width="1920" height="1080"
+                 alt="Ch8 教材投影片第 78 頁圖解：遞迴查詢與反覆查詢" loading="lazy">
+            <div class="slide-cap">來源：Net7_08IP.ppt — 投影片第 78 頁</div>
 
             <h4>投影片第 84 頁：IPv4 標頭結構</h4>
             <p>這張圖展示 <strong>IPv4 封包標頭（Header）</strong>格式，就像寄信時信封上必須填寫的標準欄位，網路設備才知道怎麼幫你送信。</p>
-            <img class="slide-img" src="images/ch08-slide84.jpg" width="1920" height="1080"
-                 alt="Ch8 教材投影片第 84 頁圖解：IPv4 標頭結構" loading="lazy">
-            <div class="slide-cap">來源：Net7_08IP.ppt — 投影片第 84 頁</div>
             <blockquote><strong>基本規則：</strong>標頭以 <strong>32 位元 (bits)</strong> 為一個單位（一整橫列剛好 32 位元）；括號裡的數字代表該欄位佔幾個位元的寬度。</blockquote>
             <ul>
                 <li><strong>Ver (4)／IHL (4)</strong>：Ver 是 IP 版本（IPv4）；IHL 是標頭總長度。</li>
@@ -1891,6 +1888,15 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li><strong>Protocol (8)</strong>：標示 IP 封包內載運的上層協定（例如 TCP 或 UDP）。</li>
                 <li><strong>Source／Destination IP Address (各 32)</strong>：標頭最核心的兩個欄位，分別是「寄件人（來源）」與「收件人（目的）」的 32 位元 IP 位址。</li>
             </ul>
+            <img class="slide-img" src="images/ch08-slide84.jpg" width="1920" height="1080"
+                 alt="Ch8 教材投影片第 84 頁圖解：IPv4 標頭結構" loading="lazy">
+            <div class="slide-cap">來源：Net7_08IP.ppt — 投影片第 84 頁</div>
+
+            <h4>DNS 的階層式架構（像一棵倒掛的樹）</h4>
+            <p>DNS 的命名空間是<strong>階層式架構</strong>：最上方是根（Root），往下逐層分出頂層網域、次層網域與主機名稱，整體形狀像一棵倒掛的樹；查詢時就沿著這棵樹由上往下一層層找到負責該名稱的伺服器。</p>
+            <img class="slide-img" src="images/ch08-dns-hierarchy.jpg" width="642" height="467"
+                 alt="DNS 階層式架構圖（倒掛的樹）" loading="lazy">
+            <div class="slide-cap">來源：你的筆記圖片（網頁筆記圖片資料夾）</div>
         </div>
     </section>
 
