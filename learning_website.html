@@ -1863,26 +1863,66 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>8.9 教材投影片圖解</h3>
-            <p>以下先整理 <strong>DHCP 解釋與 DNS 基礎觀念（FQDN 與階層架構）</strong>筆記，再附「網路概論與實務第七版」Ch8 投影片（<code>Net7_08IP.ppt</code>）的原文圖解，可搭配上方重點複習。</p>
-
-            <h4>DHCP 解釋：網路世界的「座位分配員」</h4>
+            <h3>8.9 DHCP 解釋：網路世界的「座位分配員」</h3>
             <ul>
                 <li><strong>何謂 DHCP？</strong>全名「動態主機設定協定」（Dynamic Host Configuration Protocol），可以想像成網路世界裡的「座位分配員」。</li>
-                <li><strong>DHCP 在幹嘛？</strong>當手機、電腦等設備連上 Wi-Fi 或插上網路線時，DHCP 伺服器會自動發一組「網路身分證（IP 位址）」給設備，同時告知子網路遮罩、預設閘道，以及後面筆記會提到的 DNS 伺服器位址。</li>
+                <li><strong>DHCP 在幹嘛？</strong>當手機、電腦等設備連上 Wi-Fi 或插上網路線時，DHCP 伺服器會自動發一組「網路身分證（IP 位址）」給設備，同時告知子網路遮罩、預設閘道，以及 DNS 伺服器位址。</li>
                 <li><strong>為什麼需要 DHCP？</strong>沒有 DHCP 就得手動輸入一長串 IP，還要自己確認位址沒被別人用掉，否則衝突斷線。有了 DHCP，只要點下連線，幾秒內就自動配發好所有設定，省時省力，也避免人工設定錯誤與 IP 衝突。</li>
             </ul>
+        </div>
 
-            <h4>DNS 基礎觀念：FQDN 與階層架構</h4>
+        <div class="card">
+            <h3>8.10 為什麼需要 DNS？</h3>
             <ul>
-                <li><strong>1. 為什麼需要 DNS？</strong>設備之間靠 IP 位址找彼此，但數字難記；於是給節點有意義的「網域名稱」，再用轉換機制對應回 IP。早期主機少，只靠單機的 <code>hosts.txt</code> 對照；網路大爆發後，1983 年 Paul Mockapetris 透過 RFC 882 提出 <strong>DNS (Domain Name System)</strong>，1987 年再以 RFC 1034／RFC 1035 修正。</li>
-                <li><strong>2. DNS 查詢的兩種方向</strong>：<strong>正向名稱查詢 (Forward Name Query)</strong>用「網域名稱」查「IP 位址」（最常見）；<strong>反向名稱查詢 (Reverse Name Query)</strong>用「IP 位址」查「網域名稱」。</li>
-                <li><strong>3. 網域名稱命名規則（FQDN）</strong>：<strong>FQDN (Fully Qualified Domain Name)</strong> 依階層組成，層級間用小數點隔開；最多五個層級；每一級至少 2 個字元、最多 63 個字元，總長不超過 253 個字元；早期只接受英文字母、數字、破折號「-」（不分大小寫），2008 年後可接受 Unicode 各國文字（含中文、希臘文、阿拉伯文）。</li>
-                <li><strong>4. FQDN 的組成</strong>：<strong>主機名稱 (Host Name)</strong>在最前（如 www）＋<strong>網域名稱 (Domain Name)</strong>在中間（如 flag.com.tw）＋<strong>根網域 (Root Domain)</strong>在最後（一個句點「.」）。範例：<code>www.flag.com.tw.</code>（尾端句點常被省略，系統會自動補上）。</li>
-                <li><strong>5. DNS 階層式架構</strong>：最頂端是<strong>根網域 (Root)</strong>（空標記，以「.」表示）；第二層是<strong>頂層網域 (TLD)</strong>，分 <strong>gTLD</strong>（依組織性質：com、org、edu、net、int……）與 <strong>ccTLD</strong>（依國家地區：tw、jp、cn、us……）；第三層以下再分次級網域（如 gov、edu、com 或企業名稱），最末端是各主機（如 www、mail、ftp）。下方附樹狀圖可對照。</li>
+                <li><strong>根本原因</strong>：設備之間靠 IP 位址找彼此，但數字難記。</li>
+                <li><strong>解決方法</strong>：給節點有意義的「網域名稱」，再用轉換機制對應回 IP 位址。</li>
+                <li><strong>演進過程</strong>：早期主機少，只靠單機的 <code>hosts.txt</code> 對照；網路大爆發後，1983 年 Paul Mockapetris 透過 RFC 882 提出 <strong>DNS (Domain Name System)</strong>，1987 年再以 RFC 1034／RFC 1035 修正。</li>
             </ul>
+        </div>
 
-            <h4>投影片第 78 頁：遞迴查詢與反覆查詢（DNS）</h4>
+        <div class="card">
+            <h3>8.11 DNS 查詢的兩種方向</h3>
+            <ul>
+                <li><strong>正向名稱查詢 (Forward Name Query)</strong>：用「網域名稱」查「IP 位址」，最常見。</li>
+                <li><strong>反向名稱查詢 (Reverse Name Query)</strong>：用「IP 位址」查「網域名稱」。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>8.12 網域名稱命名規則（FQDN）</h3>
+            <p><strong>FQDN (Fully Qualified Domain Name)</strong> 依階層組成，層級間用小數點隔開。</p>
+            <ul>
+                <li><strong>層級限制</strong>：最多五個層級。</li>
+                <li><strong>長度限制</strong>：每一級至少 2 個字元、最多 63 個字元，總長不超過 253 個字元。</li>
+                <li><strong>字元規定</strong>：早期只接受英文字母、數字、破折號「-」（不分大小寫）；2008 年後可接受 Unicode 各國文字（含中文、希臘文、阿拉伯文）。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>8.13 FQDN 的組成</h3>
+            <ul>
+                <li><strong>主機名稱 (Host Name)</strong>：在最前面（如 www）。</li>
+                <li><strong>網域名稱 (Domain Name)</strong>：在中間（如 flag.com.tw）。</li>
+                <li><strong>根網域 (Root Domain)</strong>：在最後，一個句點「.」。</li>
+            </ul>
+            <blockquote>範例：<code>www.flag.com.tw.</code>（尾端句點常被省略，系統會自動補上）。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>8.14 DNS 的階層式架構（像一棵倒掛的樹）</h3>
+            <ul>
+                <li><strong>最頂端：根網域 (Root)</strong>：整個架構最上層，空標記，以「.」表示。</li>
+                <li><strong>第二層：頂層網域 (TLD)</strong>：分 <strong>gTLD</strong>（依組織性質：com、org、edu、net、int……）與 <strong>ccTLD</strong>（依國家地區：tw、jp、cn、us……）。</li>
+                <li><strong>第三層以下</strong>：再分次級網域（如 gov、edu、com 或企業名稱），最末端是各主機（如 www、mail、ftp）。</li>
+            </ul>
+            <blockquote class="ok">查詢時沿著這棵倒掛的樹由上往下，一層層找到負責該名稱的伺服器。</blockquote>
+            <img class="slide-img" src="images/ch08-dns-hierarchy.jpg" width="642" height="467"
+                 alt="DNS 階層式架構圖（倒掛的樹）" loading="lazy">
+            <div class="slide-cap">來源：你的筆記圖片（網頁筆記圖片資料夾）</div>
+        </div>
+
+        <div class="card">
+            <h3>8.15 投影片第 78 頁：遞迴查詢與反覆查詢（DNS）</h3>
             <p>這張圖說明 <strong>DNS（網域名稱系統）</strong>尋找網址 IP 時的兩種運作模式。可以把 DNS 想像成網路世界的查號台。</p>
             <ul>
                 <li><strong>遞迴查詢 (Recursive Query)</strong>：圖左「客戶端」到第一台「伺服器」之間的紅色部分。客戶端直接問當地 DNS 伺服器「請告訴我這個網址的 IP 是多少？」，對方必須負責把最終答案找出來再交回來，客戶端只要等結果就好，不用自己到處去問。</li>
@@ -1892,8 +1932,10 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             <img class="slide-img" src="images/ch08-slide78.jpg" width="1920" height="1080"
                  alt="Ch8 教材投影片第 78 頁圖解：遞迴查詢與反覆查詢" loading="lazy">
             <div class="slide-cap">來源：Net7_08IP.ppt — 投影片第 78 頁</div>
+        </div>
 
-            <h4>投影片第 84 頁：IPv4 標頭結構</h4>
+        <div class="card">
+            <h3>8.16 投影片第 84 頁：IPv4 標頭結構</h3>
             <p>這張圖展示 <strong>IPv4 封包標頭（Header）</strong>格式，就像寄信時信封上必須填寫的標準欄位，網路設備才知道怎麼幫你送信。</p>
             <blockquote><strong>基本規則：</strong>標頭以 <strong>32 位元 (bits)</strong> 為一個單位（一整橫列剛好 32 位元）；括號裡的數字代表該欄位佔幾個位元的寬度。</blockquote>
             <ul>
@@ -1907,12 +1949,6 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             <img class="slide-img" src="images/ch08-slide84.jpg" width="1920" height="1080"
                  alt="Ch8 教材投影片第 84 頁圖解：IPv4 標頭結構" loading="lazy">
             <div class="slide-cap">來源：Net7_08IP.ppt — 投影片第 84 頁</div>
-
-            <h4>DNS 的階層式架構（像一棵倒掛的樹）</h4>
-            <p>DNS 的命名空間是<strong>階層式架構</strong>：最上方是根（Root），往下逐層分出頂層網域、次層網域與主機名稱，整體形狀像一棵倒掛的樹；查詢時就沿著這棵樹由上往下一層層找到負責該名稱的伺服器。</p>
-            <img class="slide-img" src="images/ch08-dns-hierarchy.jpg" width="642" height="467"
-                 alt="DNS 階層式架構圖（倒掛的樹）" loading="lazy">
-            <div class="slide-cap">來源：你的筆記圖片（網頁筆記圖片資料夾）</div>
         </div>
     </section>
 
