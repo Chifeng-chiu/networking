@@ -379,6 +379,26 @@
             .grid2 { grid-template-columns: 1fr; }
         }
 
+        /* clickable overview cards */
+        #overview .grid2 .card.link-card {
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s, border-color .15s;
+        }
+        #overview .grid2 .card.link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        #overview .grid2 .card.link-card:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        #overview .grid2 .card.link-card h3::after {
+            content: ' →';
+            color: var(--primary);
+            font-weight: 700;
+        }
+
         /* floating toc */
         .toc-card { position: sticky; top: 4rem; }
         .toc-card a {
@@ -454,52 +474,52 @@
         </div>
 
         <div class="grid2">
-            <div class="card">
+            <div class="card link-card" data-sec="ch01" tabindex="0" role="button" aria-label="前往 Ch1 網路簡介">
                 <h3>Ch1 網路簡介</h3>
                 <p>網路定義、分類（規模/角色）、拓撲、傳輸模式、網路三要素</p>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch02" tabindex="0" role="button" aria-label="前往 Ch2 通訊">
                 <h3>Ch2 通訊</h3>
                 <p>資料通訊元件、類比/數位訊號、編碼方式、傳輸媒介、多工技術</p>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch03" tabindex="0" role="button" aria-label="前往 Ch3 設備">
                 <h3>Ch3 設備</h3>
                 <p>L1-L7 網路設備、碰撞域與廣播域、MAC表、路由表</p>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch04" tabindex="0" role="button" aria-label="前往 Ch4 通訊協定">
                 <h3>Ch4 通訊協定</h3>
                 <p>OSI 七層、TCP/IP 四層、TCP/UDP、應用層協定、埠號</p>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch05" tabindex="0" role="button" aria-label="前往 Ch5 乙太網路">
                 <h3>Ch5 乙太網路</h3>
                 <p>Ethernet 演進、CSMA/CD、幀格式、MAC 位址、自動協商</p>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch07" tabindex="0" role="button" aria-label="前往 Ch7 區域網路">
                 <h3>Ch7 區域網路</h3>
                 <p>IEEE 802 標準、VLAN、STP、無線 LAN、Wi-Fi 演進</p>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch08" tabindex="0" role="button" aria-label="前往 Ch8 網際網路協定">
                 <h3>Ch8 網際網路協定</h3>
                 <p>IPv4 分類、子網路切割、CIDR、NAT、路由協定、IPv6</p>
             </div>
-<div class="card" style="border: 2px solid var(--danger); background: var(--danger-light);">
+<div class="card link-card" data-sec="final" tabindex="0" role="button" aria-label="前往期末考重點" style="border: 2px solid var(--danger); background: var(--danger-light);">
                 <h3 style="border-bottom-color: var(--danger); color: var(--danger);"><i class="icon">🎯</i> 期末考必讀重點</h3>
                 <p style="color: #a52525;">包含 CSMA 比較、IP 網段計算、子網路切割/超網化、Ethernet 標頭與 Wi-Fi 標準等重點。</p>
                 <div style="margin-top:.8rem"><button class="btn" style="background: var(--danger);" onclick="showSec('final')">立即前往複習</button></div>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch09" tabindex="0" role="button" aria-label="前往 Ch9 傳輸層協定">
                 <h3>Ch9 傳輸層協定</h3>
                 <p>TCP/UDP、埠編號、序列號碼、滑動視窗、TCP 標頭、三向交握、選擇項</p>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch10" tabindex="0" role="button" aria-label="前往 Ch10 ARP / RARP / ICMP">
                 <h3>Ch10 ARP / RARP / ICMP</h3>
                 <p>位址解析、RARP 反向解析、網路控制訊息協定、ping/tracert</p>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch11" tabindex="0" role="button" aria-label="前往 Ch11 尋徑協定">
                 <h3>Ch11 尋徑協定</h3>
                 <p>靜態/動態尋徑、距離向量、連線狀態、RIP/OSPF/BGP、自律系統</p>
             </div>
-            <div class="card">
+            <div class="card link-card" data-sec="ch12" tabindex="0" role="button" aria-label="前往 Ch12 網路安全">
                 <h3>Ch12 網路安全</h3>
                 <p>防火牆、加密、認證、數位簽章/憑證、IDS、駭客入侵方式</p>
             </div>
@@ -507,7 +527,7 @@
 
         <div class="card">
             <h3>學習進度</h3>
-            <p>點擊左側導覽選單開始閱讀各章重點。</p>
+            <p>點擊上方章節卡片或左側導覽選單開始閱讀各章重點。</p>
             <div class="progress-track">
                 <span>已讀</span>
                 <div class="bar bar-wrap"><div class="bar-fill" id="overall-bar" style="width:0%"></div></div>
@@ -3034,6 +3054,14 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
     window.addEventListener('resize', () => { if (window.innerWidth > 960) closeSidebar(); });
+
+    // Overview cards: click / Enter / Space jumps to the chapter
+    document.querySelectorAll('#overview .link-card').forEach(c => {
+        c.addEventListener('click', () => showSec(c.dataset.sec));
+        c.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showSec(c.dataset.sec); }
+        });
+    });
 
     function updateProgress() {
 const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10','ch11','ch12','midterm','final'];
