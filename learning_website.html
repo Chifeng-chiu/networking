@@ -504,10 +504,27 @@
                 <h3>Ch8 網際網路協定</h3>
                 <p>IPv4 分類、子網路切割、CIDR、NAT、路由協定、IPv6</p>
             </div>
-<div class="card link-card" data-sec="final" tabindex="0" role="button" aria-label="前往114期末考重點" style="border: 2px solid var(--danger); background: var(--danger-light);">
-                <h3 style="border-bottom-color: var(--danger); color: var(--danger);"><i class="icon">🎯</i> 114期末考必讀重點</h3>
-                <p style="color: #a52525;">包含 CSMA 比較、IP 網段計算、子網路切割/超網化、Ethernet 標頭與 Wi-Fi 標準等重點。</p>
-                <div style="margin-top:.8rem"><button class="btn" style="background: var(--danger);" onclick="showSec('final')">立即前往複習</button></div>
+<div class="card link-card" id="featured-card" data-sec="midterm115" tabindex="0" role="button" aria-label="前往115期中考重點" style="border: 2px solid var(--danger); background: var(--danger-light);">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-bottom:.4rem;">
+                    <span style="font-size:.75rem;color:var(--text3);">目前備考（可切換）</span>
+                    <select id="featured-select" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" onchange="setFeatured(this.value)" style="font-size:.78rem;padding:.25rem .4rem;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--text);" aria-label="選擇目前備考的考試">
+                        <option value="midterm115">115期中考</option>
+                        <option value="final115">115期末考</option>
+                        <option value="midterm">114期中考</option>
+                        <option value="final">114期末考</option>
+                    </select>
+                </div>
+                <h3 style="border-bottom-color: var(--danger); color: var(--danger);"><i class="icon">🎯</i> <span id="featured-title">115期中考必讀重點</span></h3>
+                <p id="featured-desc" style="color: #a52525;">考試範圍、封包解析實戰（Hex 拆解）、期中考題目，考前一次看完。</p>
+                <div style="margin-top:.8rem"><button class="btn" id="featured-btn" style="background: var(--danger);" onclick="showSec('midterm115')">立即前往複習</button></div>
+            </div>
+            <div class="card link-card" data-sec="midterm115" tabindex="0" role="button" aria-label="前往115期中考重點">
+                <h3>115期中考重點</h3>
+                <p>考試範圍、封包解析實戰、期中考題目</p>
+            </div>
+            <div class="card link-card" data-sec="final115" tabindex="0" role="button" aria-label="前往115期末考重點">
+                <h3>115期末考重點</h3>
+                <p>考試範圍、重點整理（整理中）</p>
             </div>
             <div class="card link-card" data-sec="ch09" tabindex="0" role="button" aria-label="前往 Ch9 傳輸層協定">
                 <h3>Ch9 傳輸層協定</h3>
@@ -3149,6 +3166,30 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showSec(c.dataset.sec); }
         });
     });
+
+    // Featured exam card: switchable target, remembered in localStorage
+    const featuredMap = {
+        midterm115: { title: '115期中考必讀重點', desc: '考試範圍、封包解析實戰（Hex 拆解）、期中考題目，考前一次看完。' },
+        final115: { title: '115期末考必讀重點', desc: '考試範圍與重點整理（陸續補上）。' },
+        midterm: { title: '114期中考必讀重點', desc: '數位編碼比較表、互動式波形模擬器等期中考重點。' },
+        final: { title: '114期末考必讀重點', desc: '包含 CSMA 比較、IP 網段計算、子網路切割/超網化、Ethernet 標頭與 Wi-Fi 標準等重點。' }
+    };
+    function setFeatured(id) {
+        if (!featuredMap[id]) id = 'midterm115';
+        const card = document.getElementById('featured-card');
+        card.dataset.sec = id;
+        card.setAttribute('aria-label', '前往' + featuredMap[id].title);
+        document.getElementById('featured-title').textContent = featuredMap[id].title;
+        document.getElementById('featured-desc').textContent = featuredMap[id].desc;
+        document.getElementById('featured-btn').setAttribute('onclick', "showSec('" + id + "')");
+        document.getElementById('featured-select').value = id;
+        try { localStorage.setItem('featuredExam', id); } catch (e) {}
+    }
+    (function initFeatured() {
+        let id = 'midterm115';
+        try { id = localStorage.getItem('featuredExam') || 'midterm115'; } catch (e) {}
+        setFeatured(id);
+    })();
 
     function updateProgress() {
 const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10','ch11','ch12','midterm','final','midterm115','final115'];
