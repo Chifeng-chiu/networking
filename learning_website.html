@@ -1978,6 +1978,14 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                  alt="Ch8 教材投影片第 84 頁圖解：IPv4 標頭結構" loading="lazy">
             <div class="slide-cap">來源：Net7_08IP.ppt — 投影片第 84 頁</div>
         </div>
+
+        <div class="card">
+            <h3>8.17 ECN 壅塞控制互動模擬器</h3>
+            <p>實際操作看看 <strong>ECN（明確壅塞通知）</strong>：緩衝區快滿時路由器幫封包貼 tag，目的端回傳警告 Ack，來源端自動降速；緩衝區全滿則直接 Drop 丟棄。</p>
+            <iframe src="ecn-simulator.html" title="ECN 與網路壅塞模擬器" loading="lazy"
+                style="width:100%;height:700px;border:1px solid var(--border);border-radius:6px;background:#fff;"></iframe>
+            <div class="slide-cap">玩法：先按「發送單一封包」觀察流程，再按「自動狂發」把 Buffer 灌到 7/10 看 ECN 變色、灌滿看 Drop。</div>
+        </div>
     </section>
 
     <section id="ch09">

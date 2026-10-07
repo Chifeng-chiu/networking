@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECN 與壅塞控制模擬器</title>
+<style>
+  body { font-family: sans-serif; text-align: center; background: #f4f4f9; padding: 20px; }
+  #network { display: flex; justify-content: space-between; align-items: center; margin: 50px auto; width: 80%; position: relative; }
+  .node { padding: 20px; background: #fff; border: 2px solid #333; border-radius: 10px; z-index: 2; width: 120px; font-weight: bold; }
+  #router { background: #e3f2fd; }
+  .buffer-container { border: 1px solid #999; height: 20px; width: 100%; margin-top: 10px; background: #eee; position: relative; }
+  #buffer-fill { background: #4caf50; height: 100%; width: 0%; transition: width 0.2s, background 0.2s; }
+  .packet { width: 15px; height: 15px; background: #2196f3; border-radius: 50%; position: absolute; top: 45px; transition: left 1s linear; z-index: 1; }
+  .packet.ecn { background: #ff9800; }
+  .packet.drop { background: #f44336; }
+  .ack { width: 10px; height: 10px; background: #4caf50; border-radius: 50%; position: absolute; top: 80px; transition: left 1s linear; z-index: 1; }
+  #log { margin-top: 20px; height: 200px; overflow-y: auto; background: #fff; border: 1px solid #ccc; padding: 15px; text-align: left; width: 80%; margin-left: auto; margin-right: auto; line-height: 1.5; font-size: 14px;}
+  button { padding: 10px 20px; font-size: 16px; margin: 5px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background: #fff;}
+  button:hover { background: #eee; }
+</style>
+</head>
+<body>
+  <h2>ECN 與網路壅塞模擬器</h2>
+  <button onclick="sendPacket()">發送單一封包 (Src)</button>
+  <button onclick="autoSend()">自動狂發 (測試壅塞與 Drop)</button>
+  <div id="network">
+    <div class="node" id="src">Src<br><small>(來源端)</small></div>
+    <div class="node" id="router">
+      Router R2<br>
+      <div class="buffer-container"><div id="buffer-fill"></div></div>
+      <small>Buffer: <span id="buffer-count">0</span>/10</small>
+    </div>
+    <div class="node" id="dst">Dst<br><small>(目的端)</small></div>
+  </div>
+  <div id="log"></div>
+
+  <script>
+    let buffer = 0; const MAX_BUFFER = 10; const ECN_THRESHOLD = 7;
+    let autoInterval = null;
+
+    function log(msg, color="black") {
+      const l = document.getElementById('log');
+      l.innerHTML = `<span style="color:${color}">[紀錄] ${msg}</span><br>` + l.innerHTML;
+    }
+
+    function updateBuffer() {
+      const fill = document.getElementById('buffer-fill');
+      document.getElementById('buffer-count').innerText = buffer;
+      const pct = (buffer / MAX_BUFFER) * 100;
+      fill.style.width = pct + '%';
+      if (buffer >= MAX_BUFFER) fill.style.background = '#f44336';
+      else if (buffer >= ECN_THRESHOLD) fill.style.background = '#ff9800';
+      else fill.style.background = '#4caf50';
+    }
+
+    // 模擬 Router 消化封包的速度 (每 1.5 秒處理一個)
+    setInterval(() => { if (buffer > 0) { buffer--; updateBuffer(); forwardPacket(); } }, 1500);
+
+    function sendPacket() {
+      const pkt = document.createElement('div');
+      pkt.className = 'packet';
+      pkt.style.left = '10%';
+      document.getElementById('network').appendChild(pkt);
+      
+      setTimeout(() => {
+        pkt.style.left = '45%';
+        setTimeout(() => {
+          if (buffer >= MAX_BUFFER) {
+            pkt.classList.add('drop');
+            log("緩衝區已滿！路由器執行 Drop，封包遭到丟棄。", "red");
+            setTimeout(() => pkt.remove(), 300);
+          } else {
+            buffer++;
+            if (buffer >= ECN_THRESHOLD) {
+              pkt.classList.add('ecn');
+              log("緩衝區快滿了！路由器在封包貼上 tag (Explicit Congestion Notification)。", "orange");
+            } else {
+              log("封包成功進入 Router 緩衝區排隊。");
+            }
+            pkt.style.display = 'none';
+            updateBuffer();
+          }
+        }, 1000);
+      }, 50);
+    }
+
+    function forwardPacket() {
+      const pkt = document.createElement('div');
+      pkt.className = 'packet';
+      if (document.getElementById('buffer-fill').style.background === 'rgb(255, 152, 0)' || buffer >= ECN_THRESHOLD) {
+         pkt.classList.add('ecn');
+      }
+      pkt.style.left = '50%';
+      document.getElementById('network').appendChild(pkt);
+      
+      setTimeout(() => {
+        pkt.style.left = '85%';
+        setTimeout(() => {
+          const isEcn = pkt.classList.contains('ecn');
+          log(isEcn ? "Dst 收到橘色 ECN 封包！準備回傳 Ack 要求 Src 降速。" : "Dst 成功收到藍色封包，回傳 Ack。", isEcn ? "orange" : "green");
+          pkt.remove();
+          sendAck(isEcn);
+        }, 1000);
+      }, 50);
+    }
+
+    function sendAck(isEcn) {
+      const ack = document.createElement('div');
+      ack.className = 'ack';
+      if(isEcn) ack.style.background = '#ff9800';
+      ack.style.left = '85%';
+      document.getElementById('network').appendChild(ack);
+      
+      setTimeout(() => {
+        ack.style.left = '10%';
+        setTimeout(() => {
+          log(isEcn ? "Src 收到警告 Ack！觸發 Implicit 機制：主動降低傳送速率。" : "Src 收到 Ack，確認 TCP 傳輸可靠 (reliable)。");
+          if (isEcn && autoInterval) { clearInterval(autoInterval); autoInterval = null; log("★ Src 已自動停止狂發封包 ★", "blue"); }
+          ack.remove();
+        }, 1000);
+      }, 50);
+    }
+
+    function autoSend() {
+      if (autoInterval) return;
+      log("Src 開始高速連發封包 (傳送速度大於消化速度)...");
+      autoInterval = setInterval(sendPacket, 300); 
+    }
+  </script>
+</body>
+</html>
