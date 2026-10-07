@@ -2849,6 +2849,10 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             </div>
             <blockquote class="ok">重點記憶：Type = <code>0x0800</code> → 裝載 IP 封包；<code>0x0806</code> → ARP 封包。</blockquote>
             <h4>Hex 實戰：六大考題拆解</h4>
+            <p>原圖如下，對照下方逐題拆解一起看。</p>
+            <img class="slide-img" src="images/midterm115-q3.jpg" width="795" height="120"
+                 alt="115 期中考 IP 封包題原圖" loading="lazy">
+            <div class="slide-cap">來源：ip期中考題目3.jpg</div>
             <ul>
                 <li><strong>1. MAC 位址</strong>：封包最前端 12 bytes。Dst：<code>cc 28 aa af 0f e5</code>；Src：<code>00 08 e3 ff fd 90</code>。</li>
                 <li><strong>2. IP 位址</strong>：Src <code>5b 6c 38 93</code> → <code>91.108.56.147</code>；Dst <code>c0 a8 3d 9f</code> → <code>192.168.61.159</code>。</li>
@@ -2857,16 +2861,6 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li><strong>5. TTL</strong>：<code>32</code>（hex）= <strong>50</strong>。</li>
                 <li><strong>6. Protocol</strong>：<code>06</code> → 下一層是 <strong>TCP</strong>。</li>
             </ul>
-        </div>
-
-        <div class="card">
-            <h3>期中考題目（IP）</h3>
-            <p>115 學期 IP 期中考封包題目照片。</p>
-
-            <h4>第 3 題（封包題）</h4>
-            <img class="slide-img" src="images/midterm115-q3.jpg" width="795" height="120"
-                 alt="115 期中考 IP 封包題" loading="lazy">
-            <div class="slide-cap">來源：ip期中考題目3.jpg</div>
         </div>
     </section>
 
