@@ -2834,8 +2834,29 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>重點整理</h3>
-            <blockquote class="warn">待補充。格式可參考 114 期中考的表格與範例。</blockquote>
+            <h3>封包解析實戰：Ethernet Frame（Hex 拆解）</h3>
+            <h4>封包基本架構（由外到內）</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>部位</th><th>內容</th><th>長度</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Ethernet Header</strong></td><td>目的端 MAC (dst) 6 bytes＋來源端 MAC (src) 6 bytes＋Type 2 bytes</td><td>14 bytes</td></tr>
+                        <tr><td><strong>IP Header</strong></td><td>第三層傳輸，含來源 IP (src ip) 與目的 IP (dst ip)</td><td>20 bytes 起</td></tr>
+                        <tr><td><strong>IP Payload</strong></td><td>實際傳輸的資料內容</td><td>—</td></tr>
+                        <tr><td><strong>FCS</strong></td><td>封包最尾端，檢查傳輸過程是否損壞</td><td>4 bytes</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote class="ok">重點記憶：Type = <code>0x0800</code> → 裝載 IP 封包；<code>0x0806</code> → ARP 封包。</blockquote>
+            <h4>Hex 實戰：六大考題拆解</h4>
+            <ul>
+                <li><strong>1. MAC 位址</strong>：封包最前端 12 bytes。Dst：<code>cc 28 aa af 0f e5</code>；Src：<code>00 08 e3 ff fd 90</code>。</li>
+                <li><strong>2. IP 位址</strong>：Src <code>5b 6c 38 93</code> → <code>91.108.56.147</code>；Dst <code>c0 a8 3d 9f</code> → <code>192.168.61.159</code>。</li>
+                <li><strong>3. 首 byte <code>45</code></strong>：Version = 4（IPv4）；IHL = 5 → 5 × 4 = 20 bytes。剛好標準長度 → <strong>沒有 Options</strong>。</li>
+                <li><strong>4. Payload 長度</strong>：Total Length <code>00 28</code> = 40 bytes，扣掉 IHL 20 → Payload <strong>20 bytes</strong>。</li>
+                <li><strong>5. TTL</strong>：<code>32</code>（hex）= <strong>50</strong>。</li>
+                <li><strong>6. Protocol</strong>：<code>06</code> → 下一層是 <strong>TCP</strong>。</li>
+            </ul>
         </div>
 
         <div class="card">
@@ -3033,7 +3054,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
     <section id="final115">
         <div class="sec-title">
             <h2>115期末考重點總整理</h2>
-            <p>陸續整理中 — 可先參考 <a href="#" onclick="showSec('final')" style="color:var(--primary);">114期末考重點</a></p>
+            <p>內容整理中 — 可先參考 <a href="#" onclick="showSec('final')" style="color:var(--primary);">114期末考重點</a></p>
         </div>
 
         <div class="card">
@@ -3042,29 +3063,8 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>1. 封包解析實戰：Ethernet Frame（Hex 拆解）</h3>
-            <h4>封包基本架構（由外到內）</h4>
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>部位</th><th>內容</th><th>長度</th></tr></thead>
-                    <tbody>
-                        <tr><td><strong>Ethernet Header</strong></td><td>目的端 MAC (dst) 6 bytes＋來源端 MAC (src) 6 bytes＋Type 2 bytes</td><td>14 bytes</td></tr>
-                        <tr><td><strong>IP Header</strong></td><td>第三層傳輸，含來源 IP (src ip) 與目的 IP (dst ip)</td><td>20 bytes 起</td></tr>
-                        <tr><td><strong>IP Payload</strong></td><td>實際傳輸的資料內容</td><td>—</td></tr>
-                        <tr><td><strong>FCS</strong></td><td>封包最尾端，檢查傳輸過程是否損壞</td><td>4 bytes</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <blockquote class="ok">重點記憶：Type = <code>0x0800</code> → 裝載 IP 封包；<code>0x0806</code> → ARP 封包。</blockquote>
-            <h4>Hex 實戰：六大考題拆解</h4>
-            <ul>
-                <li><strong>1. MAC 位址</strong>：封包最前端 12 bytes。Dst：<code>cc 28 aa af 0f e5</code>；Src：<code>00 08 e3 ff fd 90</code>。</li>
-                <li><strong>2. IP 位址</strong>：Src <code>5b 6c 38 93</code> → <code>91.108.56.147</code>；Dst <code>c0 a8 3d 9f</code> → <code>192.168.61.159</code>。</li>
-                <li><strong>3. 首 byte <code>45</code></strong>：Version = 4（IPv4）；IHL = 5 → 5 × 4 = 20 bytes。剛好標準長度 → <strong>沒有 Options</strong>。</li>
-                <li><strong>4. Payload 長度</strong>：Total Length <code>00 28</code> = 40 bytes，扣掉 IHL 20 → Payload <strong>20 bytes</strong>。</li>
-                <li><strong>5. TTL</strong>：<code>32</code>（hex）= <strong>50</strong>。</li>
-                <li><strong>6. Protocol</strong>：<code>06</code> → 下一層是 <strong>TCP</strong>。</li>
-            </ul>
+            <h3>重點整理</h3>
+            <blockquote class="warn">待補充。格式可參考 114 期末考的表格與範例。</blockquote>
         </div>
     </section>
 
