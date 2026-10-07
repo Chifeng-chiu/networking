@@ -460,8 +460,10 @@
         <button onclick="showSec('ch11')">Ch11 尋徑</button>
         <button onclick="showSec('ch12')">Ch12 安全</button>
         <div class="nav-group">考試與練習</div>
-        <button onclick="showSec('midterm')">期中考重點</button>
-        <button onclick="showSec('final')" style="color: #e03131; font-weight: bold;">期末考重點</button>
+        <button onclick="showSec('midterm')">114期中考重點</button>
+        <button onclick="showSec('final')" style="color: #e03131; font-weight: bold;">114期末考重點</button>
+        <button onclick="showSec('midterm115')">115期中考重點</button>
+        <button onclick="showSec('final115')" style="color: #e03131; font-weight: bold;">115期末考重點</button>
         <button onclick="showSec('quiz')">練習題庫</button>
     </div>
 </nav>
@@ -502,8 +504,8 @@
                 <h3>Ch8 網際網路協定</h3>
                 <p>IPv4 分類、子網路切割、CIDR、NAT、路由協定、IPv6</p>
             </div>
-<div class="card link-card" data-sec="final" tabindex="0" role="button" aria-label="前往期末考重點" style="border: 2px solid var(--danger); background: var(--danger-light);">
-                <h3 style="border-bottom-color: var(--danger); color: var(--danger);"><i class="icon">🎯</i> 期末考必讀重點</h3>
+<div class="card link-card" data-sec="final" tabindex="0" role="button" aria-label="前往114期末考重點" style="border: 2px solid var(--danger); background: var(--danger-light);">
+                <h3 style="border-bottom-color: var(--danger); color: var(--danger);"><i class="icon">🎯</i> 114期末考必讀重點</h3>
                 <p style="color: #a52525;">包含 CSMA 比較、IP 網段計算、子網路切割/超網化、Ethernet 標頭與 Wi-Fi 標準等重點。</p>
                 <div style="margin-top:.8rem"><button class="btn" style="background: var(--danger);" onclick="showSec('final')">立即前往複習</button></div>
             </div>
@@ -2444,7 +2446,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 
     <section id="midterm">
         <div class="sec-title">
-            <h2>期中考重點整理</h2>
+            <h2>114期中考重點整理</h2>
             <p>期中考範圍：Ch1 區域網路基礎與訊號編碼、Ch2 通訊、Ch3 設備、Ch4 OSI 模型</p>
         </div>
 
@@ -2820,10 +2822,27 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
     </section>
 
+    <section id="midterm115">
+        <div class="sec-title">
+            <h2>115期中考重點整理</h2>
+            <p>內容整理中 — 可先參考 <a href="#" onclick="showSec('midterm')" style="color:var(--primary);">114期中考重點</a></p>
+        </div>
+
+        <div class="card">
+            <h3>考試範圍</h3>
+            <blockquote class="warn">待老師公布考試範圍後補上。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>重點整理</h3>
+            <blockquote class="warn">待補充。格式可參考 114 期中考的表格與範例。</blockquote>
+        </div>
+    </section>
+
     <!-- ==================== FINAL EXAM ==================== -->
     <section id="final">
         <div class="sec-title">
-            <h2>期末考重點總整理</h2>
+            <h2>114期末考重點總整理</h2>
             <p>涵蓋期末測驗必考重點：CSMA、子網路/超網化、Ethernet 標頭、Wi-Fi 標準</p>
         </div>
 
@@ -2991,6 +3010,23 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
     </section>
 
+    <section id="final115">
+        <div class="sec-title">
+            <h2>115期末考重點總整理</h2>
+            <p>內容整理中 — 可先參考 <a href="#" onclick="showSec('final')" style="color:var(--primary);">114期末考重點</a></p>
+        </div>
+
+        <div class="card">
+            <h3>考試範圍</h3>
+            <blockquote class="warn">待老師公布考試範圍後補上。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>重點整理</h3>
+            <blockquote class="warn">待補充。格式可參考 114 期末考的表格與範例。</blockquote>
+        </div>
+    </section>
+
     <!-- ==================== QUIZ ==================== -->
     <section id="quiz">
         <div class="sec-title">
@@ -3064,12 +3100,12 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
     });
 
     function updateProgress() {
-const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10','ch11','ch12','midterm','final'];
+const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10','ch11','ch12','midterm','final','midterm115','final115'];
         let viewed = 0;
         chapters.forEach(id => {
             if (document.getElementById(id) && document.getElementById(id).classList.contains('active')) viewed++;
         });
-        const pct = Math.round(viewed / 13 * 100);
+        const pct = Math.round(viewed / chapters.length * 100);
         document.getElementById('overall-pct').textContent = pct;
         document.getElementById('overall-bar').style.width = pct + '%';
     }
