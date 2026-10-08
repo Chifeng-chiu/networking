@@ -2122,9 +2122,28 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 
         <div class="card">
             <h3>8.18-5 IPv6 標頭與封包解析</h3>
+            <h4>標頭簡介</h4>
             <ul>
-                <li>固定 40 bytes 標頭：Version、Traffic Class、Flow Label、Payload Length、Next Header、Hop Limit、來源與目的位址（各 128 bits）。</li>
-                <li>無表頭 Checksum；中間路由器不做分片（由來源端處理）。</li>
+                <li>IPv6 標頭 = <strong>主標頭</strong>＋<strong>延伸標頭 (Extension Header)</strong>；主標頭固定 8 個欄位，欄位數比 IPv4 少、長度固定，封包處理更簡潔快速，效能更高。</li>
+                <li>延伸標頭代替 IPv4 的選項欄位。</li>
+            </ul>
+            <h4>主標頭各欄位</h4>
+            <ul>
+                <li><strong>1. Version（4 位元）</strong>：版本，填 6（<code>0110</code>）。</li>
+                <li><strong>2. Traffic Class（8 位元）</strong>：服務等級，如同 IPv4 的 TOS／DS 位，區分傳輸期望等級；前 6 位元為 DSCP，後 2 位元為 <strong>ECN</strong>（壅塞時通知來源端，見 8.17 模擬器）。</li>
+                <li><strong>3. Flow Label（20 位元）</strong>：IPv6 新增欄位，標示特定封包以配合路由器分類傳送（如即時性服務）；同一串流的封包必須有相同標籤；不支援的節點只管轉送、不得更改。</li>
+                <li><strong>4. Payload Length（16 位元）</strong>：功能同 IPv4 Total Length，單位同為位元組；但<strong>只計算標頭之後資料的長度</strong>（不含 40 bytes 標頭本身）。</li>
+                <li><strong>5. Next Header（8 位元）</strong>：下一個標頭，如同 IPv4 的 Protocol (PROT) 欄；值可沿用 PROT 編號，也可指向 IPv6 延伸標頭項目。</li>
+                <li><strong>6. Hop Limit（8 位元）</strong>：最大節點數，取代 IPv4 TTL；TTL 以「秒」為單位，Hop Limit 改以「經過節點數」為單位；歸零即丟棄。</li>
+                <li><strong>來源／目的 IPv6 位址</strong>：各 128 bits。</li>
+            </ul>
+            <img class="slide-img" src="images/ch08-ipv6-header.jpg" width="792" height="549"
+                 alt="IPv6 主標頭結構圖" loading="lazy">
+            <div class="slide-cap">來源：教材投影片 — IPv6 主標頭頁</div>
+            <h4>延伸標頭</h4>
+            <ul>
+                <li>代替 IPv4 選項；由 Next Header 鏈結，依優先順序排列。例：IPv6 標頭（下一標頭=43）→ Routing 標頭（下一標頭=44）→ Fragment 標頭（下一標頭=06）→ TCP 標頭與資料。</li>
+                <li>只由目的端處理，唯一的例外是 <strong>Hop-by-Hop 選項</strong>（每個中間節點都要處理）。</li>
             </ul>
         </div>
     </section>
