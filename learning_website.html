@@ -2104,8 +2104,20 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         <div class="card">
             <h3>8.18-4 IPv4 與 IPv6 間的遷移</h3>
             <ul>
-                <li><strong>雙堆疊 (Dual Stack)</strong>、<strong>通道 (Tunneling)</strong>、<strong>轉譯 (Translation)</strong> 如 NAT64／DNS64（詳細見 8.7「過渡技術」）。</li>
+                <li>行之多年的 IPv4 環境不可能一夜轉換：避免浪費既有投資，轉換採<strong>漸進式遷移 (Migration)</strong>。</li>
+                <li>過渡期要求：原 IPv4 位址要在 IPv6 環境能通訊——做法是轉成 <strong>IPv4 相容位址</strong>或 <strong>6to4 位址</strong>（見 8.18-3 特殊位址）。</li>
+                <li>轉換初期骨幹仍是 IPv4：分隔兩地的 IPv6 主機需經由 IPv4 網路通訊 → 用<strong>通道透過 (Tunneling)</strong>。</li>
+                <li>三大過渡技術總覽：<strong>雙堆疊 (Dual Stack)</strong>、<strong>通道 (Tunneling)</strong>、<strong>轉譯 (Translation)</strong> 如 NAT64／DNS64（詳細見 8.7）。</li>
             </ul>
+            <h4>通道透過（Tunneling）圖解</h4>
+            <ul>
+                <li>(a) 原始 IPv6 封包：IPv6 標頭＋TCP 標頭＋承載資料（主機甲發出）。</li>
+                <li>(b) 經封裝後：外層再包一個 <strong>IPv4 標頭</strong>，即可穿越中間的 IPv4 網路，到達對端再拆封（主機乙收到）。</li>
+            </ul>
+            <blockquote class="ok">關鍵：外層 IPv4 標頭的 <strong>Protocol（PROT）= 41</strong>，代表內載的是 IPv6（見 8.4 對照表）。</blockquote>
+            <img class="slide-img" src="images/ch08-tunneling.jpg" width="724" height="572"
+                 alt="通道透過圖解：IPv6 封包封裝在 IPv4 標頭中穿越 IPv4 網路" loading="lazy">
+            <div class="slide-cap">來源：教材投影片 — 通道透過（Tunneling）頁</div>
         </div>
 
         <div class="card">
