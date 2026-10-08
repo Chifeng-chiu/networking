@@ -2072,8 +2072,32 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 
         <div class="card">
             <h3>8.18-3 IPv6 位址型式</h3>
+            <p>依用途分為單播／多播／任播三型（詳細見 8.7）；以下為位址的<strong>表示法與格式</strong>：</p>
+            <h4>位址表示法</h4>
             <ul>
-                <li>以冒號十六進位表示；分為單播／多播／任播三型（詳細見 8.7）。</li>
+                <li>128 位元分成 <strong>8 個區塊</strong>，每區塊 16 位元，以 16 進位表示，區塊間以「<code>:</code>」區隔。</li>
+                <li>範例：<code>2002:8C6E:C7FA:00A1:0000:0000:0000:09E3</code></li>
+                <li><strong>省略規則一</strong>：冒號間多餘的前導 <code>0</code> 可省 → <code>2002:8C6E:C7FA:A1:0:0:0:9E3</code></li>
+                <li><strong>省略規則二</strong>：連續多組 <code>0</code> 可用 <code>::</code> 表示，但全位址<strong>只能出現一次</strong> → <code>2002:8C6E:C7FA:A1::9E3</code></li>
+            </ul>
+            <h4>位址大致格式</h4>
+            <ul>
+                <li>三部分：<strong>Prefix（N 位元）</strong>＋<strong>SubnetID（M 位元）</strong>＋<strong>IID（128−N−M 位元）</strong>。</li>
+                <li><strong>格式首碼 (Format Prefix)</strong>：指定一個網路的範圍。</li>
+                <li><strong>子網路辨識碼 (SubnetID)</strong>：在網路內再劃分子網路，利於管理者規劃。</li>
+                <li><strong>介面辨識碼 (IID; Interface ID)</strong>：辨識子網路內的唯一介面。</li>
+            </ul>
+            <h4>子網路辨識碼（網域表示）</h4>
+            <ul>
+                <li>類似 IPv4 CIDR：在位址後附加「<code>/首碼位元長度</code>」，如 <code>FE80:3600::/8</code> 表示 8 位元首碼的區塊。</li>
+                <li>子網路辨識碼會依首碼不同而有不同格式。</li>
+            </ul>
+            <h4>特殊位址</h4>
+            <ul>
+                <li><code>::</code>（0:0:0:0:0:0:0:0）：任意位址，類似 IPv4 的 <code>0.0.0.0</code>；節點尚未完成 IP 設定時以此與外界通訊。</li>
+                <li><code>::1</code>（0:0:0:0:0:0:0:1）：迴路位址，類似 IPv4 的 <code>127.0.0.1</code>。</li>
+                <li><strong>IPv4 相容位址</strong>：原 IPv4 位址左邊補 96 位元 0，使 IPv4 可與 IPv6 節點互通。</li>
+                <li><strong>6to4 位址</strong>：前綴 <code>2002</code> ＋ 32 位元 IPv4 位址 ＋ 子網路位 ＋ 64 位元 IID。</li>
             </ul>
         </div>
 
