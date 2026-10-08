@@ -2040,10 +2040,34 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         <div class="card">
             <h3>8.18-2 IPv6 的傳播方式</h3>
             <ul>
-                <li><strong>單播 (Unicast)</strong>：一對一通訊。</li>
-                <li><strong>多播 (Multicast)</strong>：一對多，取代 IPv4 廣播。</li>
-                <li><strong>任播 (Anycast)</strong>：一對最近的一個（詳細見 8.7「IPv6 位址類型」）。</li>
+                <li>IPv6 的傳輸型態有三種：<strong>單點傳播 (Unicast; 1-to-1)</strong>、<strong>多點群播 (Multicast; 1-to-many)</strong>、<strong>任點傳播 (Anycast; 1-to-any)</strong>。</li>
+                <li>IPv6 <strong>移除廣播 (Broadcast)</strong> 機制，以多點群播位址取代。</li>
+                <li>IPv6 <strong>新增任點傳播</strong>：相同的任點傳播位址可指定到許多不同的介面。</li>
             </ul>
+            <h4>任點傳播（Anycast）詳解</h4>
+            <ul>
+                <li>訊息送到群組中的某一個介面——只要找到（最近的）即可，不需要固定對象。</li>
+                <li>最普遍的應用：<strong>DNS</strong> 工作。</li>
+                <li>兩項使用限制：此位址<strong>不能當來源端</strong>；只能用在<strong>路由器介面</strong>，不能用在主機上。</li>
+            </ul>
+            <h4>IPv4 vs IPv6 差異比較</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>比較項目</th><th>IPv4</th><th>IPv6</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>位址長度</strong></td><td>32 bits</td><td>128 bits</td></tr>
+                        <tr><td><strong>位址數量</strong></td><td>約 43 億</td><td>2<sup>128</sup>（近乎無限）</td></tr>
+                        <tr><td><strong>表示法</strong></td><td>點分十進位（如 192.168.1.1）</td><td>冒號十六進位</td></tr>
+                        <tr><td><strong>傳播方式</strong></td><td>單播／多播／廣播</td><td>單播／多播／任播（無廣播）</td></tr>
+                        <tr><td><strong>標頭長度</strong></td><td>20～60 bytes（可變）</td><td>固定 40 bytes</td></tr>
+                        <tr><td><strong>Checksum</strong></td><td>有</td><td>無（交由上層處理）</td></tr>
+                        <tr><td><strong>分片處理</strong></td><td>路由器可分片</td><td>僅來源端可分片</td></tr>
+                        <tr><td><strong>安全性</strong></td><td>IPSec 為選配</td><td>IPSec 內建</td></tr>
+                        <tr><td><strong>自動設定</strong></td><td>需 DHCP</td><td>SLAAC 自動設定</td></tr>
+                        <tr><td><strong>NAT</strong></td><td>需要（位址不足）</td><td>不需要（位址充足）</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="card">
