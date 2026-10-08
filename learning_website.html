@@ -2006,13 +2006,35 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 
         <div class="card">
             <h3>8.18 IPv6 位址（投影片大綱）</h3>
-            <p>教材 IPv6 單元的學習大綱，詳細內容可回 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.7 IPv6 簡介</a> 複習：</p>
+            <p>教材 IPv6 單元的學習大綱，展開為以下五小節；詳細內容可回 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.7 IPv6 簡介</a> 複習。</p>
+
+            <h4>8.18-1 簡介</h4>
             <ul>
-                <li>簡介</li>
-                <li>IPv6 的傳播方式</li>
-                <li>IPv6 位址型式</li>
-                <li>IPv4 與 IPv6 間的遷移</li>
-                <li>IPv6 標頭與封包解析</li>
+                <li>IPv4 位址空間不足 → IPv6 提供 128 位元超大位址空間。</li>
+                <li>另有隨插即用自動設定、簡化標頭等改進（詳細見 8.7）。</li>
+            </ul>
+
+            <h4>8.18-2 IPv6 的傳播方式</h4>
+            <ul>
+                <li><strong>單播 (Unicast)</strong>：一對一通訊。</li>
+                <li><strong>多播 (Multicast)</strong>：一對多，取代 IPv4 廣播。</li>
+                <li><strong>任播 (Anycast)</strong>：一對最近的一個（詳細見 8.7「IPv6 位址類型」）。</li>
+            </ul>
+
+            <h4>8.18-3 IPv6 位址型式</h4>
+            <ul>
+                <li>以冒號十六進位表示；分為單播／多播／任播三型（詳細見 8.7）。</li>
+            </ul>
+
+            <h4>8.18-4 IPv4 與 IPv6 間的遷移</h4>
+            <ul>
+                <li><strong>雙堆疊 (Dual Stack)</strong>、<strong>通道 (Tunneling)</strong>、<strong>轉譯 (Translation)</strong> 如 NAT64／DNS64（詳細見 8.7「過渡技術」）。</li>
+            </ul>
+
+            <h4>8.18-5 IPv6 標頭與封包解析</h4>
+            <ul>
+                <li>固定 40 bytes 標頭：Version、Traffic Class、Flow Label、Payload Length、Next Header、Hop Limit、來源與目的位址（各 128 bits）。</li>
+                <li>無表頭 Checksum；中間路由器不做分片（由來源端處理）。</li>
             </ul>
         </div>
     </section>
