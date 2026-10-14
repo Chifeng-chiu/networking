@@ -3036,6 +3036,34 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li><strong>6. Protocol</strong>：<code>06</code> → 下一層是 <strong>TCP</strong>。</li>
             </ul>
         </div>
+
+        <div class="card">
+            <h3>IPv4 標頭速查</h3>
+            <ul>
+                <li>最小 20 bytes（IHL=5，無 Options）；最大 60 bytes。</li>
+                <li><strong>Version(4)／IHL(4)</strong>：首 byte（如 <code>45</code>）同時給版本與長度。</li>
+                <li><strong>Total Length(16)</strong>：全封包長；減 IHL 即 Payload。</li>
+                <li><strong>Identifier(16)／Flags／Fragment Offset(13)</strong>：切割重組用。</li>
+                <li><strong>TTL(8)</strong>：每經路由器減 1，歸零丟棄。</li>
+                <li><strong>Protocol(8)</strong>：ICMP=1、TCP=6、UDP=17。</li>
+                <li><strong>來源／目的 IP</strong>：各 32 bits。</li>
+            </ul>
+            <img class="slide-img" src="images/ch08-slide84.jpg" width="1920" height="1080"
+                 alt="IPv4 標頭結構圖" loading="lazy">
+            <div class="slide-cap">同 8.16 投影片原圖，詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.4 / 8.16</a></div>
+        </div>
+
+        <div class="card">
+            <h3>IPv6 標頭速查</h3>
+            <ul>
+                <li>固定 40 bytes：Version／Traffic Class／Flow Label／Payload Length／Next Header／Hop Limit／來源目的各 128 bits。</li>
+                <li>無 Checksum；Payload Length 只算標頭後資料；Hop Limit 取代 TTL。</li>
+                <li>延伸標頭由 Next Header 串接（43 Routing／44 Fragment），只由目的端處理（Hop-by-Hop 除外）。</li>
+            </ul>
+            <img class="slide-img" src="images/ch08-ipv6-header.jpg" width="792" height="549"
+                 alt="IPv6 主標頭結構圖" loading="lazy">
+            <div class="slide-cap">同 8.18-5 主標頭圖，詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.18-5</a></div>
+        </div>
     </section>
 
     <!-- ==================== FINAL EXAM ==================== -->
