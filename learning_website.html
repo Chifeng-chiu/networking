@@ -2999,12 +2999,36 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
     <section id="midterm115">
         <div class="sec-title">
             <h2>115期中考重點整理</h2>
-            <p>內容整理中 — 可先參考 <a href="#" onclick="showSec('midterm')" style="color:var(--primary);">114期中考重點</a></p>
+            <p>共 7 大題，照白板考試範圍整理 — 可先參考 <a href="#" onclick="showSec('midterm')" style="color:var(--primary);">114期中考重點</a></p>
         </div>
 
         <div class="card">
-            <h3>考試範圍</h3>
-            <blockquote class="warn">待老師公布考試範圍後補上。</blockquote>
+            <h3>考試範圍（共 7 大題）</h3>
+            <ul>
+                <li><strong>① IPv4 標頭格式</strong>（20 分）</li>
+                <li><strong>② 分析 Ethernet Frame</strong>（20 分）</li>
+                <li><strong>③ IPv6 標頭格式</strong>（20 分）</li>
+                <li><strong>④ Server 與 Port 對應</strong>：某 Server 跑在某個 port，至少 2 題</li>
+                <li><strong>⑤ IPv4 子網路切割欄位</strong></li>
+                <li><strong>⑥ 位址長度</strong>：IPv4／IPv6 各幾位元</li>
+                <li><strong>⑦ 遞迴／反覆查詢流程</strong>（10 分）：畫出流程</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>IPv4 標頭速查</h3>
+            <ul>
+                <li>最小 20 bytes（IHL=5，無 Options）；最大 60 bytes。</li>
+                <li><strong>Version(4)／IHL(4)</strong>：首 byte（如 <code>45</code>）同時給版本與長度。</li>
+                <li><strong>Total Length(16)</strong>：全封包長；減 IHL 即 Payload。</li>
+                <li><strong>Identifier(16)／Flags／Fragment Offset(13)</strong>：切割重組用。</li>
+                <li><strong>TTL(8)</strong>：每經路由器減 1，歸零丟棄。</li>
+                <li><strong>Protocol(8)</strong>：ICMP=1、TCP=6、UDP=17。</li>
+                <li><strong>來源／目的 IP</strong>：各 32 bits。</li>
+            </ul>
+            <img class="slide-img" src="images/ch08-slide84.jpg" width="1920" height="1080"
+                 alt="IPv4 標頭結構圖" loading="lazy">
+            <div class="slide-cap">同 8.16 投影片原圖，詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.4 / 8.16</a></div>
         </div>
 
         <div class="card">
@@ -3038,22 +3062,6 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>IPv4 標頭速查</h3>
-            <ul>
-                <li>最小 20 bytes（IHL=5，無 Options）；最大 60 bytes。</li>
-                <li><strong>Version(4)／IHL(4)</strong>：首 byte（如 <code>45</code>）同時給版本與長度。</li>
-                <li><strong>Total Length(16)</strong>：全封包長；減 IHL 即 Payload。</li>
-                <li><strong>Identifier(16)／Flags／Fragment Offset(13)</strong>：切割重組用。</li>
-                <li><strong>TTL(8)</strong>：每經路由器減 1，歸零丟棄。</li>
-                <li><strong>Protocol(8)</strong>：ICMP=1、TCP=6、UDP=17。</li>
-                <li><strong>來源／目的 IP</strong>：各 32 bits。</li>
-            </ul>
-            <img class="slide-img" src="images/ch08-slide84.jpg" width="1920" height="1080"
-                 alt="IPv4 標頭結構圖" loading="lazy">
-            <div class="slide-cap">同 8.16 投影片原圖，詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.4 / 8.16</a></div>
-        </div>
-
-        <div class="card">
             <h3>IPv6 標頭速查</h3>
             <ul>
                 <li>固定 40 bytes：Version／Traffic Class／Flow Label／Payload Length／Next Header／Hop Limit／來源目的各 128 bits。</li>
@@ -3063,6 +3071,55 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             <img class="slide-img" src="images/ch08-ipv6-header.jpg" width="792" height="549"
                  alt="IPv6 主標頭結構圖" loading="lazy">
             <div class="slide-cap">同 8.18-5 主標頭圖，詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.18-5</a></div>
+        </div>
+
+        <div class="card">
+            <h3>④ Server 與 Port 對應</h3>
+            <p>考法：給某個 Server（服務），問它跑在哪個 port（至少 2 題）。</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>服務</th><th>Port</th><th>傳輸層</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>HTTP</strong>（網頁）</td><td>80</td><td>TCP</td></tr>
+                        <tr><td><strong>HTTPS</strong>（加密網頁）</td><td>443</td><td>TCP</td></tr>
+                        <tr><td><strong>FTP</strong>（檔案傳輸）</td><td>20／21</td><td>TCP</td></tr>
+                        <tr><td><strong>SSH</strong>（安全連線）</td><td>22</td><td>TCP</td></tr>
+                        <tr><td><strong>Telnet</strong>（遠端登入）</td><td>23</td><td>TCP</td></tr>
+                        <tr><td><strong>SMTP</strong>（寄信）</td><td>25</td><td>TCP</td></tr>
+                        <tr><td><strong>DNS</strong>（網域解析）</td><td>53</td><td>UDP 為主</td></tr>
+                        <tr><td><strong>DHCP</strong>（自動配 IP）</td><td>67／68</td><td>UDP</td></tr>
+                        <tr><td><strong>POP3</strong>（收信）</td><td>110</td><td>TCP</td></tr>
+                        <tr><td><strong>IMAP</strong>（收信）</td><td>143</td><td>TCP</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote>詳細見 <a href="#" onclick="showSec('ch04')" style="color:var(--primary);">Ch4 應用層協定與埠號</a>。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>⑤ IPv4 子網路切割欄位</h3>
+            <ul>
+                <li>向主機位元借位：借 n 位元 → 2<sup>n</sup> 個子網路。</li>
+                <li>例：<code>192.168.1.0/24</code> 借 2 位 → <code>/26</code>（255.255.255.192），4 個子網路，每網 2<sup>6</sup>−2 = 62 台主機。</li>
+                <li>網路位址（主機全 0）／廣播位址（主機全 1）／可用範圍（頭尾各扣 1）。</li>
+            </ul>
+            <blockquote>詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.3 子網路切割</a>、<a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.8 計算範例</a>。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>⑥ 位址長度</h3>
+            <ul>
+                <li><strong>IPv4</strong>：32 bits（4 bytes）。</li>
+                <li><strong>IPv6</strong>：128 bits（16 bytes）。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>⑦ 遞迴／反覆查詢流程</h3>
+            <p>考法：畫出流程（10 分）。左紅色 = 遞迴（客戶端→當地伺服器，一次問到底）；右紫虛線 = 反覆（逐台伺服器 A→B→C 問下去）。</p>
+            <img class="slide-img" src="images/ch08-slide78.jpg" width="1920" height="1080"
+                 alt="遞迴查詢與反覆查詢流程圖" loading="lazy">
+            <div class="slide-cap">同 8.15 投影片原圖（課堂翻拍為同一張圖），文字解說見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.15</a></div>
         </div>
     </section>
 
