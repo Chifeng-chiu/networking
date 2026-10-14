@@ -3116,9 +3116,16 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 
         <div class="card">
             <h3>⑦ 遞迴／反覆查詢流程</h3>
-            <p>考法：畫出流程（10 分）。左紅色 = 遞迴（客戶端→當地伺服器，一次問到底）；右紫虛線 = 反覆（逐台伺服器 A→B→C 問下去）。</p>
+            <p>考法：<strong>畫出流程圖</strong>（10 分）。照下面四步畫，對照原圖檢查：</p>
+            <ol>
+                <li><strong>左半部（遞迴）</strong>：畫客戶端＋第一台伺服器，兩者間畫紅色來回箭頭，旁邊寫 <code>Recursive Query</code>（遞迴查詢），再用紅虛線把這區圈起來。</li>
+                <li><strong>右半部（反覆）</strong>：從第一台伺服器向右連出三台伺服器（上、中、下），分別用藍、綠、橘三色箭頭連接。</li>
+                <li><strong>圈範圍</strong>：用紫色虛線大圈把右半部整組圈起，旁邊寫 <code>Iterative Query</code>（反覆查詢）。</li>
+                <li><strong>標名稱</strong>：客戶端標「客戶端」，每台主機標「伺服器」——名稱和兩組英文關鍵字就是得分點。</li>
+            </ol>
+            <blockquote class="ok">口訣：左紅一問到底叫遞迴，右邊三色逐台問叫反覆。</blockquote>
             <img class="slide-img" src="images/ch08-slide78.jpg" width="1920" height="1080"
-                 alt="遞迴查詢與反覆查詢流程圖" loading="lazy">
+                 alt="遞迴查詢與反覆查詢流程圖（照著畫）" loading="lazy">
             <div class="slide-cap">同 8.15 投影片原圖（課堂翻拍為同一張圖），文字解說見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.15</a></div>
         </div>
     </section>
