@@ -339,6 +339,41 @@
         }
         .quiz-exp.show { display: block; }
 
+        /* ===== 考試練習 ===== */
+        .exam-card {
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s, border-color .15s;
+        }
+        .exam-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        .exam-card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+        .exam-card h3::after { content: ' →'; color: var(--primary); font-weight: 700; }
+        .exam-card .exam-meta {
+            display: inline-block;
+            margin-top: .5rem;
+            font-size: .75rem; font-weight: 600;
+            padding: .12rem .55rem; border-radius: 999px;
+            background: var(--primary-light); color: var(--primary-dark);
+        }
+        .exam-bar {
+            display: flex; flex-wrap: wrap; align-items: center; gap: .7rem;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            padding: .9rem 1.2rem; margin-bottom: 1rem;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .exam-bar h3 { font-size: 1rem; font-weight: 700; flex: 1; min-width: 160px; }
+        .exam-bar .prog { font-size: .8rem; color: var(--text3); font-family: monospace; }
+        .quiz-opt.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            font-weight: 600;
+        }
+        .quiz-opt.unanswered { border-color: var(--border); opacity: .8; }
+
         .score-box {
             text-align: center; padding: 1.5rem;
             background: linear-gradient(135deg, var(--primary-light), var(--success-light));
@@ -481,6 +516,7 @@
         <button onclick="showSec('midterm115')">115期中考重點</button>
         <button onclick="showSec('final115')" style="color: #e03131; font-weight: bold;">115期末考重點</button>
         <button onclick="showSec('quiz')">練習題庫</button>
+        <button onclick="showSec('exampaper')" style="color: #e03131; font-weight: bold;">🎯 考試練習（四份考卷）</button>
     </div>
 </nav>
 
@@ -3703,6 +3739,58 @@ http://[::1]/                       ← 瀏覽本機 IPv6 網站</div>
             <button class="btn" onclick="resetQuiz()">重新測驗</button>
         </div>
     </section>
+
+    <section id="exampaper">
+        <div class="sec-title">
+            <h2>🎯 考試練習</h2>
+            <p>先選一份「現在要考的考卷」，作答完按交卷才會公佈成績與解析（考前模擬真實考試節奏）。</p>
+        </div>
+
+        <div class="grid2" id="exam-picker">
+            <div class="card exam-card" data-exam="m115" tabindex="0" role="button" aria-label="開始115期中考">
+                <h3>115 期中考</h3>
+                <p>範圍：IPv4／IPv6 標頭、Ethernet Frame、Port 對應、DNS 遞迴／反覆、分割與重組、IPv6 位址判斷。</p>
+                <span class="exam-meta">20 題 · 全部作答後交卷</span>
+            </div>
+            <div class="card exam-card" data-exam="f115" tabindex="0" role="button" aria-label="開始115期末考">
+                <h3>115 期末考</h3>
+                <p>115 期末範圍整理中，暫以 114 期末重點出題：CSMA、子網路切割、Ethernet 標頭、Wi-Fi 標準。</p>
+                <span class="exam-meta">12 題 · 全部作答後交卷</span>
+            </div>
+            <div class="card exam-card" data-exam="m114" tabindex="0" role="button" aria-label="開始114期中考">
+                <h3>114 期中考</h3>
+                <p>範圍：Ch1–Ch4——數位編碼、通訊基礎、網路設備、OSI 模型。</p>
+                <span class="exam-meta">12 題 · 全部作答後交卷</span>
+            </div>
+            <div class="card exam-card" data-exam="f114" tabindex="0" role="button" aria-label="開始114期末考">
+                <h3>114 期末考</h3>
+                <p>範圍：Ch5、Ch7——CSMA/CD vs CSMA/CA、IP 網段計算、子網路切割、Ethernet 標頭、Wi-Fi。</p>
+                <span class="exam-meta">12 題 · 全部作答後交卷</span>
+            </div>
+        </div>
+
+        <div id="exam-paper" style="display:none">
+            <div class="exam-bar">
+                <h3 id="exam-title">—</h3>
+                <span class="prog" id="exam-prog">0 / 0</span>
+                <button class="btn" onclick="submitExam()">交卷</button>
+                <button class="btn btn-outline" onclick="backToPicker()">換考卷</button>
+            </div>
+            <div id="exam-qs"></div>
+            <div style="text-align:center;margin-top:.8rem">
+                <button class="btn" onclick="submitExam()">✅ 交卷評分</button>
+            </div>
+        </div>
+
+        <div class="score-box" id="exam-score" style="display:none">
+            <div class="num" id="exam-score-value">0/0</div>
+            <div class="lbl" id="exam-score-label">本次成績</div>
+            <div class="bar-wrap" style="max-width:240px;margin:.5rem auto"><div class="bar-fill" id="exam-score-bar" style="width:0%"></div></div>
+            <div id="exam-score-msg" style="font-size:.9rem;color:var(--text2);margin-bottom:.8rem"></div>
+            <button class="btn" onclick="retakeExam()">↻ 重考這一份</button>
+            <button class="btn btn-outline" onclick="backToPicker()">其它考卷</button>
+        </div>
+    </section>
 </main>
 
 <footer class="footer">
@@ -3905,6 +3993,185 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
     function resetQuiz() { initQuiz(); document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' }); }
 
     initQuiz();
+
+    /* ===== 考試練習（四份考卷） ===== */
+    const examBanks = {
+        m115: {
+            name: '115 期中考',
+            qs: [
+                { q: "IPv4 標頭的最小長度是多少？", opts: ["20 bytes", "24 bytes", "32 bytes", "60 bytes"], ans: 0, exp: "IHL = 5 → 5 × 4 = 20 bytes（無 Options）。" },
+                { q: "IPv4 表頭首 byte 為 0x46，代表 IHL = 6，表頭總長度為？", opts: ["16 bytes", "20 bytes", "24 bytes", "32 bytes"], ans: 2, exp: "IHL × 4 = 6 × 4 = 24 bytes，多出的 4 bytes 為 Options。" },
+                { q: "負責分割的三個欄位（Identification／Flags／Fragment Offset）集中在表頭的第幾列？", opts: ["第一列（bit 0–31）", "第二列（bit 32–63）", "第三列（bit 64–95）", "分散在表頭各處"], ans: 1, exp: "三個欄位都在第二列：ID(16) + Flags(3) + Offset(13) = 32 bits，剛好一列。" },
+                { q: "Identification 欄位佔幾位元？", opts: ["8 bits", "16 bits", "24 bits", "32 bits"], ans: 1, exp: "Identification 為 16 bits，所有分片複製相同的 ID。" },
+                { q: "Flags 與 Fragment Offset 合計幾位元？", opts: ["13 bits", "16 bits", "19 bits", "29 bits"], ans: 1, exp: "Flags 3 bits + Fragment Offset 13 bits = 16 bits。" },
+                { q: "封包 4000 bytes 大於 MTU 1500，且 DF = 1，路由器會怎麼做？", opts: ["照常切割後轉送", "丟棄封包並回傳 ICMP Fragmentation Needed", "拆一半再送", "排隊等 MTU 變大"], ans: 1, exp: "DF=1 禁止分割，路由器只能丟棄並回 ICMP（Type 3 Code 4），即 Path MTU Discovery。" },
+                { q: "MF (More Fragments) = 0 表示什麼？", opts: ["後面還有分片", "這是最後一片，或封包根本沒被分割", "禁止分割", "保留位元"], ans: 1, exp: "MF=0 → 最後一片或未分割；MF=1 → 後面還有（除最後一片外皆為 1）。" },
+                { q: "Fragment Offset 欄位以什麼為計算單位？", opts: ["1 byte", "8 bytes", "64 bytes", "1500 bytes"], ans: 1, exp: "16 bits vs 13 bits 差 3 bits（2³ = 8），故以 8 bytes 為單位。" },
+                { q: "Fragment Offset（13 bits）最大可表示的值為？", opts: ["4095", "8191", "16383", "65535"], ans: 1, exp: "2¹³ − 1 = 8191（乘 8 後即最大偏移 65528 bytes）。" },
+                { q: "除了最後一個分片，所有分片的 Payload 長度必須是什麼的整數倍？", opts: ["8 bytes", "16 bytes", "32 bytes", "64 bytes"], ans: 0, exp: "Offset 以 8 bytes 為單位，故非最後一片的 Payload 必須是 8 的倍數。" },
+                { q: "Ethernet Type = 0x0800 代表裝載的是什麼？", opts: ["ARP", "IPv4", "IPv6", "TCP"], ans: 1, exp: "0x0800 → IPv4；0x0806 → ARP。" },
+                { q: "Ethernet 訊框最小長度（不含 Preamble）為？", opts: ["64 bytes", "46 bytes", "1500 bytes", "1518 bytes"], ans: 0, exp: "最小 64 bytes（14 header + 46 data + 4 FCS），最大 1518。" },
+                { q: "DNS 中「客戶端 → 第一台伺服器」的查詢方式稱為？", opts: ["遞迴查詢 (Recursive)", "反覆查詢 (Iterative)", "區域傳輸", "快取查詢"], ans: 0, exp: "左半部（紅色來回）＝遞迴；右半部逐台問＝反覆。" },
+                { q: "IPv6 位址長度是多少？", opts: ["32 bits", "64 bits", "128 bits", "256 bits"], ans: 2, exp: "IPv6 為 128 bits（16 bytes）。" },
+                { q: "下列何者為「合法」的 IPv6 位址？", opts: ["2001:db8:::1", "2001::db8::1", "2001:db8::1", "2001;db8::1"], ans: 2, exp: ":: 只能壓縮一次；::: 三冒號與 ; 都非法。" },
+                { q: "用瀏覽器開啟 IPv6 網站時，位址要怎麼寫？", opts: ["https://[2001:db8::1]/", "https://(2001:db8::1)/", "https://2001:db8::1/", "https://{2001:db8::1}/"], ans: 0, exp: "冒號與 port 分隔符衝突，故 IPv6 位址須加中括號，port 寫在括號外。" },
+                { q: "Port 443 對應哪個服務？", opts: ["HTTP", "HTTPS", "FTP", "SSH"], ans: 1, exp: "HTTP=80、HTTPS=443、FTP=20/21、SSH=22。" },
+                { q: "IPv6 取消了下列哪一種傳播方式？", opts: ["Unicast", "Broadcast", "Multicast", "Anycast"], ans: 1, exp: "IPv6 沒有 Broadcast，改用 Multicast（群組）與 Anycast（最近一台）。" },
+                { q: "Anycast（任意點傳播）的封包會送給誰？", opts: ["網段全部主機", "有加入群組的主機", "路由距離最近的一台", "隨機一台"], ans: 2, exp: "多台主機同一位址，路由器送給最近的那台；典型應用：DNS 根伺服器。" },
+                { q: "IPv4 表頭的 TTL 歸零時，路由器會怎麼做？", opts: ["回傳給發送端", "丟棄封包", "重新設定為 64 再送", "廣播出去"], ans: 1, exp: "TTL 每過一跳減 1，歸零即丟棄（traceroute 即利用此特性）。" }
+            ]
+        },
+        f115: {
+            name: '115 期末考',
+            qs: [
+                { q: "CSMA/CA 主要用在哪種網路？", opts: ["有線乙太網路", "無線網路 (Wi-Fi)", "骨幹網路", "WAN 連線"], ans: 1, exp: "無線無法有效偵測碰撞，改用碰撞避免 (CA)。" },
+                { q: "RTS/CTS 機制用來解決什麼問題？", opts: ["隱藏節點問題", "廣播風暴", "網路迴路", "頻寬不足"], ans: 0, exp: "RTS/CTS 解決隱藏節點 (Hidden Node Problem)。" },
+                { q: "第二層（L2）廣播位址為？", opts: ["255.255.255.255", "FF:FF:FF:FF:FF:FF", "00:00:00:00:00:00", "第一個位元組為 0xFF 的單點位址"], ans: 1, exp: "MAC 廣播＝FF-FF-FF-FF-FF-FF；255.255.255.255 是 L3 廣播。" },
+                { q: "128.1.2.3 /16 的網路位址為？", opts: ["128.1.0.0", "128.1.2.0", "128.0.0.0", "128.1.255.255"], ans: 0, exp: "前 16 bits 保留、其餘補 0 → 128.1.0.0。" },
+                { q: "128.1.2.3 /16 的廣播位址為？", opts: ["128.1.0.255", "128.0.255.255", "128.1.255.255", "128.1.2.255"], ans: 2, exp: "網路位址不變、主機位元全填 1 → 128.1.255.255。" },
+                { q: "192.168.20.0/24 向主機借 1 bit 切割，新遮罩為？", opts: ["255.255.255.0", "255.255.255.128", "255.255.128.0", "255.255.255.192"], ans: 1, exp: "借 1 bit → /25 = 255.255.255.128，切成 2 個子網。" },
+                { q: "子網路 192.168.1.0/26 有多少可用主機？", opts: ["30", "62", "126", "254"], ans: 1, exp: "主機 6 bits → 2⁶ − 2 = 62 台。" },
+                { q: "Ethernet 訊框最大長度為？", opts: ["64 bytes", "1500 bytes", "1518 bytes", "9000 bytes"], ans: 2, exp: "1518 = 14 header + 1500 data + 4 FCS。" },
+                { q: "Ethernet Type = 0x0806 代表？", opts: ["IPv4", "ARP", "IPv6", "VLAN"], ans: 1, exp: "0x0806 → ARP 封包。" },
+                { q: "Wi-Fi 6 對應的 IEEE 標準為？", opts: ["802.11n", "802.11ac", "802.11ax", "802.11be"], ans: 2, exp: "Wi-Fi 4=n、Wi-Fi 5=ac、Wi-Fi 6=ax、Wi-Fi 7=be。" },
+                { q: "CSMA/CD 發生碰撞後會送出什麼訊號？", opts: ["ACK", "Jam Signal", "RTS", "Beacon"], ans: 1, exp: "碰撞後送 Jam Signal 通知全網路，再隨機退避重傳。" },
+                { q: "ZigBee 使用哪個 IEEE 標準？", opts: ["802.15.1", "802.15.4", "802.11ax", "802.3af"], ans: 1, exp: "ZigBee＝802.15.4（低功耗物聯網）；藍牙＝802.15.1。" }
+            ]
+        },
+        m114: {
+            name: '114 期中考',
+            qs: [
+                { q: "OSI 模型中負責路由 (Routing) 的是第幾層？", opts: ["第 3 層（網路層）", "第 2 層（資料連結層）", "第 4 層（傳輸層）", "第 7 層（應用層）"], ans: 0, exp: "網路層以邏輯位址 (IP) 進行路由與轉送。" },
+                { q: "交換器 (Switch) 工作在 OSI 第幾層？", opts: ["第 1 層", "第 2 層", "第 3 層", "第 4 層"], ans: 1, exp: "傳統 Switch 依 MAC 位址轉發，屬資料連結層（L2 Switch）。" },
+                { q: "集線器 (Hub) 工作在 OSI 第幾層？", opts: ["第 1 層", "第 2 層", "第 3 層", "第 7 層"], ans: 0, exp: "Hub 只做訊號放大與廣播，屬實體層。" },
+                { q: "下列哪個設備可以分割廣播域？", opts: ["Hub", "Switch", "Router", "Repeater"], ans: 2, exp: "Router 依網路位址轉送，是廣播域的邊界。" },
+                { q: "MAC 位址的長度為？", opts: ["32 bits", "48 bits", "64 bits", "128 bits"], ans: 1, exp: "MAC＝48 bits（6 bytes），前 24 bits 為 OUI。" },
+                { q: "Manchester 编碼最大的優點是？", opts: ["自帶時脈訊號", "最省頻寬", "完全無 DC 成分", "傳輸距離最遠"], ans: 0, exp: "每個位元必有跳變，接收端可由跳變恢復時脈。" },
+                { q: "通訊協定三要素不包括下列何者？", opts: ["語法 (Syntax)", "語意 (Semantics)", "時序 (Timing)", "語音 (Voice)"], ans: 3, exp: "三要素：語法、語意、時序。" },
+                { q: "全雙工 1 Gbps 連線的理論總吞吐量為？", opts: ["500 Mbps", "1 Gbps", "2 Gbps", "4 Gbps"], ans: 2, exp: "全雙工雙向同時收發 → 1 + 1 = 2 Gbps。" },
+                { q: "UTP 纜線的最大傳輸距離約為？", opts: ["10 m", "55 m", "100 m", "500 m"], ans: 2, exp: "雙絞線單段最大 100 m。" },
+                { q: "1000BASE-T 使用哪種纜線？", opts: ["Cat3", "Cat5", "Cat5e", "Cat6a"], ans: 2, exp: "1000BASE-T 需 Cat5e 以上。" },
+                { q: "同步傳輸 (Synchronous) 的特色為？", opts: ["以時鐘同步、資料成塊傳送", "每個字元有起始/停止位元", "一次傳一個位元", "不需要時脈"], ans: 0, exp: "同步傳輸以時脈對時、成塊傳送；非同步才有起始/停止位元。" },
+                { q: "哪種設備只在實體層放大/再生訊號，不辨識 MAC？", opts: ["Repeater", "Bridge", "Switch", "Router"], ans: 0, exp: "Repeater（中繼器）＝L1 訊號再生，不看位址。" }
+            ]
+        },
+        f114: {
+            name: '114 期末考',
+            qs: [
+                { q: "CSMA/CD 遇到碰撞後的處理順序為？", opts: ["立即重傳", "停止傳送＋送 Jam Signal＋隨機退避", "提高優先權", "通知接收端補送"], ans: 1, exp: "邊傳邊聽、碰撞即停、送 Jam、隨機退避後重傳。" },
+                { q: "第三層（L3）廣播位址為？", opts: ["FF:FF:FF:FF:FF:FF", "255.255.255.255", "127.0.0.1", "0.0.0.0"], ans: 1, exp: "L3 廣播＝255.255.255.255；FF:FF:FF:FF:FF:FF 是 L2。" },
+                { q: "128.1.2.3 /16 的網路遮罩為？", opts: ["255.255.0.0", "255.0.0.0", "255.255.255.0", "255.255.240.0"], ans: 0, exp: "/16 → 前 16 bits 為 1 → 255.255.0.0。" },
+                { q: "128.1.0.1 ～ 128.1.255.254 這個範圍是什麼？", opts: ["網路位址", "廣播位址", "可用主機範圍", "保留位址"], ans: 2, exp: "頭尾各扣 1（網路位址與廣播位址不可用）。" },
+                { q: "192.168.20.0/24 與 192.168.21.0/24 超網化合併後的遮罩為？", opts: ["/24", "/23", "/22", "/25"], ans: 1, exp: "前 23 bits 相同 → 合併為 192.168.20.0/23。" },
+                { q: "192.168.20.0/25 可切成幾個子網路、各有幾台主機？", opts: ["2 網路 × 126 主機", "4 網路 × 62 主機", "2 網路 × 62 主機", "1 網路 × 126 主機"], ans: 0, exp: "借 1 bit → 切成 2 個子網；/25 主機位元 7 bits → 2⁷−2 = 126 台可用。" },
+                { q: "Ethernet Preamble（前導碼）的主要用途為？", opts: ["接收端時脈同步", "標示上層協定", "錯誤檢查", "位址標示"], ans: 0, exp: "Preamble 為 1010… 交替訊號，用於時脈同步（結尾 1011 為 SFD）。" },
+                { q: "Ethernet FCS（檢查碼）佔幾 bytes？", opts: ["2", "4", "6", "8"], ans: 1, exp: "FCS＝4 bytes（CRC），用來檢查訊框是否損壞。" },
+                { q: "Wi-Fi 5 對應的 IEEE 標準為？", opts: ["802.11n", "802.11ac", "802.11ax", "802.11be"], ans: 1, exp: "Wi-Fi 5＝802.11ac（5GHz 專用）。" },
+                { q: "802.3af (PoE) 最大供電功率為？", opts: ["7.5W", "15.4W", "30W", "60W"], ans: 1, exp: "802.3af＝15.4W、802.3at (PoE+)＝30W。" },
+                { q: "VLAN 標籤 (802.1Q) 佔用幾 bytes？", opts: ["2", "4", "6", "8"], ans: 1, exp: "802.1Q 標籤 4 bytes，插在 Source MAC 與 Type 之間。" },
+                { q: "STP（生成樹協定）的主要功能為？", opts: ["增加頻寬", "防止網路迴路", "資料加密", "自動分配 IP"], ans: 1, exp: "STP 阻塞多餘路徑，避免廣播風暴與迴路。" }
+            ]
+        }
+    };
+
+    let examKey = null, examAnswers = {}, examGraded = false;
+
+    function updateExamProg() {
+        const total = examBanks[examKey].qs.length;
+        const done = Object.keys(examAnswers).length;
+        document.getElementById('exam-prog').textContent = done + ' / ' + total;
+    }
+
+    function pickExam(key) {
+        examKey = key;
+        examAnswers = {};
+        examGraded = false;
+        const bank = examBanks[key];
+        document.getElementById('exam-picker').style.display = 'none';
+        document.getElementById('exam-score').style.display = 'none';
+        document.getElementById('exam-paper').style.display = 'block';
+        document.getElementById('exam-title').textContent = '📝 ' + bank.name;
+        const c = document.getElementById('exam-qs');
+        c.innerHTML = '';
+        bank.qs.forEach((q, i) => {
+            const card = document.createElement('div');
+            card.className = 'quiz-card';
+            card.id = 'eq-' + i;
+            card.innerHTML = `
+                <div class="quiz-q">${i + 1}. ${q.q}</div>
+                <div class="quiz-opts">
+                    ${q.opts.map((o, j) => `<div class="quiz-opt" data-qi="${i}" data-oj="${j}" onclick="answerExam(${i},${j})">${o}</div>`).join('')}
+                </div>
+                <div class="quiz-exp" id="eexp-${i}"><strong>解析：</strong>${q.exp}</div>
+            `;
+            c.appendChild(card);
+        });
+        updateExamProg();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function answerExam(qi, oj) {
+        if (examGraded) return;
+        examAnswers[qi] = oj;
+        const card = document.getElementById('eq-' + qi);
+        card.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
+        card.querySelector(`.quiz-opt[data-oj="${oj}"]`).classList.add('selected');
+        updateExamProg();
+    }
+
+    function submitExam() {
+        if (!examKey || examGraded) return;
+        const bank = examBanks[examKey];
+        if (Object.keys(examAnswers).length < bank.qs.length) {
+            const left = bank.qs.length - Object.keys(examAnswers).length;
+            if (!confirm(`還有 ${left} 題未作答，確定要交卷嗎？`)) return;
+        }
+        examGraded = true;
+        let score = 0;
+        bank.qs.forEach((q, i) => {
+            const card = document.getElementById('eq-' + i);
+            const opts = card.querySelectorAll('.quiz-opt');
+            const sel = examAnswers[i];
+            opts.forEach((o, j) => {
+                o.classList.add('disabled');
+                o.classList.remove('selected');
+                if (j === q.ans) o.classList.add('correct');
+                else if (j === sel) o.classList.add('wrong');
+            });
+            if (sel === undefined) card.querySelector(`.quiz-opt[data-oj="0"]`).classList.add('unanswered');
+            if (sel === q.ans) score++;
+            document.getElementById('eexp-' + i).classList.add('show');
+        });
+        const pct = Math.round(score / bank.qs.length * 100);
+        document.getElementById('exam-score-value').textContent = score + '/' + bank.qs.length + '（' + pct + '%）';
+        document.getElementById('exam-score-label').textContent = bank.name + ' 成績';
+        document.getElementById('exam-score-bar').style.width = pct + '%';
+        document.getElementById('exam-score-msg').textContent =
+            pct >= 80 ? '🎉 恭表現！這份考卷穩了。' :
+            pct >= 60 ? '👍 及格！再把錯題解析看一遍。' :
+            '💪 還需要加油，先回重點整理複習錯的題目。';
+        const d = document.getElementById('exam-score');
+        d.style.display = 'block';
+        d.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function retakeExam() { pickExam(examKey); }
+
+    function backToPicker() {
+        examKey = null;
+        examGraded = false;
+        document.getElementById('exam-paper').style.display = 'none';
+        document.getElementById('exam-score').style.display = 'none';
+        document.getElementById('exam-picker').style.display = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('#exam-picker .exam-card').forEach(c => {
+        c.addEventListener('click', () => pickExam(c.dataset.exam));
+        c.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickExam(c.dataset.exam); }
+        });
+    });
 </script>
 </body>
 </html>
