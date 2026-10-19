@@ -425,17 +425,17 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn btn-outline" onclick="resetQ(2)">重設本題</button>
         </div>
         <div class="fill-list" id="q2-blanks">
-            <div class="fill-item"><label>1a. Destination MAC（空格分隔或冒號皆可）</label><input class="fill-input" id="q2-a" placeholder="ex: cc 28 aa af 0f e5"></div>
-            <div class="fill-item"><label>1b. Source MAC</label><input class="fill-input" id="q2-b" placeholder="ex: 00 08 e3 ff fd 90"></div>
-            <div class="fill-item"><label>1c. Type = 08 00 裝載什麼封包？</label><input class="fill-input" id="q2-c" placeholder="IP 或 IPv4"></div>
-            <div class="fill-item"><label>2a. Source IP（十進位點分）</label><input class="fill-input" id="q2-d" placeholder="ex: 91.108.56.147"></div>
-            <div class="fill-item"><label>2b. Destination IP（十進位點分）</label><input class="fill-input" id="q2-e" placeholder="ex: 192.168.61.159"></div>
+            <div class="fill-item"><label>1a. Destination MAC（空格分隔或冒號皆可）</label><input class="fill-input" id="q2-a" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>1b. Source MAC</label><input class="fill-input" id="q2-b" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>1c. Type = 08 00 裝載什麼封包？</label><input class="fill-input" id="q2-c" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>2a. Source IP（十進位點分）</label><input class="fill-input" id="q2-d" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>2b. Destination IP（十進位點分）</label><input class="fill-input" id="q2-e" placeholder="請輸入答案"></div>
             <div class="fill-item"><label>3. 首 byte 45：Version = ?</label><input class="fill-input" id="q2-f" placeholder="數字"></div>
             <div class="fill-item"><label>3. 首 byte 45：IHL = ?</label><input class="fill-input" id="q2-g" placeholder="數字"></div>
             <div class="fill-item"><label>3. 標頭總長度（bytes）= ?</label><input class="fill-input" id="q2-h" placeholder="數字"></div>
-            <div class="fill-item"><label>4. Payload 長度（bytes）= ?</label><input class="fill-input" id="q2-i" placeholder="Total Length − 標頭長度"></div>
+            <div class="fill-item"><label>4. Payload 長度（bytes）= ?</label><input class="fill-input" id="q2-i" placeholder="請輸入答案"></div>
             <div class="fill-item"><label>5. TTL（十進位）= ?</label><input class="fill-input" id="q2-j" placeholder="數字"></div>
-            <div class="fill-item"><label>6. Protocol = ?（下一層協定）</label><input class="fill-input" id="q2-k" placeholder="ex: TCP"></div>
+            <div class="fill-item"><label>6. Protocol = ?（下一層協定）</label><input class="fill-input" id="q2-k" placeholder="請輸入答案"></div>
         </div>
         <div class="q-exp" id="q2-exp"><strong>詳解：</strong>前 6 bytes = Destination MAC（cc 28 aa af 0f e5），接著 6 bytes = Source MAC（00 08 e3 ff fd 90），Type 08 00 = IPv4（08 06 則是 ARP）。IP 標頭從第 14 bytes 的 45 開始：Version=4、IHL=5 → 標頭 5×4=20 bytes。Total Length = 00 28<sub>hex</sub> = 40 → Payload = 40 − 20 = 20 bytes。TTL = 32<sub>hex</sub> = 50；Protocol = 06 = TCP。Source IP = 5b 6c 38 93 → 91.108.56.147；Destination IP = c0 a8 3d 9f → 192.168.61.159。</div>
     </section>
@@ -500,9 +500,9 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn btn-outline" onclick="resetQ(5)">重設本題</button>
         </div>
         <div class="fill-list">
-            <div class="fill-item"><label>欄位 1（16 bits）</label><input class="fill-input" id="q5-a" placeholder="ex: Identification"></div>
-            <div class="fill-item"><label>欄位 2（3 bits）</label><input class="fill-input" id="q5-b" placeholder="ex: Flags"></div>
-            <div class="fill-item"><label>欄位 3（13 bits）</label><input class="fill-input" id="q5-c" placeholder="ex: Fragment Offset"></div>
+            <div class="fill-item"><label>欄位 1（16 bits）</label><input class="fill-input" id="q5-a" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>欄位 2（3 bits）</label><input class="fill-input" id="q5-b" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>欄位 3（13 bits）</label><input class="fill-input" id="q5-c" placeholder="請輸入答案"></div>
         </div>
         <div class="q-exp" id="q5-exp"><strong>詳解：</strong>第 2 列共 32 bits = Identification(16) + Flags(3) + Fragment Offset(13)。同一個大封包的所有分片會帶「相同的 Identification」；Flags 中 MF=1 表示後面還有分片、DF=1 表示禁止分割；Fragment Offset 以 8 bytes 為單位標示此分片在原封包中的位置。</div>
     </section>
@@ -516,8 +516,8 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn btn-outline" onclick="resetQ(6)">重設本題</button>
         </div>
         <div class="fill-list">
-            <div class="fill-item"><label>IPv4 位址長度（bits）</label><input class="fill-input" id="q6-a" placeholder="ex: 32"></div>
-            <div class="fill-item"><label>IPv6 位址長度（bits）</label><input class="fill-input" id="q6-b" placeholder="ex: 128"></div>
+            <div class="fill-item"><label>IPv4 位址長度（bits）</label><input class="fill-input" id="q6-a" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>IPv6 位址長度（bits）</label><input class="fill-input" id="q6-b" placeholder="請輸入答案"></div>
         </div>
         <div class="q-exp" id="q6-exp"><strong>詳解：</strong>IPv4 = 32 bits（4 bytes）；IPv6 = 128 bits（16 bytes），是 IPv4 的 4 倍長，位址空間幾乎用不完。</div>
     </section>
@@ -578,9 +578,9 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
         </div>
         <div class="mini-label">a. IPv4 支援的三種傳播方式（中英文皆可，順序 1→3）：</div>
         <div class="fill-list">
-            <div class="fill-item"><label>第 1 種（單點對單點）</label><input class="fill-input" id="q8-a" placeholder="ex: Unicast"></div>
-            <div class="fill-item"><label>第 2 種（群組）</label><input class="fill-input" id="q8-b" placeholder="ex: Multicast"></div>
-            <div class="fill-item"><label>第 3 種（全網段）</label><input class="fill-input" id="q8-c" placeholder="ex: Broadcast"></div>
+            <div class="fill-item"><label>第 1 種（單點對單點）</label><input class="fill-input" id="q8-a" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>第 2 種（群組）</label><input class="fill-input" id="q8-b" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>第 3 種（全網段）</label><input class="fill-input" id="q8-c" placeholder="請輸入答案"></div>
         </div>
         <div class="mini-label">b. 重點考題：IPv6 取消了哪一種傳播方式？（點選）</div>
         <div class="chips" id="q8-choice">
@@ -591,8 +591,8 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
         </div>
         <div class="mini-label">c. IPv4 vs IPv6 傳播差異的核心對比是哪兩個字眼？</div>
         <div class="fill-list">
-            <div class="fill-item"><label>IPv4 有、IPv6 沒有的傳播方式</label><input class="fill-input" id="q8-d" placeholder="ex: Broadcast"></div>
-            <div class="fill-item"><label>IPv6 新增的傳播方式（送給最近一台）</label><input class="fill-input" id="q8-e" placeholder="ex: Anycast"></div>
+            <div class="fill-item"><label>IPv4 有、IPv6 沒有的傳播方式</label><input class="fill-input" id="q8-d" placeholder="請輸入答案"></div>
+            <div class="fill-item"><label>IPv6 新增的傳播方式（送給最近一台）</label><input class="fill-input" id="q8-e" placeholder="請輸入答案"></div>
         </div>
         <div class="q-exp" id="q8-exp"><strong>詳解：</strong>IPv4 三種傳播：Unicast（單播）、Multicast（多播）、Broadcast（廣播）。IPv6 取消 Broadcast，改用 Multicast ＋ Anycast；核心對比就是 <strong>Broadcast vs Anycast</strong>——廣播送全網段，任播只送「路由上最近的一台」（典型應用：DNS 根、NTP）。</div>
     </section>
@@ -617,7 +617,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn" onclick="checkQ(10)">檢查答案</button>
             <button class="btn btn-outline" onclick="resetQ(10)">重設本題</button>
         </div>
-        <div class="fill-item"><label>完整 HTTPS 網址</label><input class="fill-input" id="q10-a" placeholder="https://[....]  記得中括號！" style="max-width:420px"></div>
+        <div class="fill-item"><label>完整 HTTPS 網址</label><input class="fill-input" id="q10-a" placeholder="請輸入完整網址" style="max-width:420px"></div>
         <div class="q-exp" id="q10-exp"><strong>詳解：</strong>正確答案 <code>https://[2001:db8::1]</code>。重點驗證有沒有加上 [ 與 ]；若寫成 <code>https://2001:db8::1</code> 瀏覽器會把 <code>:1</code> 誤認成 Port 號。</div>
     </section>
 
