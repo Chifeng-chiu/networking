@@ -7,27 +7,49 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg: #0b1020;
-            --surface: rgba(255, 255, 255, 0.06);
-            --border: rgba(255, 255, 255, 0.12);
-            --text: #eef2ff;
-            --text2: #b8c0d9;
-            --text3: #7c86a3;
-            --violet: #a78bfa;
-            --pink: #f472b6;
+            --bg: #f0f2f5;
+            --surface: #fff;
+            --surface2: #f8f9fa;
+            --border: #dee2e6;
+            --text: #212529;
+            --text2: #495057;
+            --text3: #868e96;
+            --primary: #7c3aed;
+            --primary-light: #ede9fe;
+            --primary-dark: #5b21b6;
+            --accent: #f59f00;
+            --accent-light: #fff3bf;
+            --success: #2f9e44;
+            --success-light: #d3f9d8;
+            --danger: #e03131;
+            --danger-light: #ffe0e0;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
         }
+        html { scroll-behavior: smooth; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.65;
-            min-height: 100vh;
         }
+
         header {
-            background: linear-gradient(135deg, #6d28d9, #a78bfa, #f472b6);
-            padding: 2.5rem 1.5rem 1.8rem;
+            background: linear-gradient(135deg, #6d28d9, #7c3aed, #c026d3);
+            color: #fff;
+            padding: 2.5rem 1.5rem 1.5rem;
+            position: relative;
+            overflow: hidden;
         }
-        header .inner { max-width: 900px; margin: 0 auto; }
+        header::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,.12) 0%, transparent 60%);
+        }
+        header > * { position: relative; z-index: 1; }
+        header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: .35rem; }
+        header p { font-size: 1rem; opacity: .85; max-width: 560px; }
         .home-link {
             display: inline-block;
             margin-bottom: .8rem;
@@ -39,66 +61,1120 @@
             text-decoration: none;
             font-size: .85rem;
             font-weight: 600;
+            backdrop-filter: blur(4px);
             transition: background .15s;
         }
         .home-link:hover { background: rgba(255,255,255,.3); }
-        header h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -.03em; }
-        header p { opacity: .9; font-size: .95rem; }
-        main { max-width: 900px; margin: 0 auto; padding: 1.8rem 1.2rem 3rem; }
+
+        body.has-sidebar { padding-left: 280px; }
+        main {
+            min-width: 0;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 3rem;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            width: 280px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            z-index: 200;
+            transition: transform .25s ease;
+        }
+        nav::-webkit-scrollbar { width: 6px; }
+        nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        nav::-webkit-scrollbar-track { background: transparent; }
+        nav .inner {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 1rem .75rem 2rem;
+        }
+        nav .nav-title {
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: .06em;
+            color: var(--text3);
+            padding: .25rem .6rem .5rem;
+            text-transform: uppercase;
+        }
+        nav .nav-group {
+            font-size: .7rem;
+            font-weight: 700;
+            color: var(--text3);
+            padding: .7rem .6rem .25rem;
+            letter-spacing: .04em;
+        }
+        nav button {
+            width: 100%;
+            text-align: left;
+            padding: .5rem .7rem;
+            border: none; background: transparent;
+            font-size: .85rem; font-weight: 500; color: var(--text2);
+            border-radius: 6px;
+            cursor: pointer; white-space: nowrap;
+            transition: all .15s;
+            font-family: inherit;
+        }
+        nav button:hover { background: var(--surface2); color: var(--text); }
+        nav button.active {
+            background: var(--primary); color: #fff;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(124,58,237,.35);
+        }
+        nav button.close-btn { display: none; }
+
+        .collapse-btn {
+            position: fixed;
+            top: 50%; left: 280px;
+            transform: translateY(-50%);
+            z-index: 300;
+            width: 22px; height: 56px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--surface);
+            color: var(--text2);
+            border: 1px solid var(--border);
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            padding: 0;
+            transition: left .25s ease, color .15s, background .15s;
+        }
+        .collapse-btn:hover { background: var(--primary); color: #fff; }
+        .collapse-btn svg { width: 14px; height: 14px; transition: transform .25s ease; }
+
+        body.sidebar-collapsed { padding-left: 0; }
+        body.sidebar-collapsed nav { transform: translateX(-100%); }
+        body.sidebar-collapsed .collapse-btn { left: 0; border-left: 1px solid var(--border); border-radius: 8px; }
+        body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
+        body.sidebar-collapsed main { max-width: none; }
+
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: .75rem; left: .75rem;
+            z-index: 1200;
+            width: 42px; height: 42px;
+            border: 1px solid rgba(255,255,255,.35);
+            border-radius: 8px;
+            background: rgba(255,255,255,.15);
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+            padding: 0;
+        }
+        .hamburger span {
+            display: block;
+            width: 20px; height: 2px;
+            margin: 4px auto;
+            background: #fff;
+            border-radius: 1px;
+            transition: all .2s;
+        }
+        .hamburger.active span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        .backdrop {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.45);
+            z-index: 150;
+        }
+        .backdrop.show { display: block; }
+
+        @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        section { display: none; }
+        section.active { display: block; animation: fade .25s ease; }
+
+        .sec-title { margin-bottom: 1.25rem; }
+        .sec-title h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: .2rem; }
+        .sec-title p { color: var(--text3); font-size: .9rem; }
+
         .card {
             background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1.4rem 1.5rem;
-            margin-bottom: 1.2rem;
-            backdrop-filter: blur(8px);
         }
-        .card h2 { font-size: 1.15rem; margin-bottom: .6rem; }
-        .card ul { padding-left: 1.2rem; color: var(--text2); font-size: .92rem; }
-        .card li { margin-bottom: .35rem; }
-        .soon-badge {
+        .card h3 {
+            font-size: 1.1rem; font-weight: 700;
+            margin-bottom: .6rem; padding-bottom: .4rem;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+        }
+        .card h4 { font-size: 1rem; font-weight: 600; margin: .85rem 0 .35rem; color: var(--text); }
+        .card p, .card li { font-size: .9rem; color: var(--text2); }
+        .card ul, .card ol { padding-left: 1.1rem; margin: .3rem 0; }
+        .card li { margin-bottom: .2rem; }
+        .card li ul, .card li ol { margin: .25rem 0; }
+        .card blockquote {
+            border-left: 3px solid var(--primary);
+            background: var(--primary-light);
+            padding: .6rem .9rem; margin: .6rem 0;
+            border-radius: 0 4px 4px 0;
+            font-size: .85rem; color: var(--text);
+        }
+        .card blockquote.ok {
+            border-left-color: var(--success);
+            background: var(--success-light);
+        }
+
+        .tag {
             display: inline-block;
-            font-size: .75rem; font-weight: 700;
-            padding: .2rem .7rem; border-radius: 999px;
-            background: rgba(244, 114, 182, .15);
-            border: 1px solid rgba(244, 114, 182, .45);
-            color: #f9a8d4;
-            margin-bottom: .8rem;
+            padding: .1rem .5rem;
+            border-radius: 4px;
+            font-size: .72rem; font-weight: 600;
+        }
+        .tag-p { background: var(--primary-light); color: var(--primary-dark); }
+        .tag-a { background: var(--accent-light); color: #b88500; }
+        .tag-s { background: var(--success-light); color: var(--success); }
+        .tag-d { background: var(--danger-light); color: var(--danger); }
+
+        .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+
+        table {
+            width: 100%; border-collapse: collapse;
+            font-size: .85rem; margin: .5rem 0;
+        }
+        th {
+            background: var(--surface2);
+            padding: .55rem .7rem; text-align: left;
+            font-weight: 600; border-bottom: 2px solid var(--border);
+            color: var(--text);
+        }
+        td {
+            padding: .45rem .7rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text2);
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--surface2); }
+        .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; margin: .5rem 0; }
+
+        code {
+            background: var(--surface2);
+            padding: .1rem .35rem; border-radius: 3px;
+            font-family: 'Consolas', monospace; font-size: .85em;
+            color: var(--primary-dark);
+        }
+
+        #overview .grid2 .card.link-card {
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s, border-color .15s;
+        }
+        #overview .grid2 .card.link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        #overview .grid2 .card.link-card:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        #overview .grid2 .card.link-card h3::after {
+            content: ' →';
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .footer {
+            background: #1e1e2e; color: var(--text3);
+            text-align: center; padding: 1.5rem;
+            font-size: .8rem;
+        }
+
+        @media (max-width: 960px) {
+            body.has-sidebar { padding-left: 0; }
+            main { max-width: none; padding: 1rem .5rem 3rem; }
+            .collapse-btn { display: none; }
+            nav {
+                width: 264px;
+                max-width: 82vw;
+                border-right: 1px solid var(--border);
+                transform: translateX(-100%);
+                transition: transform .25s ease;
+                box-shadow: var(--shadow-lg);
+            }
+            nav.open { transform: translateX(0); }
+            nav button.close-btn { display: block; text-align: right; color: var(--text3); }
+            nav button.close-btn:hover { color: var(--danger); }
+            .hamburger { display: block; }
+            header { padding: 4.5rem 1.25rem 1.5rem; }
+        }
+        @media (max-width: 640px) {
+            header h1 { font-size: 1.4rem; }
+            .card { padding: 1rem; }
+            .grid2 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-<body>
+<body class="has-sidebar">
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="開啟導覽選單" aria-expanded="false">
+    <span></span><span></span><span></span>
+</button>
+<div class="backdrop" id="backdrop" onclick="toggleSidebar()"></div>
 
 <header>
-    <div class="inner">
-        <a class="home-link" href="index.html">🏠 回首頁（所有科目）</a>
-        <h1>🗄️ 資料庫系統管理 重點總複習</h1>
-        <p>SQL、正規化、ER Model、交易管理——內容整理中，骨架已備好。</p>
-    </div>
+    <a class="home-link" href="index.html">🏠 回首頁（所有科目）</a>
+    <h1>資料庫系統管理 重點總複習</h1>
+    <p>資料庫導論、環境、架構與 Web、關聯模型、關聯代數、正規化——七大單元一次整理</p>
 </header>
 
+<button class="collapse-btn" id="collapse-btn" onclick="toggleCollapse()" aria-label="收合側邊欄" title="收合側邊欄">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+</button>
+
+<nav id="sidebar">
+    <div class="inner">
+        <button class="close-btn" onclick="toggleSidebar()" aria-label="關閉導覽選單">✕</button>
+        <div class="nav-title">目錄</div>
+        <button class="active" onclick="showSec('overview')">總覽</button>
+        <div class="nav-group">單元</div>
+        <button onclick="showSec('u1')">單元一 資料庫導論</button>
+        <button onclick="showSec('u2')">單元二 資料庫環境</button>
+        <button onclick="showSec('u3')">單元三 架構與 Web</button>
+        <button onclick="showSec('u4')">單元四 關聯模型</button>
+        <button onclick="showSec('u5')">單元五 關聯代數／微積分</button>
+        <button onclick="showSec('u6')">單元六 正規化 I</button>
+        <button onclick="showSec('u7')">單元七 正規化 II</button>
+    </div>
+</nav>
+
 <main>
+
+<section id="overview" class="active">
+    <div class="sec-title">
+        <h2>資料庫系統管理 總覽</h2>
+        <p>七大單元重點整理 — 點卡片或左側目錄進入</p>
+    </div>
+    <div class="grid2">
+        <div class="card link-card" data-sec="u1" tabindex="0" role="button" aria-label="前往單元一">
+            <h3>單元一：資料庫導論</h3>
+            <p>檔案式系統的限制、DBMS 概念、DDL/DML、Views、DBMS 優缺點、發展歷史。</p>
+        </div>
+        <div class="card link-card" data-sec="u2" tabindex="0" role="button" aria-label="前往單元二">
+            <h3>單元二：資料庫環境</h3>
+            <p>ANSI-SPARC 三層架構、資料獨立性、資料模型分類、DBMS 功能與系統目錄、多使用者架構。</p>
+        </div>
+        <div class="card link-card" data-sec="u3" tabindex="0" role="button" aria-label="前往單元三">
+            <h3>單元三：資料庫架構與 Web</h3>
+            <p>主從架構、中介軟體、TP Monitor、Web 服務與 SOA、分散式 DBMS、資料倉儲、Oracle 架構。</p>
+        </div>
+        <div class="card link-card" data-sec="u4" tabindex="0" role="button" aria-label="前往單元四">
+            <h3>單元四：關聯模型</h3>
+            <p>關聯術語、關聯鍵（超鍵/候選鍵/主鍵/外鍵）、完整性限制、檢視表與基底關聯。</p>
+        </div>
+        <div class="card link-card" data-sec="u5" tabindex="0" role="button" aria-label="前往單元五">
+            <h3>單元五：關聯代數與微積分</h3>
+            <p>選取／投影／聯集／差集／笛卡兒積、Join 家族、除法、聚合與分組、TRC 與 DRC。</p>
+        </div>
+        <div class="card link-card" data-sec="u6" tabindex="0" role="button" aria-label="前往單元六">
+            <h3>單元六：正規化 I</h3>
+            <p>正規化基礎、1NF → 2NF → 3NF → BCNF、功能相依、部分相依與遞移相依。</p>
+        </div>
+        <div class="card link-card" data-sec="u7" tabindex="0" role="button" aria-label="前往單元七">
+            <h3>單元七：正規化 II</h3>
+            <p>1NF 三規則、2NF/3NF/BCNF 實作、訂購單正規化實戰、反正規化的另類思考。</p>
+        </div>
+    </div>
+</section>
+
+<section id="u1">
+    <div class="sec-title">
+        <h2>單元一：資料庫導論 (Introduction to Databases)</h2>
+        <p>檔案式系統的限制、DBMS 基本概念、資料庫語言、DBMS 優缺點</p>
+    </div>
+
     <div class="card">
-        <span class="soon-badge">內容建置中</span>
-        <h2>規劃中的重點</h2>
+        <h3>資料庫的常見應用 <span class="tag tag-a">觀念</span></h3>
         <ul>
-            <li>關聯式資料庫基礎：資料表、主鍵、外鍵、關聯</li>
-            <li>SQL：DDL / DML / DQL 常用指令與範例</li>
-            <li>ER Model 與 ER Diagram 畫法</li>
-            <li>正規化：1NF → 2NF → 3NF → BCNF</li>
-            <li>交易管理：ACID 性質、並行控制、Deadlock</li>
-            <li>索引（Index）與效能調校</li>
+            <li>超市購物 (Purchases from the supermarket)</li>
+            <li>信用卡消費 (Purchases using your credit card)</li>
+            <li>旅行社訂假 (Booking a holiday at the travel agents)</li>
+            <li>圖書館借書 (Using the local library)</li>
+            <li>投保 (Taking out insurance)</li>
+            <li>租片 (Renting a video)</li>
+            <li>使用網際網路 (Using the Internet)</li>
+            <li>大學就讀 (Studying at university)</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：你到超商「嗶」一聲結帳，系統背後就是在查詢並更新資料庫。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>檔案式系統 (File-Based Systems) 及其限制 <span class="tag tag-d">必考</span></h3>
+        <p>檔案式系統是一群<strong>為終端使用者提供服務的應用程式集合</strong>，每個程式各自定義並管理自己的資料。</p>
+        <ul>
+            <li><strong>資料的分離與隔離</strong> (Separation and Isolation of Data)：每個程式維護自己的資料集，某程式的使用者可能不知道其他程式握有的有用資料。</li>
+            <li><strong>資料重複</strong> (Duplication of Data)：同一份資料被不同程式各自保存，浪費空間，且可能出現不同值或不同格式。</li>
+            <li><strong>資料相依</strong> (Data Dependence)：檔案結構定義在程式碼中。</li>
+            <li><strong>檔案格式不相容</strong> (Incompatible File Formats)：程式以不同語言撰寫，難以互相存取檔案。</li>
+            <li><strong>固定查詢／應用程式激增</strong> (Fixed Queries / Proliferation of Application Programs)：程式只滿足特定功能，任何新需求都要寫新程式。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：教務處、學務處各存一份學生名單，改地址時要改兩份，改一漏一就「資料不一致」。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>資料庫 (Database) 與資料庫管理系統 (DBMS) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>資料庫</strong>：邏輯相關資料的共享集合（含資料的描述），用以滿足組織的資訊需求。</li>
+            <li><strong>系統目錄</strong> (System Catalog / Metadata)：提供資料描述，使程式與資料間達到<strong>資料獨立性</strong> (Program–Data Independence)。</li>
+            <li>邏輯相關資料由組織資訊的<strong>實體</strong> (Entities)、<strong>屬性</strong> (Attributes) 與<strong>關聯性</strong> (Relationships) 組成。</li>
+            <li><strong>DBMS</strong>：讓使用者<strong>定義、建立、維護、控制</strong>資料庫存取的軟體系統。</li>
+            <li><strong>應用程式</strong> (Application Program)：透過對 DBMS 發出請求（SQL 敘述）與資料庫互動的電腦程式。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：DBMS 像圖書館的自動化系統，你只管借還書，書怎麼擺、放哪一櫃由它管理。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>資料庫語言與存取控制 <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>資料定義語言</strong> (Data Definition Language, DDL)：規範資料型別、結構與資料限制，規格儲存在資料庫中。</li>
+            <li><strong>資料操作語言</strong> (Data Manipulation Language, DML)：資料的一般查詢設施（查詢語言）。</li>
+            <li>控制存取包含：<strong>安全系統</strong> (Security System)、<strong>完整性系統</strong> (Integrity System)、<strong>並行控制系統</strong> (Concurrency Control System)、<strong>回復控制系統</strong> (Recovery Control System)、<strong>使用者可存取目錄</strong> (User-Accessible Catalog)。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：DDL 像「蓋房子的設計圖」，DML 像「進屋拿東西」。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>檢視表 (Views) 及效益 <span class="tag tag-a">觀念</span></h3>
+        <ul>
+            <li>讓每位使用者擁有專屬的資料庫視觀，<strong>檢視表本質上是資料庫的某個子集</strong>。</li>
+            <li>效益：<strong>降低複雜度</strong> (Reduce Complexity)、<strong>提供安全層級</strong> (Security)、<strong>客製化資料庫外觀</strong>、<strong>呈現一致且不變的結構畫面</strong>（即使底層資料庫改變）。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：同一份成績資料，學生只看到自己的成績檢視表，老師看到全班。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>DBMS 環境的組成與角色 <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>五大組成：<strong>硬體</strong> (Hardware)、<strong>軟體</strong> (Software，含 DBMS、作業系統、網路軟體、應用程式)、<strong>資料</strong> (Data，含描述資料的<strong>綱要 Schema</strong>)、<strong>程序</strong> (Procedures)、<strong>人員</strong> (People)。</li>
+            <li>角色：<strong>資料管理者</strong> (Data Administrator, DA)、<strong>資料庫管理者</strong> (Database Administrator, DBA)、<strong>資料庫設計師</strong> (Database Designers，邏輯與實體)、<strong>應用程式設計師</strong> (Application Programmers)、<strong>終端使用者</strong> (End Users，天真型與精熟型)。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：DBA 像圖書館館長，設計師像排書的規劃者，終端使用者就是借書的讀者。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>資料庫系統發展歷史 <span class="tag tag-a">觀念</span></h3>
+        <ul>
+            <li><strong>第一代</strong> (First-generation)：階層式 (Hierarchical) 與網路式 (Network)。</li>
+            <li><strong>第二代</strong> (Second generation)：關聯式 (Relational)。</li>
+            <li><strong>第三代</strong> (Third generation)：物件關聯式 (Object-Relational) 與物件導向式 (Object-Oriented)。</li>
         </ul>
     </div>
 
     <div class="card">
-        <h2>如何新增內容？</h2>
+        <h3>DBMS 的優點 (Advantages) <span class="tag tag-d">必考</span></h3>
         <ul>
-            <li>在本頁加入 <code>&lt;section&gt;</code> 或 <code>div.card</code> 即可擴充章節。</li>
-            <li>也可以仿照網路概論頁，做成左側目錄＋多章節的完整站。</li>
+            <li>控制資料重複 (Control of Data Redundancy)</li>
+            <li>資料一致性 (Data Consistency)</li>
+            <li>以相同資料量獲得更多資訊 (More Information from the Same Amount of Data)</li>
+            <li>資料共享 (Sharing of Data)</li>
+            <li>改善資料完整性 (Improved Data Integrity)</li>
+            <li>改善安全性 (Improved Security)</li>
+            <li>標準的強制執行 (Enforcement of Standards)</li>
+            <li>規模經濟 (Economy of Scale)</li>
+            <li>平衡衝突需求 (Balance Conflicting Requirements)</li>
+            <li>改善資料可存取性與回應力 (Improved Data Accessibility and Responsiveness)</li>
+            <li>提升生產力 (Increased Productivity)</li>
+            <li>透過資料獨立性改善維護 (Improved Maintenance through Data Independence)</li>
+            <li>提升並行性 (Increased Concurrency)</li>
+            <li>改善備份與回復 (Improved Backup and Recovery Services)</li>
         </ul>
     </div>
+
+    <div class="card">
+        <h3>DBMS 的缺點 (Disadvantages) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>複雜度 (Complexity)</li>
+            <li>規模 (Size)</li>
+            <li>DBMS 成本 (Cost of DBMS)</li>
+            <li>額外硬體成本 (Additional Hardware Costs)</li>
+            <li>轉換成本 (Cost of Conversion)</li>
+            <li>效能 (Performance)</li>
+            <li>失敗時衝擊更大 (Higher Impact of a Failure)</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：DBMS 就像大型團膳，優點是統一衛生管理，缺點是一旦廚房出錯，全部人受影響。</blockquote>
+    </div>
+</section>
+
+<section id="u2">
+    <div class="sec-title">
+        <h2>單元二：資料庫環境 (Database Environment)</h2>
+        <p>三層架構、資料獨立性、資料模型、DBMS 功能與系統目錄、多使用者架構</p>
+    </div>
+
+    <div class="card">
+        <h3>三層架構 (Three-Level Architecture) 的目的 <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>所有使用者都能存取同一份資料。</li>
+            <li>某使用者的視觀不受其他視觀變更影響。</li>
+            <li>使用者無須知道實體資料庫儲存細節。</li>
+            <li>DBA 能改變儲存結構而不影響使用者視觀。</li>
+            <li>資料庫內部結構不受儲存實體層面變更影響。</li>
+            <li>DBA 能改變概念結構而不影響所有使用者。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>ANSI-SPARC 三層架構內容 <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>外部層</strong> (External Level)：使用者的資料庫視觀，描述與特定使用者相關的部分。</li>
+            <li><strong>概念層</strong> (Conceptual Level)：社群的資料庫視觀，描述資料庫儲存哪些資料及資料間關聯。</li>
+            <li><strong>內部層</strong> (Internal Level)：資料庫在電腦上的實體表示，描述資料如何儲存。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：外部層＝個人課表、概念層＝全校課表、內部層＝課表存在硬碟哪個磁區。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>對映 (Mapping) 與資料獨立性 (Data Independence) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>外部／概念對映</strong> (External/Conceptual Mapping) 與 <strong>概念／內部對映</strong> (Conceptual/Internal Mapping)。</li>
+            <li><strong>邏輯資料獨立性</strong> (Logical Data Independence)：外部綱要對概念綱要變更的免疫。概念綱要改變（如新增/移除實體）時，不應需要更改外部綱要或改寫應用程式。</li>
+            <li><strong>實體資料獨立性</strong> (Physical Data Independence)：概念綱要對內部綱要變更的免疫。內部綱要改變（如改用不同檔案組織、儲存結構/裝置）時，不應需要更改概念或外部綱要。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>資料庫語言與資料模型分類 <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>DDL</strong>：讓 DBA 或使用者描述並命名實體、屬性、關聯性，以及相關的完整性與安全限制。</li>
+            <li><strong>DML</strong>：對資料庫資料提供基本的資料操作。</li>
+            <li><strong>程序性 DML</strong> (Procedural DML)：告訴系統<em>如何</em>操作資料。</li>
+            <li><strong>非程序性 DML</strong> (Non-Procedural DML)：只陳述<em>需要什麼</em>資料，而非如何擷取。</li>
+            <li><strong>第四代語言</strong> (Fourth Generation Languages, 4GLs)。</li>
+            <li><strong>資料模型</strong> (Data Model)：描述資料、資料間關聯與限制的整合概念集合，含<strong>結構部分</strong>、<strong>操作部分</strong>、可能的<strong>完整性規則</strong>。</li>
+            <li>資料模型分類：<strong>物件基礎</strong> (Entity-Relationship 實體關聯、Semantic 語意、Functional 功能、Object-Oriented 物件導向)、<strong>記錄基礎</strong> (Relational 關聯、Network 網路、Hierarchical 階層)、<strong>實體模型</strong> (Physical)。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：非程序性 DML 像「我要一份全班及格名單」，程序性 DML 則像逐步指示「先開檔、逐筆讀、比對分數…」。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>概念建模 (Conceptual Modeling) <span class="tag tag-a">觀念</span></h3>
+        <ul>
+            <li>概念綱要是系統核心，支援所有使用者視觀。</li>
+            <li>應為組織資料需求的完整且正確表示。</li>
+            <li>概念建模是發展「與實作細節無關」的資訊使用模型的過程，結果為<strong>概念資料模型</strong> (Conceptual Data Model)。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>DBMS 的功能 (Functions) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>資料儲存、擷取與更新 (Data Storage, Retrieval, and Update)</li>
+            <li>使用者可存取目錄 (A User-Accessible Catalog)</li>
+            <li>交易支援 (Transaction Support)</li>
+            <li>並行控制服務 (Concurrency Control Services)</li>
+            <li>回復服務 (Recovery Services)</li>
+            <li>授權服務 (Authorization Services)</li>
+            <li>資料通訊支援 (Support for Data Communication)</li>
+            <li>完整性服務 (Integrity Services)</li>
+            <li>促進資料獨立性的服務 (Services to Promote Data Independence)</li>
+            <li>公用服務 (Utility Services)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>DBMS 系統目錄 (System Catalog) <span class="tag tag-d">必考</span></h3>
+        <p>描述資料庫中資料的資訊儲存庫（<strong>中介資料 Metadata</strong>），是 DBMS 的基本元件之一，典型儲存：</p>
+        <ul>
+            <li>資料項目的名稱、型別與大小</li>
+            <li>資料的限制 (Constraints)</li>
+            <li>授權使用者的名稱</li>
+            <li>使用者可存取的資料項目與存取型別</li>
+            <li>使用統計 (Usage Statistics)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>多使用者 DBMS 架構 (Multi-User DBMS Architectures) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>遠端處理</strong> (Teleprocessing)：傳統架構，單一主機接多台終端機，趨勢為向下適型化 (Downsizing)。</li>
+            <li><strong>檔案伺服器</strong> (File-Server)：檔案伺服器與多台工作站透過網路連接，資料庫置於檔案伺服器，DBMS 與應用程式在工作站上執行。缺點：大量網路流量、每台工作站需完整 DBMS 副本、並行/回復/完整性控制較複雜。</li>
+            <li><strong>兩層主從</strong> (Two-Tier Client-Server)：客戶端（第一層）管理使用者介面並執行應用程式，伺服器（第二層）持有資料庫與 DBMS。優點：更廣泛的資料庫存取、提升效能、可能降低硬體成本、降低通訊成本、提升一致性。</li>
+            <li><strong>三層主從</strong> (Three-Tier Client-Server)：解決「胖客戶端」與客戶端管理負擔，1995 年提出三層，各層可執行於不同平台。優點：精簡客戶端、集中維護、易於替換單層、可負載平衡、自然對應 Web 環境。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：檔案伺服器像大家一起編輯同一份雲端硬碟檔，兩層像「前端 App ＋ 後端資料庫」。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>交易處理監控器 (Transaction Processing Monitors, TPM) <span class="tag tag-a">觀念</span></h3>
+        <p>控制客戶端與伺服器間資料傳輸的程式，以提供一致的環境，特別針對<strong>線上交易處理</strong> (Online Transaction Processing, OLTP)，可作為三層主從的中間層。</p>
+    </div>
+</section>
+
+<section id="u3">
+    <div class="sec-title">
+        <h2>單元三：資料庫架構與 Web (Database Architectures and the Web)</h2>
+        <p>主從架構、中介軟體、Web 服務與 SOA、分散式 DBMS、資料倉儲、Oracle</p>
+    </div>
+
+    <div class="card">
+        <h3>多使用者 DBMS 架構 <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>遠端處理</strong> (Teleprocessing)：單一 CPU 與多終端機，對中央電腦負擔極大；<strong>向下適型化</strong> (Downsizing) 指以更具成本效益的個人電腦網路取代昂貴主機。</li>
+            <li><strong>檔案伺服器架構</strong> (File-Server Architecture)：處理分散於網路；三大缺點為大量網路流量、每台工作站需完整 DBMS 副本、並行/回復/完整性控制複雜；多個 DBMS 可存取同一檔案。</li>
+            <li><strong>兩層主從架構</strong> (Two-Tier Client–Server)：客戶端程序需要資源，伺服器提供資源；將商業應用的四大元件做基本分離。</li>
+            <li><strong>三層主從架構</strong> (Three-Tier)：使用者介面層、商業邏輯與資料處理層、DBMS；比兩層或單層有諸多優點。</li>
+            <li><strong>N 層架構</strong> (N-Tier)：三層架構可擴充為 n 層。</li>
+            <li><strong>應用伺服器</strong> (Application Servers)：裝載應用程式介面 (API)，曝露商業邏輯與流程供其他應用使用。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：N 層就像「手機 App → 網站 API → 商業服務 → 資料庫」，一層一層拆開各自擴充。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>中介軟體 (Middleware) 六大類 <span class="tag tag-d">必考</span></h3>
+        <p>中介軟體是與其他軟體居間協調的軟體，用於不同應用間的溝通。</p>
+        <ul>
+            <li>非同步遠端程序呼叫 (Asynchronous Remote Procedure Call, Asynchronous RPC)</li>
+            <li>同步遠端程序呼叫 (Synchronous RPC)</li>
+            <li>發佈／訂閱 (Publish/Subscribe)</li>
+            <li>訊息導向中介軟體 (Message-Oriented Middleware, MOM)</li>
+            <li>物件請求仲介 (Object-Request Broker, ORB)</li>
+            <li>SQL 導向資料存取 (SQL-Oriented Data Access)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>交易處理監控器 (TP Monitor) <span class="tag tag-a">觀念</span></h3>
+        <p>控制客戶端/伺服器間資料傳輸、提供一致環境（特別是 OLTP）。顯著優點：<strong>交易路由</strong> (Transaction Routing)、<strong>管理分散式交易</strong> (Managing Distributed Transactions)、<strong>負載平衡</strong> (Load Balancing)、<strong>漏斗化</strong> (Funneling)、<strong>提高可靠性</strong> (Increased Reliability)。</p>
+    </div>
+
+    <div class="card">
+        <h3>Web 服務與服務導向架構 (SOA) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>Web 服務</strong> (Web Service)：支援網路上可互通的機器對機器互動的軟體系統，沒有使用者介面，採用廣泛接受的技術與標準。</li>
+            <li><strong>WSDL、UDDI 與 SOAP 的關係</strong>（敘述、註冊、訊息交換三者的關聯）。</li>
+            <li><strong>服務導向架構</strong> (Service-Oriented Architecture, SOA)：將商業流程實作為一組服務的架構；以與服務消費者相關的粒度發佈；服務間<strong>鬆散耦合</strong>且<strong>自主</strong>；為 SOA 設計的 Web 服務與其他 Web 服務不同。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：SOA 像「組裝積木」，每個服務（付款、物流、通知）可獨立替換而不動到其他積木。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>分散式 DBMS (Distributed DBMS) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>分散式資料庫</strong> (Distributed Database)：邏輯上互有關聯的共享資料，實體上分散於電腦網路。</li>
+            <li><strong>分散式 DBMS</strong> (Distributed DBMS)：允許管理分散式資料庫的軟體系統，使分散性對使用者透明。</li>
+            <li>DDBMS 特性：邏輯相關的共享資料集合、資料分割成<strong>片段</strong> (Fragments)、片段可<strong>複製</strong> (Replicated)、片段/複本配置到各<strong>站點</strong> (Sites)、站點以通訊網路連結、各站資料由 DBMS 控制、DBMS 自主處理本地應用、每個 DBMS 參與一或多個全域應用。</li>
+            <li><strong>分散式處理</strong> (Distributed Processing)：集中式資料庫可透過電腦網路存取。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：連鎖店把北中南資料各自存在當地，但查詢時像查一份完整資料。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>資料倉儲 (Data Warehousing) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>資料倉儲</strong> (Data Warehouse)：企業資料的整合/彙總視觀，來源為異質的營運資料源，提供從簡單到高度複雜查詢的終端使用者存取工具以支援決策。</li>
+            <li>四大特性：<strong>主體導向</strong> (Subject-Oriented)、<strong>整合的</strong> (Integrated)、<strong>時間變異的</strong> (Time-Variant)、<strong>非揮發性的</strong> (Nonvolatile)。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：倉儲像超商總部把各門市每日銷售集中起來，做趨勢分析與決策。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>DBMS 的元件 (Components of a DBMS) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>主要元件：<strong>查詢處理器</strong> (Query Processor)、<strong>資料庫管理器</strong> (Database Manager, DM)、<strong>檔案管理器</strong> (File Manager)、<strong>DML 前置處理器</strong> (DML Preprocessor)、<strong>DDL 編譯器</strong> (DDL Compiler)、<strong>目錄管理器</strong> (Catalog Manager)。</li>
+            <li>資料庫管理器之子元件：<strong>授權控制</strong> (Authorization Control)、<strong>命令處理器</strong> (Command Processor)、<strong>完整性檢查器</strong> (Integrity Checker)、<strong>查詢最佳化器</strong> (Query Optimizer)、<strong>交易管理器</strong> (Transaction Manager)、<strong>排程器</strong> (Scheduler)、<strong>回復管理器</strong> (Recovery Manager)、<strong>緩衝管理器</strong> (Buffer Manager)。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>Oracle 架構 (Oracle Architecture) <span class="tag tag-a">觀念</span></h3>
+        <ul>
+            <li><strong>邏輯資料庫結構</strong>：表空間 (Tablespaces)、綱要 (Schemas)、資料區塊 (Data Blocks)、延伸段/區段 (Extents/Segments)。</li>
+            <li><strong>實體資料庫結構</strong>：資料檔 (Datafiles)、重做日誌檔 (Redo Log Files)、控制檔 (Control Files)。</li>
+            <li><strong>Oracle 實例</strong> (Oracle Instance)：存取資料庫資訊所需的 Oracle 程序與共享記憶體。</li>
+        </ul>
+    </div>
+</section>
+
+<section id="u4">
+    <div class="sec-title">
+        <h2>單元四：關聯模型 (The Relational Model)</h2>
+        <p>關聯術語、關聯鍵、完整性限制、檢視表與基底關聯</p>
+    </div>
+
+    <div class="card">
+        <h3>關聯模型術語 (Terminology) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>關聯</strong> (Relation)：具有欄與列的表格，僅適用於資料庫的邏輯結構，非實體結構。</li>
+            <li><strong>屬性</strong> (Attribute)：關聯中具名的欄。</li>
+            <li><strong>定義域</strong> (Domain)：一或多個屬性可允許的值集合。</li>
+            <li><strong>值組</strong> (Tuple)：關聯的一列。</li>
+            <li><strong>度</strong> (Degree)：關聯中屬性的數目。</li>
+            <li><strong>基數</strong> (Cardinality)：關聯中值組的數目。</li>
+            <li><strong>關聯資料庫</strong> (Relational Database)：一組具<strong>清楚關聯名稱</strong>的<strong>正規化</strong>關聯集合。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：一張「學生表」＝關聯；「姓名」欄＝屬性；一筆學生＝值組；有幾個欄＝度；有幾筆學生＝基數。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>關聯的數學定義 (Mathematical Definition) <span class="tag tag-a">觀念</span></h3>
+        <ul>
+            <li><strong>笛卡兒積</strong> (Cartesian Product)：兩個集合 D1 × D2 為所有有序對的集合，第一元素屬於 D1、第二元素屬於 D2。</li>
+            <li>笛卡兒積的任何<strong>子集</strong>即為一個關聯，可用選擇條件指定。</li>
+            <li>n 個集合的笛卡兒積 D1 × D2 × … × Dn，其任何 n 值組集合即為其上的關聯。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：上衣{紅,藍} × 褲子{長,短} ＝ 4 種搭配，挑其中幾種即是一個「關聯」。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>關聯綱要 (Relation Schema) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>關聯綱要</strong>：由屬性與定義域名稱對所定義的具名關聯。</li>
+            <li><strong>關聯資料庫綱要</strong> (Relational Database Schema)：一組關聯綱要的集合，每個擁有唯一名稱。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>關聯的性質 (Properties of Relations) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>關聯名稱在關聯綱要中與其他關聯名稱互異。</li>
+            <li>關聯的每個儲存格只含<strong>恰好一個基元值</strong> (Atomic / Single Value)。</li>
+            <li>每個屬性有互異的名稱。</li>
+            <li>屬性的值都來自同一定義域。</li>
+            <li>每個值組互異，沒有重複值組。</li>
+            <li>屬性的順序無關緊要。</li>
+            <li>值組的順序理論上無關緊要。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>關聯鍵 (Relational Keys) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>超鍵</strong> (Superkey)：能唯一識別關聯中值組的屬性或屬性集合。</li>
+            <li><strong>候選鍵</strong> (Candidate Key)：超鍵 K，且其<strong>無任何真子集</strong>為超鍵。<strong>唯一性</strong> (Uniqueness) ＋ <strong>不可簡化</strong> (Irreducibility)。</li>
+            <li><strong>主鍵</strong> (Primary Key)：被選用以唯一識別值組的候選鍵。</li>
+            <li><strong>替代鍵</strong> (Alternate Keys)：未被選為主鍵的候選鍵。</li>
+            <li><strong>外鍵</strong> (Foreign Key)：某關聯中與另一（可能相同）關聯之候選鍵相符的屬性或屬性集合。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：學號是主鍵；身分證號是另一候選鍵（替代鍵）；班級表用系所代碼回指就是外鍵。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>完整性限制 (Integrity Constraints) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>空值</strong> (Null)：表示屬性目前未知或不適用的值；處理不完整或例外資料；代表「值的不存在」，與零或空白不同。</li>
+            <li><strong>實體完整性</strong> (Entity Integrity)：在基底關聯中，主鍵的任何屬性皆不可為空值。</li>
+            <li><strong>參考完整性</strong> (Referential Integrity)：若關聯中存在外鍵，其值必須與其本位關聯中某值組的候選鍵值相符，或外鍵值全為空值。</li>
+            <li><strong>一般限制</strong> (General Constraints)：使用者或 DBA 指定、定義或約束企業某些面向的額外規則。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：學生不能沒有學號（實體完整性）；選課記錄的學號必須真的存在於學生表（參考完整性）。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>檢視表與基底關聯 (Views &amp; Base Relations) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>基底關聯</strong> (Base Relation)：對應概念綱要中某實體的具名關聯，其值組實際儲存於資料庫。</li>
+            <li><strong>檢視表</strong> (View)：對基底關聯做一或多個關聯運算所產生的動態結果關聯。</li>
+            <li>檢視表是<strong>虛擬關聯</strong>，不一定實際存在於資料庫，於請求時產生。</li>
+            <li>檢視表內容定義為對一或多個基底關聯的查詢；檢視表是動態的，基底關聯的變更會立即反映在檢視表。</li>
+            <li><strong>檢視表目的</strong>：提供強大且彈性的安全機制（對某些使用者隱藏部分資料庫）、允許客製化存取（同一資料不同使用者有不同看法）、簡化對基底關聯的複雜操作。</li>
+            <li><strong>更新檢視表的限制</strong>：若查詢涉及單一基底關聯且包含其候選鍵則允許更新；涉及多個基底關聯則不允許；涉及聚合或分組運算則不允許。</li>
+            <li><strong>檢視表的分類</strong>：理論上不可更新 (Theoretically Not Updateable)、理論上可更新 (Theoretically Updateable)、部分可更新 (Partially Updateable)。</li>
+        </ul>
+    </div>
+</section>
+
+<section id="u5">
+    <div class="sec-title">
+        <h2>單元五：關聯代數與關聯微積分 (Relational Algebra and Relational Calculus)</h2>
+        <p>五個基本運算、Join 家族、除法、聚合與分組、TRC 與 DRC</p>
+    </div>
+
+    <div class="card">
+        <h3>簡介與關聯完備性 (Introduction &amp; Relational Completeness) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>關聯代數與關聯微積分是與關聯模型相關的形式語言 (Formal Languages)。</li>
+            <li>非正式而言：<strong>關聯代數是（高階）程序性語言</strong>，<strong>關聯微積分是非程序性語言</strong>；正式而言兩者彼此等價。</li>
+            <li><strong>關聯完備性</strong> (Relational Completeness)：一個語言若其產生的關聯可用關聯微積分推導，即為關聯完備。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>關聯代數基礎 (Relational Algebra Basics) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>關聯代數運算作用於一或多個關聯以定義另一個關聯，且<strong>不改變原始關聯</strong>。</li>
+            <li>運算元與結果都是關聯，故一個運算的輸出可成為另一運算的輸入，允許運算式巢狀化，此性質稱為<strong>封閉性</strong> (Closure)。</li>
+            <li><strong>五個基本運算</strong>：<strong>選取</strong> (Selection)、<strong>投影</strong> (Projection)、<strong>笛卡兒積</strong> (Cartesian Product)、<strong>聯集</strong> (Union)、<strong>差集</strong> (Set Difference)。</li>
+            <li>另有 <strong>Join</strong>、<strong>交集</strong> (Intersection)、<strong>除法</strong> (Division)，可用五個基本運算表示。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>選取 (Selection / Restriction) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>符號：σ<sub>predicate</sub>(R)。</li>
+            <li>作用於單一關聯 R，定義一個只含滿足指定條件 (Predicate) 之值組（列）的關聯。</li>
+            <li>範例：列出薪資大於 £10,000 的員工 → σ<sub>salary &gt; 10000</sub>(Staff)。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：選取＝從全班名單中只挑出「成績及格」的列。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>投影 (Projection) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>符號：π<sub>col1, …, coln</sub>(R)。</li>
+            <li>作用於單一關聯 R，定義一個含 R 之<strong>垂直子集</strong>的關聯，擷取指定屬性的值並<strong>去除重複</strong>。</li>
+            <li>範例：π<sub>staffNo, fName, lName, salary</sub>(Staff)。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：投影＝整張名單只保留「姓名、電話」兩個欄。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>聯集 (Union) 與差集 (Set Difference) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>聯集</strong> R ∪ S：含 R、S 或兩者之值組的關聯，去除重複值組；R 與 S 必須<strong>聯集相容</strong> (Union-Compatible)。若 R、S 各有 I、J 個值組，聯集最多 (I + J) 個值組。範例：π<sub>city</sub>(Branch) ∪ π<sub>city</sub>(PropertyForRent)。</li>
+            <li><strong>差集</strong> R − S：屬於 R 但不屬於 S 的值組；R 與 S 必須聯集相容。範例：π<sub>city</sub>(Branch) − π<sub>city</sub>(PropertyForRent)。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>交集 (Intersection) <span class="tag tag-a">觀念</span></h3>
+        <ul>
+            <li>符號：R ∩ S，含同時在 R 與 S 中的值組；R 與 S 必須聯集相容。</li>
+            <li>可用基本運算表示：R ∩ S = R − (R − S)。</li>
+            <li>範例：π<sub>city</sub>(Branch) ∩ π<sub>city</sub>(PropertyForRent)。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>笛卡兒積 (Cartesian Product) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>符號：R × S，將 R 的每個值組與 S 的每個值組串接。</li>
+            <li>範例：列出看過物件的客戶姓名與評論 → (π<sub>clientNo, fName, lName</sub>(Client)) × (π<sub>clientNo, propertyNo, comment</sub>(Viewing))。</li>
+            <li>可再以選取擷取 Client.clientNo = Viewing.clientNo 的值組；笛卡兒積＋選取可簡化為一個 <strong>Join</strong> 運算。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>Join 運算家族 (Join Operations) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>Join 是笛卡兒積的衍生；等於在兩運算元關聯的笛卡兒積上，以 join 述詞為選取公式執行選取。</li>
+            <li>是 RDBMS 中最難有效實作的運算之一，也是 RDBMS 效能問題的原因之一。</li>
+            <li><strong>Theta Join</strong> (θ-join)：R ⋈<sub>F</sub> S，含滿足述詞 F 的值組；F 形式為 R.ai θ S.bi，θ 可為 &lt;, ≤, &gt;, ≥, =, ≠。可改寫為 R ⋈<sub>F</sub> S = σ<sub>F</sub>(R × S)。度為兩運算元關聯度之和。</li>
+            <li><strong>等值 Join</strong> (Equijoin)：θ-join 中述詞僅含等號 (=) 的特例。</li>
+            <li><strong>自然 Join</strong> (Natural Join)：對兩關聯 R、S 所有共同屬性做的等值 Join，結果中每個共同屬性只保留一次。</li>
+            <li><strong>外部 Join</strong> (Outer Join)：為顯示在 join 欄位無匹配值的列；<strong>左外部 Join</strong> (Left Outer Join) 會把 R 中在 S 共同欄無匹配的值組也含入結果。</li>
+            <li><strong>半 Join</strong> (Semijoin)：R ⋉<sub>F</sub> S，含 R 中參與 R 與 S 之 join 的值組；可改寫為 R ⋉<sub>F</sub> S = π<sub>A</sub>(R ⋈<sub>F</sub> S)。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：自然 Join＝學生表與選課表用「學號」合併，只留一個學號欄。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>除法 (Division) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>符號：R ÷ S，定義在屬性 C 上的關聯，含 R 中能匹配 S 每個值組組合的值組。</li>
+            <li>可用基本運算表示：T1 = π<sub>C</sub>(R)；T2 = π<sub>C</sub>((S × T1) − R)；T = T1 − T2。</li>
+            <li>範例：找出看過所有三房物件的客戶 → (π<sub>clientNo, propertyNo</sub>(Viewing)) ÷ (π<sub>propertyNo</sub>(σ<sub>rooms = 3</sub>(PropertyForRent)))。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：除法＝找出「每一科都及格」的學生。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>聚合運算與分組運算 (Aggregate &amp; Grouping Operations) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>聚合運算</strong> ℑ<sub>AL</sub>(R)：將聚合函數清單 AL 套用於 R；AL 含一或多個 (&lt;聚合函數&gt;, &lt;屬性&gt;) 對。</li>
+            <li>主要聚合函數：<strong>COUNT、SUM、AVG、MIN、MAX</strong>。</li>
+            <li>範例：月租超過 £350 的物件有幾個 → ℑ<sub>COUNT propertyNo</sub>(σ<sub>rent &gt; 350</sub>(PropertyForRent))。</li>
+            <li><strong>分組運算</strong> <sub>GA</sub>ℑ<sub>AL</sub>(R)：依分組屬性 GA 分組後套用聚合函數清單 AL；結果含分組屬性與各聚合函數結果。</li>
+            <li>範例：各分行的員工數與薪資總和 → <sub>branchNo</sub>ℑ<sub>COUNT staffNo, SUM salary</sub>(Staff)。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>關聯微積分 (Relational Calculus) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>關聯微積分查詢只指定<strong>要擷取什麼</strong>，而非<strong>如何擷取</strong>；不描述如何評估查詢。</li>
+            <li>在一階邏輯（述詞微積分）中，<strong>述詞</strong> (Predicate) 是帶有論據 (Arguments) 的真值函數。</li>
+            <li>代入論據值後得到<strong>命題</strong> (Proposition)，可真或假。</li>
+            <li>若述詞含變數，必須有變數的<strong>範圍</strong> (Range)；代入範圍中某些值命題真、其他值假。</li>
+            <li>應用於資料庫時有兩種形式：<strong>值組</strong> (Tuple) 與 <strong>定義域</strong> (Domain)。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>值組關聯微積分 (Tuple Relational Calculus) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>尋找使述詞為真的值組，基於<strong>值組變數</strong> (Tuple Variable) 的使用。</li>
+            <li>值組變數「巡覽」一個具名關聯，其允許值僅為該關聯的值組。將變數 S 的範圍設為 Staff 關聯表示為 Staff(S)。</li>
+            <li>一般式：{S | P(S)}；查特定屬性如 {S.salary | Staff(S) ∧ S.salary &gt; 10000}。</li>
+            <li>兩個量詞：<strong>存在量詞 ∃</strong> (there exists) 與 <strong>全稱量詞 ∀</strong> (for all)。受量詞限定的變數為<strong>約束變數</strong> (Bound Variables)，否則為<strong>自由變數</strong> (Free Variables)。</li>
+            <li>存在量詞例：Staff(S) ∧ (∃B)(Branch(B) ∧ (B.branchNo = S.branchNo) ∧ B.city = 'London')。全稱量詞例：(∀B)(B.city ≠ 'Paris') 或 ~(∃B)(B.city = 'Paris')。</li>
+            <li><strong>單式公式</strong> (Well-Formed Formula) 由原子 (Atoms) 組成：R(S<sub>i</sub>)（S<sub>i</sub> 為值組變數、R 為關聯）、S<sub>i</sub>.a<sub>1</sub> θ S<sub>j</sub>.a<sub>2</sub>、S<sub>i</sub>.a<sub>1</sub> θ c。可遞迴組合成 conjunction (∧)、disjunction (∨)、negation (~)，以及 (∃X)(F) 與 (∀X)(F)。</li>
+            <li>範例：薪資 &gt; £25,000 的經理姓名 {S.fName, S.lName | Staff(S) ∧ S.position = 'Manager' ∧ S.salary &gt; 25000}。</li>
+            <li>避免無限集合：{S | ~Staff(S)} 會產生無限集，需限制結果值必須在該運算式的<strong>定義域</strong>內。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>定義域關聯微積分 (Domain Relational Calculus) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>使用從<strong>定義域</strong>取值（而非關聯值組）的變數。</li>
+            <li>一般式：{d1, d2, …, dn | F(d1, d2, …, dn)}。</li>
+            <li>範例：薪資 &gt; £25,000 的經理姓名 → {fN, lN | (∃sN, posn, sex, DOB, sal, bN)(Staff(sN, fN, lN, posn, sex, DOB, sal, bN) ∧ posn = 'Manager' ∧ sal &gt; 25000)}。</li>
+            <li>限制為<strong>安全運算式</strong> (Safe Expressions) 時，定義域關聯微積分等價於值組關聯微積分，亦等價於關聯代數；即每個關聯代數運算式都有等價的關聯微積分運算式，反之亦然。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>其他語言 (Other Languages) <span class="tag tag-a">觀念</span></h3>
+        <ul>
+            <li><strong>轉換導向語言</strong> (Transform-Oriented Languages)：非程序性語言，用關聯將輸入資料轉換為所需輸出（如 SQL）。</li>
+            <li><strong>圖形語言</strong> (Graphical Languages)：提供關聯結構的圖形，使用者填入想要的範例，系統以該格式回傳資料（如 QBE）。</li>
+            <li><strong>4GL</strong>：以有限命令集、友善（常為選單導向）環境建立完整客製應用。</li>
+            <li>某些系統接受自然語言形式，有時稱為 <strong>5GL</strong>，但仍處於早期階段。</li>
+        </ul>
+    </div>
+</section>
+
+<section id="u6">
+    <div class="sec-title">
+        <h2>單元六：正規化 I — 關聯模型與正規化 (Normalization)</h2>
+        <p>正規化基礎、1NF → 2NF → 3NF → BCNF、功能相依</p>
+    </div>
+
+    <div class="card">
+        <h3>正規化的基礎 (3-3-1) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>正規化</strong> (Normalization)：決定關聯表應擁有哪些屬性的標準處理程序，目的是建立<strong>良好結構關聯表</strong> (Well-Structured Relation)——沒有重複資料，且在新增、刪除或更新資料時不造成錯誤或資料不一致的異常。</li>
+            <li>以資料庫設計而言，正規化屬於<strong>邏輯資料庫設計</strong>的一部分，用來驗證並最佳化邏輯資料庫設計，以滿足完整性限制條件並避免不必要的資料重複。</li>
+            <li><strong>目的</strong>：<strong>去除重複性</strong> (Eliminating Redundancy)——重複資料浪費空間且造成維護問題；<strong>去除不一致的相依性</strong> (Eliminating Inconsistent Dependency)——不一致的資料相依會在新增、刪除、更新時造成異常。</li>
+            <li>實體關聯圖採<strong>由上而下</strong> (Top-Down) 分析（先找實體再分析關聯）；正規化採<strong>由下而上</strong> (Bottom-Up) 評估關聯表綱要是否符合正規化型式。</li>
+            <li>首要工作是處理主鍵與屬性間的<strong>功能相依</strong> (Functional Dependencies, FD)，它是前三階正規化型式的基礎。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：正規化像把一間塞滿雜物的房間分類收納，減少重複、避免找東西找錯。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>正規化型式定義 (前三階與 BCNF) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>第一階正規化型式</strong> (First Normal Form, 1NF)：刪除多重值與複合屬性，使關聯表只擁有單元值屬性。</li>
+            <li><strong>第二階正規化型式</strong> (Second Normal Form, 2NF)：滿足 1NF 且沒有<strong>部分相依</strong> (Partial Dependency)。</li>
+            <li><strong>第三階正規化型式</strong> (Third Normal Form, 3NF)：滿足 2NF 且沒有<strong>遞移相依</strong> (Transitive Dependency)。</li>
+            <li><strong>Boyce-Codd 正規化型式</strong> (Boyce-Codd Normal Form, BCNF)：若關聯表有多個複合候選鍵，需刪除候選鍵間的功能相依，因為這些相依會造成異常操作。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>第一階正規化型式 (1NF) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>1NF 在處理關聯表本身，並未解決功能相依造成的資料重複或操作異常。</li>
+            <li>簡單說：關聯表沒有多重值與複合屬性，都是<strong>單元值屬性</strong>。</li>
+            <li><strong>刪除複合屬性</strong>：將組成的單元值屬性展開，例如「地址」由街道、城市、郵遞區號組成，展開成三個屬性。</li>
+            <li><strong>刪除多重值屬性三方法</strong>：
+                <ul>
+                    <li>方法一：分割成不同的關聯表（將多重值屬性連同主鍵分割成新關聯表）。</li>
+                    <li>方法二：分割成值組（將屬性的每個多重值新增一筆值組）。</li>
+                    <li>方法三：分割成不同屬性（配合空值，前提是多重值個數有限，如一位學生只能修兩門課）。</li>
+                </ul>
+            </li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：一張訂單塞了「書1、書2、書3」，違反 1NF；拆成「一列一本書」就正規化了。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>第二階正規化型式 (2NF) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>目的是讓每個關聯表只儲存同類資料（單純化），例如學生表只存學生資料、教授表只存教授資料。</li>
+            <li>當關聯表符合 1NF 後，即可進行第二階正規化。</li>
+            <li>簡單說：非主鍵屬性需要<strong>完全相依</strong>於主鍵；即刪除所有<strong>部分相依</strong> (Partial Dependency) 的屬性。</li>
+            <li><strong>功能相依</strong> (Functional Dependency, FD)：欄位間關係，知道欄位 A 的值就能知道欄位 B 的值，寫成 A → B。</li>
+            <li>範例：班級關聯表主鍵為 (學號, 課程編號, 教授編號)，已知 FD1：{學號, 課程編號, 教授編號} → 教室、FD2：課程編號 → 名稱、FD3：教授編號 → {教授姓名, 辦公室}。執行 2NF 時將 FD2、FD3 兩邊屬性獨立成關聯表，左邊屬性作新主鍵。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：訂單明細主鍵是(訂單,商品)，但「商品名稱」只相依於商品，就是部分相依，應拆到商品表。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>第三階正規化型式 (3NF) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>目的是移除<strong>不是直接功能相依於主鍵</strong>的屬性（這些屬性藉由另一個屬性才相依於主鍵，是隱藏在非主鍵屬性中的子集合）。</li>
+            <li>當關聯表符合 2NF 後，即可進行第三階正規化。</li>
+            <li>簡單說：非主鍵屬性只能功能相依於主鍵，不能同時相依於其他非主鍵屬性；即刪除所有<strong>遞移相依</strong> (Transitive Dependency)。</li>
+            <li>範例：教授關聯表中 FD1：教授編號 → {教授姓名, 辦公室編號, 辦公室名稱}、FD4：教授編號 → 辦公室編號、FD5：辦公室編號 → 辦公室名稱，則 FD3（教授編號 → 辦公室名稱）為遞移相依。執行 3NF 時將造成遞移相依的 A → B 兩邊屬性獨立成新關聯表。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：員工表裡「部門名稱」其實靠「部門編號」才決定的，屬遞移相依，應獨立成部門表。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>Boyce-Codd 正規化型式 (BCNF) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>BCNF 可視為更嚴格的 3NF，目的是保證所有屬性都功能相依於<strong>候選鍵</strong>（完全相依於候選鍵，而非候選鍵的部分屬性）。</li>
+            <li>處理關聯表擁有<strong>多個候選鍵</strong>的特殊情況，至少擁有兩個以上且為：<strong>複合候選鍵</strong>，且候選鍵間<strong>擁有重疊屬性</strong>（至少一個相同屬性）。</li>
+            <li>範例：學生表有兩個候選鍵 (學號, 課程編號) 與 (身分證字號, 課程編號)，兩者重疊「課程編號」，且候選鍵間存在 FD：身分證字號 → 學號，故違反 BCNF。</li>
+            <li><strong>決定屬性</strong> (Determinant)：主要功能相依 A → B 的左邊屬性 A；決定屬性一定是候選鍵或主鍵。若有不符合的功能相依，表示不同資料存在同一關聯表，需分割。</li>
+            <li>範例中學號與身分證字號互相功能相依（學號 → 身分證字號、身分證字號 → 學號），故分割學生表時也可用身分證字號進行分割。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：學生表同時用「學號」和「身分證號」兩個都能辨識人，彼此又互相決定，就會更新不同步而異常。</blockquote>
+    </div>
+</section>
+
+<section id="u7">
+    <div class="sec-title">
+        <h2>單元七：正規化 II — 規劃關聯式資料庫 (Planning Relational Databases)</h2>
+        <p>1NF 三規則、2NF/3NF/BCNF 實作、訂購單正規化實戰</p>
+    </div>
+
+    <div class="card">
+        <h3>何謂正規化 (2-7) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>關聯式資料庫不管好壞都能儲存資料，但存取效率可能差別很大。</li>
+            <li>想提升效率，可在設計時利用<strong>正規化</strong> (Normalization) 方法修改資料表結構。</li>
+            <li>正規化就是讓資料庫中<strong>重複的資料減到最少</strong>，以便快速找到資料、提升效能。</li>
+            <li><strong>E.F. Codd 博士</strong>的關聯式資料庫正規化理論，將步驟歸納成幾個階段。</li>
+            <li>正規化階段：<strong>1NF → 2NF → 3NF → BCNF → 4NF → 5NF</strong>；一般資料庫設計通常只要執行到 <strong>BCNF</strong>，更高階僅特殊情況使用。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>第一階正規化 (1NF) — 規則與實作 <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>正規化循序漸進，須先滿足 1NF 才能進行 2NF，1NF 是所有正規化的基礎。</li>
+            <li><strong>1NF 三規則</strong>：
+                <ol>
+                    <li>資料表中必須有 <strong>Primary Key</strong>，其他所有欄位都<strong>相依</strong>於 Primary Key。</li>
+                    <li>每個欄位中都只儲存<strong>單一值</strong>（不能一筆記錄的姓名欄放 2 個人的姓名）。</li>
+                    <li>資料表中沒有<strong>意義相同的多個欄位</strong>（如姓名1、姓名2…）。</li>
+                </ol>
+            </li>
+            <li><strong>相依</strong>：若欄位 B 的值必須搭配欄位 A 才有意義，即「B 相依於 A」。</li>
+            <li>不符合 1NF 的缺點：欄位長度無法確定（浪費空間）、降低存取效率（需先找位置再擷取）、缺少唯一主鍵。</li>
+            <li>反之則稱<strong>非正規化</strong>資料表。</li>
+            <li>建構 1NF 方法：將重複資料項分別儲存到不同記錄，並加上適當的 Primary Key。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：訂單表「書1、書2、書3」改成「訂單編號＋書號」為主鍵、一列一本書。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>第二階正規化 (2NF) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>將 1NF 資料表執行後，容易察覺輸入了許多重複資料，浪費空間並造成新增/刪除/更新的異常。</li>
+            <li><strong>2NF 規則</strong>：
+                <ol>
+                    <li>必須符合 <strong>1NF</strong> 格式。</li>
+                    <li>各欄位與 Primary Key 間沒有<strong>部分相依</strong>的關係。</li>
+                </ol>
+            </li>
+            <li><strong>部分相依</strong>只在 Primary Key 由多個欄位組成時才發生；指某些欄位只與 Primary Key 中的<strong>部分欄位</strong>有相依性，而與另一部分欄位沒有相依性。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：訂單細目主鍵(訂單編號,項目編號)，但「書籍名稱」只跟項目編號有關，應拆到書籍表。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>第三階正規化 (3NF) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li><strong>3NF 規則</strong>：
+                <ol>
+                    <li>符合 <strong>2NF</strong> 格式。</li>
+                    <li>各欄位與 Primary Key 間沒有「<strong>間接相依</strong>」的關係。</li>
+                </ol>
+            </li>
+            <li>範例：送貨地址實際由聯絡人決定，與訂單編號無直接關係，即不符合 3NF；應將聯絡人與送貨地址獨立成客戶資料表，並以新增的客戶編號建立關聯。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：3NF＝把「靠別人才能連到主鍵」的欄位拆出去。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>Boyce-Codd 正規化 (BCNF) <span class="tag tag-d">必考</span></h3>
+        <ul>
+            <li>對大部分資料庫而言，通常執行到 3NF 即足夠。</li>
+            <li>若資料表的 Primary Key 由多個欄位組成，可用 BCNF 繼續檢查。</li>
+            <li><strong>BCNF 規則</strong>（Primary Key 由多欄組成時）：
+                <ol>
+                    <li>符合 2NF 的格式。</li>
+                    <li>各欄位與 Primary Key 沒有「<strong>間接相依</strong>」的關係。</li>
+                    <li>Primary Key 中的各欄位<strong>不可相依於其他非 Primary Key 的欄位</strong>。</li>
+                </ol>
+            </li>
+            <li>檢驗範例：訂單細目資料表中「數量」相依於訂單編號及書號，對訂單編號而言無相依於數量、對書號而言亦無相依於數量，故符合 BCNF。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>資料庫規劃實戰 (2-8) <span class="tag tag-s">實作</span></h3>
+        <ul>
+            <li>從一份<strong>訂購單</strong>開始，將資料記錄轉換為資料表，並執行正規化分析，使其成為實際可用的資料表。</li>
+            <li>步驟：列出資料項目 → 整理成欄位 → 得到第一份資料表 → 逐步執行 1NF → 2NF → 3NF → 最後以 BCNF 檢查。</li>
+            <li>1NF：找出唯一性欄位作 Primary Key（若無則新增訂單編號）；去除意義相同的重複欄位（書籍名稱_1、_2、_3…）；將項目編號、書籍名稱、價格、數量、出版公司獨立成另一資料表；訂單編號不足以代表唯一性，故以訂單編號＋項目編號組合成 Primary Key。</li>
+            <li>2NF：書籍名稱、價格、出版公司等欄位與項目編號無必然關係 → 獨立成書籍資料表，並在訂單細目增加書籍編號欄建立關聯。</li>
+            <li>3NF：送貨地址由聯絡人決定，與訂單編號無直接關係 → 將聯絡人與送貨地址獨立成客戶資料表，以客戶編號建立關聯。</li>
+            <li>BCNF：最後檢查只有訂單細目由多欄組成 Primary Key；書號和數量均相依於訂單編號及項目編號，反之不成立，故符合 BCNF。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：等於把一張「什麼都塞」的訂購單，一步步拆成訂單、訂單細目、書籍、客戶四張乾淨的表。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>正規化的另類思考 <span class="tag tag-a">觀念</span></h3>
+        <ul>
+            <li>正規化只是基本原則，仍可依系統需求自行變化。</li>
+            <li><strong>不必要的分割</strong>：正規化不一定做得非常徹底。例如地址表的郵遞區號與縣市、區有從屬關係，按原理須再分割才符合 3NF；但實際作業每次都查詢全部欄位，分割後每次都要還原，反而不明智。</li>
+            <li><strong>人工的分割</strong>：為增加效率，會將已符合 3NF 的資料表再做分割。例如欄位很多且多數很少使用時，把少用欄位分離到另一資料表（一個存常用、一個存罕用），欄位變少可提升存取效率。</li>
+        </ul>
+        <blockquote class="ok">💡 生活化舉例：常用資料放錢包、少用資料鎖抽屜，需要時再合併查詢。</blockquote>
+    </div>
+</section>
+
 </main>
+
+<footer class="footer">資料庫系統管理 重點總複習 · <a href="index.html" style="color:#a5b4fc;">回首頁</a></footer>
+
+<script>
+    function toggleCollapse() {
+        document.body.classList.toggle('sidebar-collapsed');
+        try { localStorage.setItem('dbSidebarCollapsed', document.body.classList.contains('sidebar-collapsed')); } catch (e) {}
+    }
+    (function initCollapse() {
+        try {
+            if (localStorage.getItem('dbSidebarCollapsed') === '1') document.body.classList.add('sidebar-collapsed');
+        } catch (e) {}
+    })();
+
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const open = sb.classList.toggle('open');
+        document.getElementById('backdrop').classList.toggle('show', open);
+        document.getElementById('hamburger').classList.toggle('active', open);
+        document.getElementById('hamburger').setAttribute('aria-expanded', open);
+    }
+
+    function closeSidebar() {
+        const sb = document.getElementById('sidebar');
+        if (!sb.classList.contains('open')) return;
+        sb.classList.remove('open');
+        document.getElementById('backdrop').classList.remove('show');
+        document.getElementById('hamburger').classList.remove('active');
+        document.getElementById('hamburger').setAttribute('aria-expanded', 'false');
+    }
+
+    function showSec(id) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        const targetBtn = Array.from(document.querySelectorAll('nav button')).find(b => b.getAttribute('onclick') === `showSec('${id}')`);
+        if (targetBtn) {
+            targetBtn.classList.add('active');
+            targetBtn.scrollIntoView({ block: 'nearest' });
+        }
+        closeSidebar();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 960) closeSidebar(); });
+
+    document.querySelectorAll('#overview .link-card').forEach(c => {
+        c.addEventListener('click', () => showSec(c.dataset.sec));
+        c.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showSec(c.dataset.sec); }
+        });
+    });
+</script>
 
 </body>
 </html>
