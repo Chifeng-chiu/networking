@@ -266,6 +266,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
     position: relative; background: var(--surface2); border: 1px solid var(--border);
     border-radius: 8px; padding: 1.2rem; margin: .6rem 0; overflow-x: auto;
 }
+.dns-stage { position: relative; min-width: 720px; }
 .dns-inner { display: flex; align-items: center; gap: 0; min-width: 720px; position: relative; }
 .dns-node { display: flex; flex-direction: column; align-items: center; gap: .25rem; z-index: 2; }
 .dns-node .icon { font-size: 1.6rem; line-height: 1; }
@@ -280,15 +281,18 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
     position: absolute; border: 2px dashed; border-radius: 50%;
     pointer-events: none; z-index: 1;
 }
-.oval-red { border-color: var(--danger); left: 2%; top: 4%; width: 34%; height: 62%; }
-.oval-purple { border-color: #7048e8; right: 1%; top: 2%; width: 46%; height: 96%; }
-.oval-labels {
-    position: absolute; display: flex; flex-direction: column; gap: .3rem;
-    z-index: 3; font-size: .78rem; font-weight: 600;
+.oval-red { border-color: var(--danger); left: 1%; top: 0; bottom: 0; width: 34%; }
+.oval-purple { border-color: #7048e8; right: 0; top: 0; bottom: 0; width: 46%; }
+.oval-legend {
+    display: flex; flex-direction: column; gap: .5rem;
+    margin-top: .8rem; padding-top: .8rem;
+    border-top: 1px dashed var(--border);
+    font-size: .8rem; font-weight: 600;
 }
-.oval-labels.red { left: 6%; bottom: 4%; }
-.oval-labels.purple { right: 4%; bottom: 3%; }
-.oval-labels .inline-slot { min-width: 150px; }
+.oval-legend .leg { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+.oval-legend .leg-red { color: var(--danger); }
+.oval-legend .leg-purple { color: #7048e8; }
+.oval-legend .inline-slot { min-width: 150px; }
 
 /* ===== Choices (Q8, Q9) ===== */
 .chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0; }
@@ -533,34 +537,32 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
         </div>
         <div id="q7-dnd">
             <div class="dns-diagram">
-                <div class="oval oval-red"></div>
-                <div class="oval oval-purple"></div>
-                <div class="dns-inner">
-                    <div class="dns-node">
-                        <div class="icon">💻</div>
-                        <div class="d-slot" data-accept="client|客戶端|pc|電腦" data-name="A（最左側主機）" data-hint="空格 A"><span class="hint">空格 A</span></div>
-                    </div>
-                    <div class="dns-arrow red">⇄</div>
-                    <div class="dns-node">
-                        <div class="icon">🖥️</div>
-                        <div class="d-slot" data-accept="server|伺服器" data-name="B（第一台 DNS 伺服器）" data-hint="空格 B"><span class="hint">空格 B</span></div>
-                    </div>
-                    <div class="dns-arrow blue">⇄</div>
-                    <div class="dns-arrow green">⇄</div>
-                    <div class="dns-arrow orange">⇄</div>
-                    <div class="dns-servers">
-                        <div class="dns-node"><div class="icon">🖧</div><div class="d-slot" data-accept="server|伺服器" data-name="C1" data-hint="C1"><span class="hint">C1</span></div></div>
-                        <div class="dns-node"><div class="icon">🖧</div><div class="d-slot" data-accept="server|伺服器" data-name="C2" data-hint="C2"><span class="hint">C2</span></div></div>
-                        <div class="dns-node"><div class="icon">🖧</div><div class="d-slot" data-accept="server|伺服器" data-name="C3" data-hint="C3"><span class="hint">C3</span></div></div>
+                <div class="dns-stage">
+                    <div class="oval oval-red"></div>
+                    <div class="oval oval-purple"></div>
+                    <div class="dns-inner">
+                        <div class="dns-node">
+                            <div class="icon">💻</div>
+                            <div class="d-slot" data-accept="client|客戶端|pc|電腦" data-name="A（最左側主機）" data-hint="空格 A"><span class="hint">空格 A</span></div>
+                        </div>
+                        <div class="dns-arrow red">⇄</div>
+                        <div class="dns-node">
+                            <div class="icon">🖥️</div>
+                            <div class="d-slot" data-accept="server|伺服器" data-name="B（第一台 DNS 伺服器）" data-hint="空格 B"><span class="hint">空格 B</span></div>
+                        </div>
+                        <div class="dns-arrow blue">⇄</div>
+                        <div class="dns-arrow green">⇄</div>
+                        <div class="dns-arrow orange">⇄</div>
+                        <div class="dns-servers">
+                            <div class="dns-node"><div class="icon">🖧</div><div class="d-slot" data-accept="server|伺服器" data-name="C1" data-hint="C1"><span class="hint">C1</span></div></div>
+                            <div class="dns-node"><div class="icon">🖧</div><div class="d-slot" data-accept="server|伺服器" data-name="C2" data-hint="C2"><span class="hint">C2</span></div></div>
+                            <div class="dns-node"><div class="icon">🖧</div><div class="d-slot" data-accept="server|伺服器" data-name="C3" data-hint="C3"><span class="hint">C3</span></div></div>
+                        </div>
                     </div>
                 </div>
-                <div class="oval-labels red">
-                    <span>英文：<div class="d-slot inline-slot" data-accept="recursivequery|recursive|遞迴查詢|遞迴" data-name="E（紅圈英文）" data-hint="空格 E"><span class="hint">空格 E</span></div></span>
-                    <span>中文：<div class="d-slot inline-slot" data-accept="遞迴查詢|recursivequery|遞迴" data-name="F（紅圈中文）" data-hint="空格 F"><span class="hint">空格 F</span></div></span>
-                </div>
-                <div class="oval-labels purple">
-                    <span>英文：<div class="d-slot inline-slot" data-accept="iterativequery|iterative|反覆查詢|反覆" data-name="G（紫圈英文）" data-hint="空格 G"><span class="hint">空格 G</span></div></span>
-                    <span>中文：<div class="d-slot inline-slot" data-accept="反覆查詢|iterativequery|反覆" data-name="H（紫圈中文）" data-hint="空格 H"><span class="hint">空格 H</span></div></span>
+                <div class="oval-legend">
+                    <div class="leg leg-red">🔴 紅圈（左半部）：英文 <div class="d-slot inline-slot" data-accept="recursivequery|recursive|遞迴查詢|遞迴" data-name="E（紅圈英文）" data-hint="空格 E"><span class="hint">空格 E</span></div> ／ 中文 <div class="d-slot inline-slot" data-accept="遞迴查詢|recursivequery|遞迴" data-name="F（紅圈中文）" data-hint="空格 F"><span class="hint">空格 F</span></div></div>
+                    <div class="leg leg-purple">🟣 紫圈（右半部）：英文 <div class="d-slot inline-slot" data-accept="iterativequery|iterative|反覆查詢|反覆" data-name="G（紫圈英文）" data-hint="空格 G"><span class="hint">空格 G</span></div> ／ 中文 <div class="d-slot inline-slot" data-accept="反覆查詢|iterativequery|反覆" data-name="H（紫圈中文）" data-hint="空格 H"><span class="hint">空格 H</span></div></div>
                 </div>
             </div>
             <div class="dnd-pool" id="q7-pool"><span class="dnd-pool-label">方塊庫（共 9 塊：1 客戶端、4 伺服器、中英文各一組）</span></div>
