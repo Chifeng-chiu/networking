@@ -55,6 +55,21 @@
         header > * { position: relative; z-index: 1; }
         header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: .35rem; }
         header p { font-size: 1rem; opacity: .85; max-width: 560px; }
+        .home-link {
+            display: inline-block;
+            margin-bottom: .8rem;
+            padding: .4rem .9rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,.15);
+            border: 1px solid rgba(255,255,255,.35);
+            color: #fff;
+            text-decoration: none;
+            font-size: .85rem;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            transition: background .15s;
+        }
+        .home-link:hover { background: rgba(255,255,255,.3); }
 
         /* ===== Layout: sidebar (fixed) + main ===== */
         body.has-sidebar { padding-left: 280px; }
@@ -434,6 +449,7 @@
 <div class="backdrop" id="backdrop" onclick="toggleSidebar()"></div>
 
 <header>
+    <a class="home-link" href="index.html">🏠 回首頁（所有科目）</a>
     <h1>網路概論 重點總複習</h1>
     <p>基於「網路概論與實務第七版」各章節內容整理 — 重點摘要、比較表格、自我測驗</p>
 </header>
