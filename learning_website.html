@@ -3012,7 +3012,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li><strong>⑤ IPv4 封包分割與重組</strong>（Identification／Flags／Fragment Offset）</li>
                 <li><strong>⑥ 位址長度</strong>：IPv4／IPv6 各幾位元</li>
                 <li><strong>⑦ 遞迴／反覆查詢流程</strong>（10 分）：畫出流程</li>
-                <li><strong>⑧ IPv4 與 IPv6 傳播的不同</strong></li>
+                <li><strong>⑧ IPv4 與 IPv6 傳播的不同</strong>：Broadcast vs Anycast（IPv6 沒有廣播）</li>
                 <li><strong>⑨ 判斷是否為合法的 IPv6 位址</strong></li>
                 <li><strong>⑩ 網址中的 IPv6 位址要加中括號</strong>：<code>https://[...]</code></li>
             </ul>
@@ -3389,23 +3389,44 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>⑧ IPv4 與 IPv6 傳播的不同</h3>
+            <h3>⑧ IPv4 與 IPv6 傳播的不同（Broadcast vs Anycast）</h3>
+            <p>核心考點：<strong>IPv4 有廣播（Broadcast）；IPv6 沒有廣播</strong>，改用多點傳播（Multicast）與<strong>任意點傳播（Anycast）</strong>取代。</p>
+            <h4>四種傳播方式</h4>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>比較項目</th><th>IPv4</th><th>IPv6</th></tr></thead>
+                    <thead><tr><th>傳播方式</th><th>對象</th><th>IPv4</th><th>IPv6</th></tr></thead>
                     <tbody>
-                        <tr><td><strong>封包分割（Fragmentation）</strong></td><td>發送端和<strong>途中的路由器都可以</strong>切割封包（表頭內建 Identification／Flags／Fragment Offset）。</td><td><strong>只有發送端能分割</strong>，路由器一律不切；需要分割時改用<strong>延伸標頭（Fragment Header，Next Header = 44）</strong>。遇到太大的封包就丟棄並回傳 ICMPv6 Packet Too Big。</td></tr>
-                        <tr><td><strong>廣播（Broadcast）</strong></td><td>支援廣播（如 <code>255.255.255.255</code>），ARP 靠廣播問 MAC。</td><td><strong>完全沒有廣播</strong>，改用<strong>多點傳播（Multicast）</strong>與<strong>任意點傳播（Anycast）</strong>取代。</td></tr>
-                        <tr><td><strong>位址解析</strong></td><td>ARP（協定 0x0806）直接問「誰是這個 IP」。</td><td><strong>NDP（Neighbor Discovery Protocol， ICMPv6）</strong>取代 ARP，用 Multicast 查詢。</td></tr>
-                        <tr><td><strong>生存時間欄位</strong></td><td>TTL（8 bits），每過一台路由器減 1。</td><td>Hop Limit（同樣 8 bits），概念相同、名稱不同。</td></tr>
-                        <tr><td><strong>表頭 CHECKSUM</strong></td><td>表頭有 Checksum，每一跳都要重新計算。</td><td>表頭<strong>沒有 Checksum</strong>（交給上層與 Link 層處理），傳播更快。</td></tr>
-                        <tr><td><strong>表頭大小</strong></td><td>固定 20 bytes 起（可加 Options 最長 60），每跳可能變動。</td><td>固定 40 bytes，且<strong>路由器不再修改表頭</strong>（except Hop Limit），處理更有效率。</td></tr>
-                        <tr><td><strong>安全性</strong></td><td>IPsec 為選配。</td><td>IPsec 為<strong>標準內建</strong>功能。</td></tr>
-                        <tr><td><strong>自動組態</strong></td><td>需 DHCP 或手動設定。</td><td>支援 <strong>SLAAC</strong>（ Stateless Address Autoconfiguration）自動取得位址。</td></tr>
+                        <tr><td><strong>Unicast（單點傳播）</strong></td><td>一對一</td><td>✅</td><td>✅</td></tr>
+                        <tr><td><strong>Broadcast（廣播）</strong></td><td>一對<strong>同網段全部</strong>主機</td><td>✅ 支援（如 <code>255.255.255.255</code> 限定廣播、子網廣播位址主機位元全 1）</td><td>❌ <strong>完全取消</strong>，連表頭與位址空間都沒有廣播的設計</td></tr>
+                        <tr><td><strong>Multicast（多點傳播）</strong></td><td>一對<strong>群組</strong>（有加入的才收）</td><td>✅（D 类 224.0.0.0/4，選配使用）</td><td>✅ <strong>改為主力</strong>（ff00::/8），NDP、MLD 都靠它，取代原廣播的角色</td></tr>
+                        <tr><td><strong>Anycast（任意點傳播）</strong></td><td>一對<strong>最近的一台</strong>（同位址可配置多台，路由器送給「離它最近」的那台）</td><td>⚠️ 理論可行但幾乎不使用，無標準支援</td><td>✅ <strong>正式內建</strong>，位址可同時配置在多台主機上</td></tr>
                     </tbody>
                 </table>
             </div>
-            <blockquote class="ok">口訣：IPv4 路由器會切、有廣播、靠 ARP；IPv6 只有源頭切、沒廣播、靠 NDP。</blockquote>
+
+            <h4>Broadcast（廣播）— IPv4 專屬</h4>
+            <ul>
+                <li>封包送給<strong>同一網段上的所有主機</strong>，沒加入也要收、被迫處理，容易造成<strong>廣播風暴（Broadcast Storm）</strong>、浪費頻寬。</li>
+                <li>典型應用：ARP 廣播問 MAC、DHCP 伺服器還不知道 Client IP 時回應、舊式網路遊戲找房。</li>
+                <li>廣播只能在<strong>本地網段</strong>存活（路由器不轉發廣播）。</li>
+            </ul>
+
+            <h4>Anycast（任意點傳播）— IPv6 正式支援</h4>
+            <ul>
+                <li><strong>多台主機設定同一個位址</strong>，封包只會被送到「<strong>路由距離最近</strong>」的那一台（通常是離發送端最近的機房）。</li>
+                <li>一對多，但<strong>只有最近的一台回應</strong>——兼具分散負載與就近服務。</li>
+                <li>典型應用：DNS 根伺服器（全球多台共用同一個位址）、CDN、大型網站分流。</li>
+                <li>IPv6 將 Anycast 定義為標準功能；IPv4 雖可手動這樣配，但沒有協定層的正式支援。</li>
+            </ul>
+
+            <h4>為什麼 IPv6 要取消廣播？</h4>
+            <ul>
+                <li>廣播「不管你要不要都塞給你」，主機被迫中斷處理，安全性與效率都差。</li>
+                <li>改用 <strong>Multicast</strong>：只有「有加入該群組」的主機才收，其餘直接略過。</li>
+                <li>改用 <strong>Anycast</strong>：需要「最近的一台」服務時，不必廣播問一圈，路由協定直接選最近的。</li>
+            </ul>
+
+            <blockquote class="ok">口訣：IPv4 廣播「全部都要收」；IPv6 沒有廣播——群組用 Multicast、找最近用 Anycast。</blockquote>
             <blockquote>詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">Ch8 網際網路協定</a>。</blockquote>
         </div>
 
