@@ -3009,7 +3009,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li><strong>② 分析 Ethernet Frame</strong>（20 分）</li>
                 <li><strong>③ IPv6 標頭格式</strong>（20 分）</li>
                 <li><strong>④ Server 與 Port 對應</strong>：某 Server 跑在某個 port，至少 2 題</li>
-                <li><strong>⑤ IPv4 子網路切割欄位</strong></li>
+                <li><strong>⑤ IPv4 封包分割與重組</strong>（Identification／Flags／Fragment Offset）</li>
                 <li><strong>⑥ 位址長度</strong>：IPv4／IPv6 各幾位元</li>
                 <li><strong>⑦ 遞迴／反覆查詢流程</strong>（10 分）：畫出流程</li>
             </ul>
@@ -3097,13 +3097,269 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>⑤ IPv4 子網路切割欄位</h3>
+            <h3>⑤ IPv4 封包分割與重組（Fragmentation）</h3>
+            <p>負責處理分割與重組的欄位全部集中在表頭的<strong>第二列（第 32～63 位元）</strong>，一共有三個核心欄位，另外還會搭配第一列的「總長度（Total Length）」一起運作。</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>欄位</th><th>長度</th><th>位置</th><th>功用</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Identification（識別碼）</strong></td><td>16 bits</td><td rowspan="3">第二列<br>（bits 32–63）</td><td>封包的「身分證字號」，同一個封包切出的所有分片都複製相同的 ID，接收端靠它分辨哪些碎片屬於同一個封包。</td></tr>
+                        <tr><td><strong>Flags（旗標）</strong></td><td>3 bits</td><td>控制是否允許分割、標記是否還有分片未到。</td></tr>
+                        <tr><td><strong>Fragment Offset（分段偏移量）</strong></td><td>13 bits</td><td>告訴接收端這個碎片的資料應排在原始封包資料區的「第幾個位置」，碎片亂序抵達時靠它拼回正確順序。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>1. Identification（識別碼，16 位元）</h4>
             <ul>
-                <li>向主機位元借位：借 n 位元 → 2<sup>n</sup> 個子網路。</li>
-                <li>例：<code>192.168.1.0/24</code> 借 2 位 → <code>/26</code>（255.255.255.192），4 個子網路，每網 2<sup>6</sup>−2 = 62 台主機。</li>
-                <li>網路位址（主機全 0）／廣播位址（主機全 1）／可用範圍（頭尾各扣 1）。</li>
+                <li>當一個大封包因為超過路徑 <strong>MTU</strong>（最大傳輸單元，通常 1500 bytes）而被迫切碎成多個小分片（Fragments）時，<strong>所有分片都會複製原本封包的 Identification 值</strong>。</li>
+                <li>接收端收到一堆碎片時，就是靠這個號碼來分辨「哪些碎片原本屬於同一個封包」，才不會把不同封包的碎片拼錯。</li>
             </ul>
-            <blockquote>詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.3 子網路切割</a>、<a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.8 計算範例</a>。</blockquote>
+
+            <h4>2. Flags（旗標，3 位元）</h4>
+            <p>由左至右分成 3 個位元：</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>位元</th><th>名稱</th><th>意義</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Bit 0</strong></td><td>Reserved（保留）</td><td>永遠設為 0（除非有人拿來做惡意測試，也就是俗稱的 Evil Bit 彩蛋）。</td></tr>
+                        <tr><td><strong>Bit 1</strong></td><td><strong>DF</strong>（Don't Fragment，不可分割）</td><td>DF = 0：允許路由器在必要時切割。<br>DF = 1：禁止分割。封包太大又遇到小 MTU 時，路由器不能切，只能丟棄並回傳 <strong>ICMP 錯誤（Fragmentation Needed）</strong> 給發送端（<strong>Path MTU Discovery</strong> 的核心機制）。</td></tr>
+                        <tr><td><strong>Bit 2</strong></td><td><strong>MF</strong>（More Fragments，還有更多分片）</td><td>MF = 1：後面還有其他碎片未到（<strong>除了最後一片以外</strong>，前面所有碎片都設為 1）。<br>MF = 0：這是最後一片（或封包根本沒被分割過）。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>3. Fragment Offset（分段偏移量，13 位元）</h4>
+            <ul>
+                <li>關鍵考點（<strong>8 Bytes 單位</strong>）：IPv4 的 Total Length 有 16 bits（最大 2<sup>16</sup>−1 = 65535 bytes），但 Offset 只有 13 bits（最大 2<sup>13</sup>−1 = 8191），位元數差 3 bits（2<sup>3</sup> = 8 倍）。</li>
+                <li>因此 <strong>Fragment Offset 是以「8 Bytes（64 bits）」為一個單位來計算的！</strong></li>
+                <li>這也規定：<strong>除了最後一個分片以外，前面所有分片的 Payload 長度都必須是 8 Bytes 的整數倍</strong>。</li>
+            </ul>
+
+            <blockquote class="ok">口訣：ID 認親、DF 禁切、MF 未完、Offset 以 8 為單位排座位。</blockquote>
+
+            <h4>互動式：IPv4 封包分割與重組模擬器</h4>
+            <p>拖動滑桿調整封包大小與路徑 MTU，即時觀察 Total Length、Flags（DF/MF）與 Fragment Offset 的計算變化。</p>
+            <style>
+                .ipv4-sim-widget {
+                    --bg-card: #ffffff;
+                    --bg-subtle: #f8fafc;
+                    --border-color: #e2e8f0;
+                    --text-main: #0f172a;
+                    --text-muted: #64748b;
+                    --primary: #2563eb;
+                    --header-color: #f59e0b;
+                    --payload-color: #3b82f6;
+                    --danger: #ef4444;
+                    --success: #10b981;
+                    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    max-width: 900px;
+                    margin: 12px auto;
+                    padding: 24px;
+                    background: var(--bg-card);
+                    border: 1px solid var(--border-color);
+                    border-radius: 16px;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+                    color: var(--text-main);
+                    box-sizing: border-box;
+                }
+                .ipv4-sim-widget * { box-sizing: border-box; }
+                .ipv4-sim-widget h2 { margin: 0 0 8px 0; font-size: 1.4rem; display: flex; align-items: center; gap: 8px; }
+                .ipv4-sim-widget p.subtitle { margin: 0 0 20px 0; color: var(--text-muted); font-size: 0.92rem; }
+                .sim-controls {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    gap: 16px;
+                    background: var(--bg-subtle);
+                    padding: 18px;
+                    border-radius: 12px;
+                    border: 1px solid var(--border-color);
+                    margin-bottom: 20px;
+                }
+                .control-group { display: flex; flex-direction: column; gap: 8px; }
+                .control-label { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; }
+                .control-value { color: var(--primary); font-family: monospace; font-size: 1rem; }
+                .sim-controls input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
+                .df-toggle-wrapper {
+                    display: flex; align-items: center; justify-content: space-between;
+                    height: 100%; padding: 8px 12px; background: #fff;
+                    border-radius: 8px; border: 1px solid var(--border-color);
+                }
+                .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
+                .switch input { opacity: 0; width: 0; height: 0; }
+                .slider { position: absolute; cursor: pointer; inset: 0; background-color: #cbd5e1; transition: 0.25s; border-radius: 26px; }
+                .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: 0.25s; border-radius: 50%; }
+                input:checked + .slider { background-color: var(--danger); }
+                input:checked + .slider:before { transform: translateX(22px); }
+                .summary-bar {
+                    display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;
+                    padding: 12px 16px; background: #eff6ff;
+                    border-left: 4px solid var(--primary); border-radius: 6px; font-size: 0.9rem;
+                }
+                .summary-item { margin-right: 16px; }
+                .summary-item strong { font-family: monospace; color: var(--primary); font-size: 1rem; }
+                .icmp-alert {
+                    background: #fef2f2; border: 1px solid #fecaca; border-left: 5px solid var(--danger);
+                    color: #991b1b; padding: 18px; border-radius: 8px; margin-top: 16px;
+                }
+                .icmp-alert h4 { margin: 0 0 6px 0; font-size: 1.05rem; }
+                .icmp-alert p { margin: 0; font-size: 0.9rem; line-height: 1.5; }
+                .fragments-container { display: flex; flex-direction: column; gap: 14px; }
+                .fragment-card { border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 16px; background: #fff; transition: transform 0.15s ease; }
+                .fragment-card:hover { border-color: #94a3b8; }
+                .fragment-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+                .fragment-title { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+                .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+                .badge { font-family: monospace; font-size: 0.8rem; padding: 3px 8px; border-radius: 6px; background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; }
+                .badge.mf-1 { background: #fef3c7; border-color: #fcd34d; color: #92400e; font-weight: 600; }
+                .badge.mf-0 { background: #d1fae5; border-color: #6ee7b7; color: #065f46; font-weight: 600; }
+                .badge.offset { background: #ede9fe; border-color: #c4b5fd; color: #5b21b6; font-weight: 600; }
+                .packet-bar-track { width: 100%; height: 30px; background: #f1f5f9; border-radius: 6px; overflow: hidden; display: flex; border: 1px solid #e2e8f0; }
+                .bar-header {
+                    background: var(--header-color); color: #fff; font-size: 0.75rem; font-weight: 700;
+                    display: flex; align-items: center; justify-content: center; min-width: 55px; white-space: nowrap; padding: 0 6px;
+                }
+                .bar-payload {
+                    background: var(--payload-color); color: #fff; font-size: 0.78rem; font-weight: 500;
+                    display: flex; align-items: center; justify-content: center; white-space: nowrap;
+                    overflow: hidden; transition: width 0.2s ease;
+                }
+            </style>
+            <div class="ipv4-sim-widget">
+                <div class="sim-controls">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>原始封包總長度 (Total Length)</span>
+                            <span class="control-value" id="pktSizeVal">4000 Bytes</span>
+                        </div>
+                        <input type="range" id="pktSizeInput" min="200" max="6000" step="10" value="4000">
+                        <small style="color: var(--text-muted); font-size: 0.78rem;">含 20B IPv4 表頭 + <span id="origPayloadVal">3980</span>B 資料</small>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>路徑 MTU (最大傳輸單元)</span>
+                            <span class="control-value" id="mtuVal">1500 Bytes</span>
+                        </div>
+                        <input type="range" id="mtuInput" min="200" max="1500" step="1" value="1500">
+                        <small style="color: var(--text-muted); font-size: 0.78rem;">扣除 20B 表頭後，每片最多載 8 的倍數 Bytes</small>
+                    </div>
+                    <div class="control-group">
+                        <div class="df-toggle-wrapper">
+                            <div>
+                                <div style="font-weight: 600; font-size: 0.9rem;">DF 旗標 (Don't Fragment)</div>
+                                <small id="dfStatusText" style="color: var(--text-muted); font-size: 0.78rem;">DF = 0 (允許路由器分割)</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="dfToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-bar" id="summaryBar"></div>
+                <div id="outputArea" class="fragments-container"></div>
+            </div>
+            <script>
+                (function () {
+                    const HEADER_SIZE = 20;
+                    const PACKET_ID = 0x1A2B;
+                    const pktSizeInput = document.getElementById('pktSizeInput');
+                    const mtuInput = document.getElementById('mtuInput');
+                    const dfToggle = document.getElementById('dfToggle');
+                    const pktSizeVal = document.getElementById('pktSizeVal');
+                    const origPayloadVal = document.getElementById('origPayloadVal');
+                    const mtuVal = document.getElementById('mtuVal');
+                    const dfStatusText = document.getElementById('dfStatusText');
+                    const summaryBar = document.getElementById('summaryBar');
+                    const outputArea = document.getElementById('outputArea');
+                    function renderSimulation() {
+                        const totalLength = parseInt(pktSizeInput.value, 10);
+                        const mtu = parseInt(mtuInput.value, 10);
+                        const df = dfToggle.checked ? 1 : 0;
+                        const originalPayload = totalLength - HEADER_SIZE;
+                        pktSizeVal.textContent = `${totalLength} Bytes`;
+                        origPayloadVal.textContent = originalPayload;
+                        mtuVal.textContent = `${mtu} Bytes`;
+                        dfStatusText.textContent = df === 1 ? 'DF = 1 (禁止分割)' : 'DF = 0 (允許路由器分割)';
+                        const rawMaxPayload = mtu - HEADER_SIZE;
+                        const alignedMaxPayload = Math.floor(rawMaxPayload / 8) * 8;
+                        const wastedBytes = rawMaxPayload - alignedMaxPayload;
+                        if (totalLength > mtu && df === 1) {
+                            summaryBar.innerHTML = `
+                                <div class="summary-item">狀態：<strong style="color: #ef4444;">封包被丟棄 (Dropped)</strong></div>
+                                <div class="summary-item">原因：封包 (${totalLength}B) &gt; MTU (${mtu}B) 且 DF=1</div>
+                            `;
+                            outputArea.innerHTML = `
+                                <div class="icmp-alert">
+                                    <h4>🚫 路由器丟棄封包！回傳 ICMP Error (Type 3, Code 4: Fragmentation Needed)</h4>
+                                    <p>
+                                        原始封包大小為 <strong>${totalLength} Bytes</strong>，大於下一跳路由器的 <strong>MTU (${mtu} Bytes)</strong>。<br>
+                                        因為表頭中的 <strong>DF (Don't Fragment) 旗標設為 1</strong>，路由器無權切割此封包，只能將其丟棄並通知發送端降低封包大小（這就是 <em>Path MTU Discovery</em> 的運作原理）。
+                                    </p>
+                                </div>
+                            `;
+                            return;
+                        }
+                        const fragments = [];
+                        if (totalLength <= mtu) {
+                            fragments.push({ index: 1, totalLen: totalLength, payloadLen: originalPayload, startByte: 0, endByte: originalPayload - 1, df: df, mf: 0, offset: 0 });
+                        } else {
+                            let remaining = originalPayload;
+                            let currentByte = 0;
+                            let idx = 1;
+                            while (remaining > 0) {
+                                const isLast = remaining <= alignedMaxPayload;
+                                const chunkPayload = isLast ? remaining : alignedMaxPayload;
+                                fragments.push({
+                                    index: idx, totalLen: chunkPayload + HEADER_SIZE, payloadLen: chunkPayload,
+                                    startByte: currentByte, endByte: currentByte + chunkPayload - 1,
+                                    df: df, mf: isLast ? 0 : 1, offset: currentByte / 8
+                                });
+                                currentByte += chunkPayload;
+                                remaining -= chunkPayload;
+                                idx++;
+                            }
+                        }
+                        summaryBar.innerHTML = `
+                            <div class="summary-item">總分片數：<strong>${fragments.length} 片</strong></div>
+                            <div class="summary-item">每片最大資料量 (8B 對齊)：<strong>${alignedMaxPayload} Bytes</strong> ${wastedBytes > 0 ? `<span style="color:#64748b;">(因 8B 對齊捨棄 ${wastedBytes}B)</span>` : ''}</div>
+                            <div class="summary-item">總傳輸量 (含所有表頭)：<strong>${fragments.reduce((sum, f) => sum + f.totalLen, 0)} Bytes</strong></div>
+                        `;
+                        outputArea.innerHTML = fragments.map(frag => {
+                            const widthPercent = Math.max(12, Math.round((frag.totalLen / mtu) * 100));
+                            return `
+                                <div class="fragment-card">
+                                    <div class="fragment-header">
+                                        <div class="fragment-title">
+                                            <span>#${frag.index} ${fragments.length === 1 ? '完整封包 (未分割)' : '分片 (Fragment)'}</span>
+                                            <span style="color: var(--text-muted); font-weight: normal; font-size: 0.85rem;">
+                                                (資料範圍: Byte ${frag.startByte} ~ ${frag.endByte})
+                                            </span>
+                                        </div>
+                                        <div class="badges">
+                                            <span class="badge">ID: ${PACKET_ID}</span>
+                                            <span class="badge">Total Length: ${frag.totalLen}B</span>
+                                            <span class="badge">DF: ${frag.df}</span>
+                                            <span class="badge ${frag.mf === 1 ? 'mf-1' : 'mf-0'}">MF: ${frag.mf} ${frag.mf === 1 ? '(還有分片)' : '(最後一片)'}</span>
+                                            <span class="badge offset">Offset: ${frag.offset} (${frag.startByte} ÷ 8)</span>
+                                        </div>
+                                    </div>
+                                    <div class="packet-bar-track">
+                                        <div class="bar-header" title="IPv4 表頭 (20 Bytes)">20B 表頭</div>
+                                        <div class="bar-payload" style="width: ${widthPercent}%;" title="Payload 資料 (${frag.payloadLen} Bytes)">
+                                            Payload: ${frag.payloadLen} Bytes
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                    pktSizeInput.addEventListener('input', renderSimulation);
+                    mtuInput.addEventListener('input', renderSimulation);
+                    dfToggle.addEventListener('change', renderSimulation);
+                    renderSimulation();
+                })();
+            </script>
         </div>
 
         <div class="card">
