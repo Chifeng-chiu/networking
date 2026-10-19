@@ -175,6 +175,9 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
 }
 .q-exp.show { display: block; }
 .q-exp strong { color: var(--text); }
+.q-exp ol, .exp-sum-body ol { padding-left: 1.3rem; margin: .35rem 0; }
+.q-exp li, .exp-sum-body li { font-size: .83rem; color: var(--text2); margin-bottom: .25rem; }
+.q-exp code, .exp-sum-body code { background: var(--surface); padding: .05rem .3rem; border-radius: 3px; font-family: Consolas, monospace; font-size: .85em; color: var(--primary-dark); }
 
 /* ===== Header diagrams (drag & drop) ===== */
 .ip-hdr { display: flex; flex-direction: column; gap: 3px; margin: .4rem 0 .6rem; }
@@ -424,7 +427,16 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="dnd-pool" id="q1-pool"><span class="dnd-pool-label">方塊庫（拖曳或點擊後再點空格）</span></div>
         </div>
         <div id="q1-fill" class="fill-list" style="display:none"></div>
-        <div class="q-exp" id="q1-exp"><strong>第 1 題｜詳解：</strong>IPv4 基本標頭 20 bytes（IHL=5×4）。第 1 列 Version(4)+IHL(4)+ToS(8)+Total Length(16)=32 bits；第 2 列是「分割三兄弟」Identification(16)+Flags(3)+Fragment Offset(13)=32 bits；第 3 列 TTL(8)+Protocol(8)+Checksum(16)；第 4、5 列各放一個 32 bits 的 IP 位址。表頭最小 20 bytes、最大 60 bytes（有 Options 時）。</div>
+        <div class="q-exp" id="q1-exp"><strong>第 1 題｜詳解（依列對照）：</strong>
+            <ol>
+                <li><strong>第 1 列</strong>：Version(4) ＋ IHL(4) ＋ ToS(8) ＋ Total Length(16) ＝ 32 bits</li>
+                <li><strong>第 2 列</strong>：Identification(16) ＋ Flags(3) ＋ Fragment Offset(13) ＝ 32 bits（分割三兄弟）</li>
+                <li><strong>第 3 列</strong>：TTL(8) ＋ Protocol(8) ＋ Header Checksum(16)</li>
+                <li><strong>第 4 列</strong>：Source IP Address(32)</li>
+                <li><strong>第 5 列</strong>：Destination IP Address(32)</li>
+                <li><strong>第 6 列</strong>：Options ＋ Padding（可變）</li>
+            </ol>
+            <strong>補充：</strong>IHL=5（×4）時標頭為最小 20 bytes；有 Options 時最多 60 bytes。</div>
     </section>
 
     <!-- ===== Q2 ===== -->
@@ -449,7 +461,18 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="fill-item"><label>5. TTL（十進位）= ?</label><input class="fill-input" id="q2-j" placeholder="數字"></div>
             <div class="fill-item"><label>6. Protocol = ?（下一層協定）</label><input class="fill-input" id="q2-k" placeholder="請輸入答案"></div>
         </div>
-        <div class="q-exp" id="q2-exp"><strong>第 2 題｜詳解：</strong>前 6 bytes = Destination MAC（cc 28 aa af 0f e5），接著 6 bytes = Source MAC（00 08 e3 ff fd 90），Type 08 00 = IPv4（08 06 則是 ARP）。IP 標頭從第 14 bytes 的 45 開始：Version=4、IHL=5 → 標頭 5×4=20 bytes。Total Length = 00 28<sub>hex</sub> = 40 → Payload = 40 − 20 = 20 bytes。TTL = 32<sub>hex</sub> = 50；Protocol = 06 = TCP。Source IP = 5b 6c 38 93 → 91.108.56.147；Destination IP = c0 a8 3d 9f → 192.168.61.159。</div>
+        <div class="q-exp" id="q2-exp"><strong>第 2 題｜詳解（依小題）：</strong>
+            <ol>
+                <li><strong>1a. Destination MAC</strong>：封包最前面 6 bytes → <code>cc 28 aa af 0f e5</code></li>
+                <li><strong>1b. Source MAC</strong>：接著的 6 bytes → <code>00 08 e3 ff fd 90</code></li>
+                <li><strong>1c. Type = 08 00</strong>：代表 IPv4（若是 <code>08 06</code> 才是 ARP）</li>
+                <li><strong>2a. Source IP</strong>：<code>5b 6c 38 93</code> → 5b=91、6c=108、38=56、93=147 → <code>91.108.56.147</code></li>
+                <li><strong>2b. Destination IP</strong>：<code>c0 a8 3d 9f</code> → c0=192、a8=168、3d=61、9f=159 → <code>192.168.61.159</code></li>
+                <li><strong>3. 首 byte 45</strong>：Version = 4（IPv4）；IHL = 5 → 標頭 5 × 4 = <strong>20 bytes</strong>（沒有 Options）</li>
+                <li><strong>4. Payload 長度</strong>：Total Length <code>00 28</code> = 40 bytes，40 − 標頭 20 = <strong>20 bytes</strong></li>
+                <li><strong>5. TTL</strong>：<code>32</code><sub>hex</sub> = 3×16+2 = <strong>50</strong></li>
+                <li><strong>6. Protocol</strong>：<code>06</code> = <strong>TCP</strong>（若為 17 = UDP、1 = ICMP）</li>
+            </ol></div>
     </section>
 
     <!-- ===== Q3 ===== -->
@@ -486,7 +509,14 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="dnd-pool" id="q3-pool"><span class="dnd-pool-label">方塊庫（拖曳或點擊後再點空格）</span></div>
         </div>
         <div id="q3-fill" class="fill-list" style="display:none"></div>
-        <div class="q-exp" id="q3-exp"><strong>第 3 題｜詳解：</strong>IPv6 固定 40 bytes：第 1 列 Version(4)+Traffic Class(8)+Flow Label(20)=32 bits；第 2 列 Payload Length(16)+Next Header(8)+Hop Limit(8)；後面 Source Address 與 Destination Address 各 128 bits（16 bytes）。對照 IPv4：TTL → Hop Limit、Protocol → Next Header（IPv6 標頭沒有 Header Checksum，交給鏈路層處理）。</div>
+        <div class="q-exp" id="q3-exp"><strong>第 3 題｜詳解（依列對照）：</strong>
+            <ol>
+                <li><strong>第 1 列</strong>：Version(4) ＋ Traffic Class(8) ＋ Flow Label(20) ＝ 32 bits</li>
+                <li><strong>第 2 列</strong>：Payload Length(16) ＋ Next Header(8) ＋ Hop Limit(8)</li>
+                <li><strong>第 3 列</strong>：Source Address ＝ 128 bits（16 bytes）</li>
+                <li><strong>第 4 列</strong>：Destination Address ＝ 128 bits（16 bytes）</li>
+            </ol>
+            <strong>補充：</strong>IPv6 標頭固定 40 bytes；對照 IPv4——TTL → Hop Limit、Protocol → Next Header，且 IPv6 沒有 Header Checksum（交給鏈路層與上層處理）。</div>
     </section>
 
     <!-- ===== Q4 ===== -->
@@ -500,7 +530,20 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn btn-ghost" onclick="renderPorts(10)">📋 全部 10 題</button>
         </div>
         <div id="q4-rows"></div>
-        <div class="q-exp" id="q4-exp"><strong>第 4 題｜詳解口訣：</strong>「80 網頁 443 加密、20/21 檔傳、22 遠端 SSH、23 旧式 Telnet、25 寄信、53 網域名、67/68 自動拿 IP、110 POP3 與 143 IMAP 收信來」。DNS 以 UDP 為主（區域傳輸才用 TCP）、DHCP 為 UDP；其餘大多走 TCP。</div>
+        <div class="q-exp" id="q4-exp"><strong>第 4 題｜詳解（依服務順序）：</strong>
+            <ol>
+                <li><strong>HTTP</strong>：80（TCP）</li>
+                <li><strong>HTTPS</strong>：443（TCP）</li>
+                <li><strong>FTP</strong>：20／21（TCP）</li>
+                <li><strong>SSH</strong>：22（TCP）</li>
+                <li><strong>Telnet</strong>：23（TCP）</li>
+                <li><strong>SMTP</strong>：25（TCP，寄信）</li>
+                <li><strong>DNS</strong>：53（UDP 為主；區域傳輸才用 TCP）</li>
+                <li><strong>DHCP</strong>：67／68（UDP）</li>
+                <li><strong>POP3</strong>：110（TCP，收信）</li>
+                <li><strong>IMAP</strong>：143（TCP，收信）</li>
+            </ol>
+            <strong>口訣：</strong>「80 網頁 443 加密、20/21 檔傳、22 遠端、23 舊式遠端、25 寄信、53 網域、67/68 拿 IP、110 與 143 收信」。</div>
     </section>
 
     <!-- ===== Q5 ===== -->
@@ -516,7 +559,13 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="fill-item"><label>欄位 2（3 bits）</label><input class="fill-input" id="q5-b" placeholder="請輸入答案"></div>
             <div class="fill-item"><label>欄位 3（13 bits）</label><input class="fill-input" id="q5-c" placeholder="請輸入答案"></div>
         </div>
-        <div class="q-exp" id="q5-exp"><strong>第 5 題｜詳解：</strong>第 2 列共 32 bits = Identification(16) + Flags(3) + Fragment Offset(13)。同一個大封包的所有分片會帶「相同的 Identification」；Flags 中 MF=1 表示後面還有分片、DF=1 表示禁止分割；Fragment Offset 以 8 bytes 為單位標示此分片在原封包中的位置。</div>
+        <div class="q-exp" id="q5-exp"><strong>第 5 題｜詳解（依欄位）：</strong>
+            <ol>
+                <li><strong>欄位 1（16 bits）Identification</strong>：同一個大封包的所有分片都帶相同的識別碼，用來判斷哪些分片屬於同一包。</li>
+                <li><strong>欄位 2（3 bits）Flags</strong>：MF=1 表示後面還有分片；MF=0 表示最後一片；DF=1 表示禁止分割。</li>
+                <li><strong>欄位 3（13 bits）Fragment Offset</strong>：以 8 bytes 為單位，標示此分片在原始封包中的位置。</li>
+            </ol>
+            <strong>補充：</strong>三欄位同在第 2 列，共 16 ＋ 3 ＋ 13 ＝ 32 bits。</div>
     </section>
 
     <!-- ===== Q6 ===== -->
@@ -531,7 +580,11 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="fill-item"><label>IPv4 位址長度（bits）</label><input class="fill-input" id="q6-a" placeholder="請輸入答案"></div>
             <div class="fill-item"><label>IPv6 位址長度（bits）</label><input class="fill-input" id="q6-b" placeholder="請輸入答案"></div>
         </div>
-        <div class="q-exp" id="q6-exp"><strong>第 6 題｜詳解：</strong>IPv4 = 32 bits（4 bytes）；IPv6 = 128 bits（16 bytes），是 IPv4 的 4 倍長，位址空間幾乎用不完。</div>
+        <div class="q-exp" id="q6-exp"><strong>第 6 題｜詳解：</strong>
+            <ol>
+                <li><strong>IPv4</strong>：32 bits（＝ 4 bytes）</li>
+                <li><strong>IPv6</strong>：128 bits（＝ 16 bytes），是 IPv4 的 4 倍長，位址空間幾乎用不完。</li>
+            </ol></div>
     </section>
 
     <!-- ===== Q7 ===== -->
@@ -576,7 +629,15 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="dnd-pool" id="q7-pool"><span class="dnd-pool-label">方塊庫（共 9 塊：1 客戶端、4 伺服器、中英文各一組）</span></div>
         </div>
         <div id="q7-fill" class="fill-list" style="display:none"></div>
-        <div class="q-exp" id="q7-exp"><strong>第 7 題｜詳解口訣：</strong>「左紅一問到底叫遞迴，右邊三色逐台問叫反覆」。客戶端 → 第一台 DNS 伺服器之間是 Recursive（伺服器「負責問完」再回答案）；第一台伺服器再向根／上層／權威名稱伺服器逐台詢問則是 Iterative（每次都回「去問下一層」）。</div>
+        <div class="q-exp" id="q7-exp"><strong>第 7 題｜詳解（依空格）：</strong>
+            <ol>
+                <li><strong>空格 A</strong>：客戶端（發出查詢的電腦）</li>
+                <li><strong>空格 B</strong>：伺服器（第一台 DNS 伺服器）</li>
+                <li><strong>空格 C1／C2／C3</strong>：伺服器（根／上層／權威名稱伺服器）</li>
+                <li><strong>空格 E／F（紅圈）</strong>：Recursive Query／遞迴查詢——客戶端只問第一台，由它負責把所有答案問回來</li>
+                <li><strong>空格 G／H（紫圈）</strong>：Iterative Query／反覆查詢——第一台伺服器逐台去問，每次只得到「去問下一層」</li>
+            </ol>
+            <strong>口訣：</strong>「左紅一問到底叫遞迴，右邊三色逐台問叫反覆。」</div>
     </section>
 
     <!-- ===== Q8 ===== -->
@@ -604,7 +665,13 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="fill-item"><label>IPv4 有、IPv6 沒有的傳播方式</label><input class="fill-input" id="q8-d" placeholder="請輸入答案"></div>
             <div class="fill-item"><label>IPv6 新增的傳播方式（送給最近一台）</label><input class="fill-input" id="q8-e" placeholder="請輸入答案"></div>
         </div>
-        <div class="q-exp" id="q8-exp"><strong>第 8 題｜詳解：</strong>IPv4 三種傳播：Unicast（單播）、Multicast（多播）、Broadcast（廣播）。IPv6 取消 Broadcast，改用 Multicast ＋ Anycast；核心對比就是 <strong>Broadcast vs Anycast</strong>——廣播送全網段，任播只送「路由上最近的一台」（典型應用：DNS 根、NTP）。</div>
+        <div class="q-exp" id="q8-exp"><strong>第 8 題｜詳解（依小題）：</strong>
+            <ol>
+                <li><strong>a. IPv4 三種傳播</strong>：Unicast（單播）、Multicast（多播）、Broadcast（廣播）</li>
+                <li><strong>b. IPv6 取消的傳播方式</strong>：Broadcast（廣播）——IPv6 標頭沒有廣播位址</li>
+                <li><strong>c. 核心對比</strong>：Broadcast vs Anycast——廣播送「整個網段全部主機」；任播只送「路由上最近的一台」（典型應用：DNS 根伺服器、NTP）</li>
+            </ol>
+            <strong>補充：</strong>IPv6 改用 Multicast（群組）＋ Anycast（任播）取代廣播，可減少不必要的流量。</div>
     </section>
 
     <!-- ===== Q9 ===== -->
@@ -616,7 +683,14 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn btn-outline" onclick="resetQ(9)">重設本題</button>
         </div>
         <div id="q9-rows"></div>
-        <div class="q-exp" id="q9-exp"><strong>第 9 題｜詳解：</strong>① 合法——:: 只壓縮一次連續的 0，正確。② 不合法——一個位址中 :: 雙冒號只能出現一次。③ 不合法——十六進位只能 0-9 a-f，出現了 g。④ 合法——::1 是 Loopback 位址。⑤ 不合法——IPv6 只有 8 組 16-bit 區塊，這裡有 9 組。</div>
+        <div class="q-exp" id="q9-exp"><strong>第 9 題｜詳解（依序號）：</strong>
+            <ol>
+                <li><code>2001:0db8:85a3::8a2e:0370:7334</code> → <strong>合法</strong>：:: 只用一次壓縮連續的 0，正確</li>
+                <li><code>2001:db8::1::2</code> → <strong>不合法</strong>：:: 雙冒號零壓縮在一個位址中只能出現一次</li>
+                <li><code>2001:0db8:85g3:...:7334</code> → <strong>不合法</strong>：含非十六進位字元 g，僅限 0-9、a-f</li>
+                <li><code>::1</code> → <strong>合法</strong>：Loopback 位址（相當於 IPv4 的 127.0.0.1）</li>
+                <li><code>2001:db8:1:2:3:4:5:6:7</code> → <strong>不合法</strong>：超過 8 組 16-bit 區塊（此處有 9 組）</li>
+            </ol></div>
     </section>
 
     <!-- ===== Q10 ===== -->
@@ -628,7 +702,12 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn btn-outline" onclick="resetQ(10)">重設本題</button>
         </div>
         <div class="fill-item"><label>完整 HTTPS 網址</label><input class="fill-input" id="q10-a" placeholder="請輸入完整網址" style="max-width:420px"></div>
-        <div class="q-exp" id="q10-exp"><strong>第 10 題｜詳解：</strong>正確答案 <code>https://[2001:db8::1]</code>。重點驗證有沒有加上 [ 與 ]；若寫成 <code>https://2001:db8::1</code> 瀏覽器會把 <code>:1</code> 誤認成 Port 號。</div>
+        <div class="q-exp" id="q10-exp"><strong>第 10 題｜詳解：</strong>
+            <ol>
+                <li><strong>正確寫法</strong>：<code>https://[2001:db8::1]</code>——IPv6 位址必須用中括號 [ ] 包住</li>
+                <li><strong>原因</strong>：IPv6 以冒號分隔，若不括起來，瀏覽器會把 <code>:1</code> 誤認成 Port 號</li>
+                <li><strong>若要加 Port</strong>：寫在括號外，例如 <code>https://[2001:db8::1]:443</code></li>
+            </ol></div>
     </section>
 
     <section class="card" id="exp-summary" style="display:none">
