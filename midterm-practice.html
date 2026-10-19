@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>期中考十大題互動模擬 | 網路概論</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --bg: #f0f2f5;
+    --surface: #fff;
+    --surface2: #f8f9fa;
+    --border: #dee2e6;
+    --text: #212529;
+    --text2: #495057;
+    --text3: #868e96;
+    --primary: #4263eb;
+    --primary-light: #dbe4ff;
+    --primary-dark: #3b5bdb;
+    --accent: #f59f00;
+    --accent-light: #fff3bf;
+    --success: #2f9e44;
+    --success-light: #d3f9d8;
+    --danger: #e03131;
+    --danger-light: #ffe0e0;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.1);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+}
+html { scroll-behavior: smooth; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.65;
+}
+header {
+    background: linear-gradient(135deg, #1c7ed6, #4263eb, #7048e8);
+    color: #fff; padding: 2.5rem 1.5rem 1.5rem;
+    position: relative; overflow: hidden;
+}
+header::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,.12) 0%, transparent 60%);
+}
+header > * { position: relative; z-index: 1; }
+header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: .35rem; }
+header p { font-size: 1rem; opacity: .85; max-width: 640px; }
+.home-link {
+    display: inline-block; margin-bottom: .8rem; padding: .4rem .9rem;
+    border-radius: 999px; background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.35); color: #fff;
+    text-decoration: none; font-size: .85rem; font-weight: 600;
+    backdrop-filter: blur(4px); transition: background .15s;
+}
+.home-link:hover { background: rgba(255,255,255,.3); }
+
+body.has-sidebar { padding-left: 280px; }
+main { min-width: 0; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+nav {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 280px;
+    overflow-y: auto; overscroll-behavior: contain;
+    background: var(--surface); border-right: 1px solid var(--border);
+    z-index: 200; transition: transform .25s ease;
+}
+nav::-webkit-scrollbar { width: 6px; }
+nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+nav .inner { display: flex; flex-direction: column; gap: 2px; padding: 1rem .75rem 2rem; }
+nav .nav-title {
+    font-size: .78rem; font-weight: 700; letter-spacing: .06em;
+    color: var(--text3); padding: .25rem .6rem .5rem; text-transform: uppercase;
+}
+nav a {
+    display: block; text-align: left; padding: .5rem .7rem;
+    border: none; background: transparent; font-size: .85rem; font-weight: 500;
+    color: var(--text2); border-radius: 6px; cursor: pointer; white-space: nowrap;
+    text-decoration: none; transition: all .15s;
+}
+nav a:hover { background: var(--surface2); color: var(--text); }
+nav a.hot { color: var(--danger); font-weight: 700; }
+nav a.hot:hover { background: var(--danger-light); }
+
+.collapse-btn {
+    position: fixed; top: 50%; left: 280px; transform: translateY(-50%);
+    z-index: 300; width: 22px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); color: var(--text2);
+    border: 1px solid var(--border); border-left: none;
+    border-radius: 0 8px 8px 0; cursor: pointer; padding: 0;
+    transition: left .25s ease, color .15s, background .15s;
+}
+.collapse-btn:hover { background: var(--primary); color: #fff; }
+.collapse-btn svg { width: 14px; height: 14px; transition: transform .25s ease; }
+body.sidebar-collapsed { padding-left: 0; }
+body.sidebar-collapsed nav { transform: translateX(-100%); }
+body.sidebar-collapsed .collapse-btn { left: 0; border-left: 1px solid var(--border); border-radius: 8px; }
+body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
+
+.hamburger {
+    display: none; position: fixed; top: .75rem; left: .75rem; z-index: 1200;
+    width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.35);
+    border-radius: 8px; background: rgba(255,255,255,.15);
+    backdrop-filter: blur(6px); cursor: pointer; padding: 0;
+}
+.hamburger span {
+    display: block; width: 20px; height: 2px; margin: 4px auto;
+    background: #fff; border-radius: 1px; transition: all .2s;
+}
+.hamburger.active span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 150; }
+.backdrop.show { display: block; }
+
+.sec-title { margin-bottom: 1.25rem; }
+.sec-title h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: .2rem; }
+.sec-title p { color: var(--text3); font-size: .9rem; }
+
+.card {
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem; border: 1px solid var(--border);
+}
+.card h3 {
+    font-size: 1.1rem; font-weight: 700; margin-bottom: .6rem;
+    padding-bottom: .4rem; border-bottom: 2px solid var(--primary-light);
+    display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+}
+.card p, .card li { font-size: .9rem; color: var(--text2); }
+
+.tag { display: inline-block; padding: .1rem .5rem; border-radius: 4px; font-size: .72rem; font-weight: 600; }
+.tag-p { background: var(--primary-light); color: var(--primary-dark); }
+.tag-a { background: var(--accent-light); color: #b88500; }
+.tag-d { background: var(--danger-light); color: var(--danger); }
+
+.btn {
+    display: inline-block; padding: .4rem .85rem; border: none; border-radius: 6px;
+    cursor: pointer; font-size: .82rem; font-weight: 500;
+    background: var(--primary); color: #fff; transition: background .15s;
+    font-family: inherit;
+}
+.btn:hover { background: var(--primary-dark); }
+.btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+.btn-outline:hover { background: var(--primary-light); }
+.btn-ghost { background: var(--surface2); color: var(--text2); border: 1.5px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+.btn-danger { background: var(--danger); }
+.btn-danger:hover { background: #c92a2a; }
+
+.score-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 1.5rem; text-align: center; margin-bottom: 1rem;
+}
+.score-box .num { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+.score-box .lbl { color: var(--text3); font-size: .82rem; }
+.bar-wrap { height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 99px; transition: width .4s; }
+
+.global-bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .6rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: .9rem 1.2rem; margin-bottom: 1.2rem;
+}
+.global-bar .g-score { font-weight: 800; font-size: 1.05rem; color: var(--primary); margin-right: auto; }
+
+.qcard { scroll-margin-top: 1rem; }
+.q-badge { margin-left: auto; font-size: 1.1rem; }
+.q-tools { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .8rem; align-items: center; }
+.q-desc { font-size: .85rem; color: var(--text2); margin-bottom: .7rem; }
+.q-exp {
+    margin-top: .8rem; padding: .7rem .9rem; background: var(--surface2);
+    border-radius: 6px; font-size: .84rem; color: var(--text2);
+    display: none; border-left: 3px solid var(--accent);
+}
+.q-exp.show { display: block; }
+.q-exp strong { color: var(--text); }
+
+/* ===== Header diagrams (drag & drop) ===== */
+.ip-hdr { display: flex; flex-direction: column; gap: 3px; margin: .4rem 0 .6rem; }
+.bit-scale {
+    display: grid; grid-template-columns: repeat(32, 1fr);
+    font-family: Consolas, monospace; font-size: .62rem; color: var(--text3);
+}
+.hrow { display: grid; grid-template-columns: repeat(32, 1fr); gap: 3px; }
+.hrow .d-slot { min-height: 40px; }
+.s3 { grid-column: span 3; }
+.s4 { grid-column: span 4; }
+.s8 { grid-column: span 8; }
+.s13 { grid-column: span 13; }
+.s16 { grid-column: span 16; }
+.s20 { grid-column: span 20; }
+.s32 { grid-column: span 32; }
+
+.dnd-pool {
+    display: flex; flex-wrap: wrap; gap: .4rem;
+    padding: .6rem; margin: .5rem 0;
+    background: var(--surface2); border: 1px dashed var(--border);
+    border-radius: 6px; min-height: 44px;
+}
+.dnd-pool-label { font-size: .75rem; font-weight: 700; color: var(--text3); width: 100%; }
+.d-item {
+    padding: .3rem .7rem; border: 2px dashed var(--primary);
+    background: var(--primary-light); border-radius: 6px;
+    cursor: grab; font-size: .78rem; font-weight: 600; color: var(--primary-dark);
+    user-select: none; transition: all .15s;
+}
+.d-item:hover { background: #c5d3ff; }
+.d-item.picked { outline: 3px solid var(--accent); background: var(--accent-light); color: #b88500; border-color: var(--accent); }
+.d-item.dragging { opacity: .5; }
+.d-item.in-slot { cursor: pointer; font-size: .68rem; padding: .18rem .4rem; margin: 0; }
+.d-slot {
+    border: 2px dashed var(--border); border-radius: 6px;
+    min-height: 38px; display: flex; align-items: center; justify-content: center;
+    font-size: .72rem; cursor: pointer; transition: border-color .15s, background .15s;
+    padding: 2px; text-align: center; background: var(--surface);
+}
+.d-slot:hover { border-color: var(--primary); background: var(--primary-light); }
+.d-slot .hint { color: var(--text3); font-size: .62rem; font-family: Consolas, monospace; pointer-events: none; }
+.d-slot.over { border-color: var(--accent); background: var(--accent-light); }
+.slot-ok { border-color: var(--success) !important; background: var(--success-light) !important; border-style: solid !important; }
+.slot-bad { border-color: var(--danger) !important; background: var(--danger-light) !important; border-style: solid !important; }
+.inline-slot { display: inline-flex; min-width: 130px; min-height: 30px; vertical-align: middle; margin: 0 .2rem; }
+
+.fill-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .6rem; }
+.fill-item label { display: block; font-size: .75rem; font-weight: 600; color: var(--text2); margin-bottom: .15rem; }
+.fill-input {
+    width: 100%; border: 2px solid var(--border); border-radius: 6px;
+    padding: .45rem .6rem; font-family: Consolas, monospace; font-size: .85rem;
+    transition: border-color .15s;
+}
+.fill-input:focus { outline: none; border-color: var(--primary); }
+.in-ok { border-color: var(--success) !important; background: var(--success-light); }
+.in-bad { border-color: var(--danger) !important; background: var(--danger-light); }
+
+/* ===== Hex dump ===== */
+.hex-dump {
+    background: #1e1e2e; color: #cdd6f4; padding: 1rem 1.2rem;
+    border-radius: 8px; font-family: Consolas, monospace;
+    font-size: .85rem; line-height: 1.9; overflow-x: auto; margin: .5rem 0;
+}
+.hex-off { color: #6c7086; margin-right: 1em; }
+.hex-byte { padding: 1px 2px; border-radius: 3px; transition: background .2s, color .2s; }
+.hex-byte.on { background: #f9e2af; color: #1e1e2e; font-weight: 700; }
+.hex-byte.on2 { background: #89b4fa; color: #1e1e2e; font-weight: 700; }
+.hex-byte.on3 { background: #a6e3a1; color: #1e1e2e; font-weight: 700; }
+.hex-byte.on4 { background: #f5c2e7; color: #1e1e2e; font-weight: 700; }
+.hex-byte.on5 { background: #fab387; color: #1e1e2e; font-weight: 700; }
+.hex-byte.on6 { background: #94e2d5; color: #1e1e2e; font-weight: 700; }
+
+/* ===== Port table ===== */
+.port-row {
+    display: grid; grid-template-columns: 100px 1fr 110px 90px;
+    gap: .5rem; align-items: center; margin-bottom: .5rem;
+    padding: .45rem .6rem; background: var(--surface2); border-radius: 6px;
+}
+.port-row .svc { font-weight: 700; font-size: .88rem; }
+.port-row .proto { font-size: .72rem; color: var(--text3); }
+.port-row input { max-width: 110px; }
+@media (max-width: 640px) {
+    .port-row { grid-template-columns: 1fr 1fr; }
+}
+
+/* ===== DNS diagram ===== */
+.dns-diagram {
+    position: relative; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.2rem; margin: .6rem 0; overflow-x: auto;
+}
+.dns-inner { display: flex; align-items: center; gap: 0; min-width: 720px; position: relative; }
+.dns-node { display: flex; flex-direction: column; align-items: center; gap: .25rem; z-index: 2; }
+.dns-node .icon { font-size: 1.6rem; line-height: 1; }
+.dns-node .d-slot { min-width: 110px; min-height: 32px; }
+.dns-arrow { font-weight: 800; font-size: 1.1rem; margin: 0 .4rem; z-index: 2; white-space: nowrap; }
+.dns-arrow.red { color: var(--danger); }
+.dns-arrow.blue { color: #1971c2; }
+.dns-arrow.green { color: var(--success); }
+.dns-arrow.orange { color: var(--accent); }
+.dns-servers { display: flex; flex-direction: column; gap: .9rem; z-index: 2; }
+.oval {
+    position: absolute; border: 2px dashed; border-radius: 50%;
+    pointer-events: none; z-index: 1;
+}
+.oval-red { border-color: var(--danger); left: 2%; top: 4%; width: 34%; height: 62%; }
+.oval-purple { border-color: #7048e8; right: 1%; top: 2%; width: 46%; height: 96%; }
+.oval-labels {
+    position: absolute; display: flex; flex-direction: column; gap: .3rem;
+    z-index: 3; font-size: .78rem; font-weight: 600;
+}
+.oval-labels.red { left: 6%; bottom: 4%; }
+.oval-labels.purple { right: 4%; bottom: 3%; }
+.oval-labels .inline-slot { min-width: 150px; }
+
+/* ===== Choices (Q8, Q9) ===== */
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0; }
+.chip {
+    padding: .4rem .85rem; border: 2px solid var(--border); border-radius: 999px;
+    cursor: pointer; font-size: .82rem; background: var(--surface);
+    transition: all .15s; font-family: inherit;
+}
+.chip:hover { border-color: var(--primary); background: var(--primary-light); }
+.chip.picked { border-color: var(--primary); background: var(--primary-light); font-weight: 700; }
+.chip.ok { border-color: var(--success); background: var(--success-light); color: #1a5e2a; }
+.chip.bad { border-color: var(--danger); background: var(--danger-light); color: #a52525; }
+.chip.disabled { pointer-events: none; }
+.q9-row {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+    padding: .5rem .7rem; background: var(--surface2); border-radius: 6px; margin-bottom: .5rem;
+}
+.q9-row .addr { font-family: Consolas, monospace; font-size: .82rem; flex: 1; min-width: 240px; }
+.q9-row .chip { padding: .25rem .7rem; }
+
+.mini-label { font-size: .78rem; font-weight: 700; color: var(--text2); margin: .6rem 0 .2rem; }
+
+@media (max-width: 900px) {
+    body.has-sidebar { padding-left: 0; }
+    nav { width: 264px; max-width: 82vw; transform: translateX(-100%); box-shadow: var(--shadow-lg); }
+    nav.open { transform: translateX(0); }
+    .collapse-btn { display: none; }
+    .hamburger { display: block; }
+    header { padding: 4.5rem 1.25rem 1.5rem; }
+}
+@media (max-width: 640px) {
+    header h1 { font-size: 1.4rem; }
+    .card { padding: 1rem; }
+}
+</style>
+</head>
+<body class="has-sidebar">
+
+<button class="collapse-btn" id="collapse-btn" onclick="toggleCollapse()" aria-label="收合側邊欄" title="收合側邊欄">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="開啟目錄" aria-expanded="false">
+    <span></span><span></span><span></span>
+</button>
+<div class="backdrop" id="backdrop" onclick="closeSidebar()"></div>
+
+<nav id="sidebar">
+    <div class="inner">
+        <a href="learning_website.html">← 回網路概論學習站</a>
+        <a href="index.html">🏠 回首頁</a>
+        <div class="nav-title">十大題</div>
+        <a href="#q1">① IPv4 標頭格式（拖拉）</a>
+        <a href="#q2">② 分析 Ethernet Frame（Hex）</a>
+        <a href="#q3">③ IPv6 標頭格式（拖拉）</a>
+        <a href="#q4">④ Server 與 Port 對應</a>
+        <a href="#q5">⑤ 分割與重組三要素</a>
+        <a href="#q6">⑥ 位址長度 IPv4 / IPv6</a>
+        <a href="#q7">⑦ DNS 遞迴／反覆查詢（拖拉）</a>
+        <a href="#q8">⑧ Broadcast vs Anycast</a>
+        <a href="#q9">⑨ 判斷合法 IPv6 位址</a>
+        <a href="#q10">⑩ 網址 IPv6 加中括號</a>
+        <div class="nav-title">快捷</div>
+        <a href="#global-bar" class="hot">⬇ 一鍵批改全卷</a>
+    </div>
+</nav>
+
+<header>
+    <a class="home-link" href="learning_website.html">← 回學習網站</a>
+    <h1>📝 期中考十大題互動模擬</h1>
+    <p>拖拉方塊、Hex 拆解、填空、選擇即時批改。每一題可獨立「檢查答案／重設」，最後可一鍵批改全卷。</p>
+</header>
+
+<main>
+    <div class="global-bar" id="global-bar">
+        <span class="g-score" id="g-score">目前得分：0 / 10</span>
+        <button class="btn btn-danger" onclick="gradeAll()">✅ 一鍵批改全卷</button>
+        <button class="btn" onclick="showAllExp()">💡 顯示所有詳解</button>
+        <button class="btn btn-outline" onclick="resetAll()">↻ 全部重寫</button>
+    </div>
+
+    <!-- ===== Q1 ===== -->
+    <section class="card qcard" id="q1">
+        <h3>第 1 題｜IPv4 標頭格式（20 分）<span class="tag tag-p">拖拉 / 填空</span><span class="q-badge" id="q1-badge"></span></h3>
+        <p class="q-desc">把下方欄位方塊拖進正確位置（或「點方塊 → 點空格」），也可切換成文字填空模式。空格上顯示 bit 寬度提示。</p>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(1)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(1)">重設本題</button>
+            <button class="btn btn-ghost" onclick="toggleMode(1)">⇄ 切換填空模式</button>
+        </div>
+        <div id="q1-dnd">
+            <div class="ip-hdr">
+                <div class="bit-scale">
+                    <span style="grid-column:1">0</span><span style="grid-column:5">4</span><span style="grid-column:9">8</span><span style="grid-column:17">16</span><span style="grid-column:20">19</span><span style="grid-column:25">24</span><span style="grid-column:30">31</span>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s4" data-accept="version" data-name="Version" data-hint="4b"><span class="hint">4b</span></div>
+                    <div class="d-slot s4" data-accept="ihl|headerlength" data-name="IHL / Header Length" data-hint="4b"><span class="hint">4b</span></div>
+                    <div class="d-slot s8" data-accept="tos|typeofservice" data-name="Type of Service (ToS)" data-hint="8b"><span class="hint">8b</span></div>
+                    <div class="d-slot s16" data-accept="totallength|totallen" data-name="Total Length" data-hint="16b"><span class="hint">16b</span></div>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s16" data-accept="identification" data-name="Identification" data-hint="16b"><span class="hint">16b</span></div>
+                    <div class="d-slot s3" data-accept="flags" data-name="Flags" data-hint="3b"><span class="hint">3b</span></div>
+                    <div class="d-slot s13" data-accept="fragmentoffset|offset" data-name="Fragment Offset" data-hint="13b"><span class="hint">13b</span></div>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s8" data-accept="ttl|timetolive" data-name="Time to Live (TTL)" data-hint="8b"><span class="hint">8b</span></div>
+                    <div class="d-slot s8" data-accept="protocol" data-name="Protocol" data-hint="8b"><span class="hint">8b</span></div>
+                    <div class="d-slot s16" data-accept="checksum|headerchecksum" data-name="Header Checksum" data-hint="16b"><span class="hint">16b</span></div>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s32" data-accept="sourceip|sourceipaddress|sourceaddress" data-name="Source IP Address" data-hint="32b"><span class="hint">32b</span></div>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s32" data-accept="destinationip|destinationipaddress|destinationaddress|destip" data-name="Destination IP Address" data-hint="32b"><span class="hint">32b</span></div>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s32" data-accept="options|optionspadding" data-name="Options + Padding" data-hint="變動"><span class="hint">變動</span></div>
+                </div>
+            </div>
+            <div class="dnd-pool" id="q1-pool"><span class="dnd-pool-label">方塊庫（拖曳或點擊後再點空格）</span></div>
+        </div>
+        <div id="q1-fill" class="fill-list" style="display:none"></div>
+        <div class="q-exp" id="q1-exp"><strong>詳解：</strong>IPv4 基本標頭 20 bytes（IHL=5×4）。第 1 列 Version(4)+IHL(4)+ToS(8)+Total Length(16)=32 bits；第 2 列是「分割三兄弟」Identification(16)+Flags(3)+Fragment Offset(13)=32 bits；第 3 列 TTL(8)+Protocol(8)+Checksum(16)；第 4、5 列各放一個 32 bits 的 IP 位址。表頭最小 20 bytes、最大 60 bytes（有 Options 時）。</div>
+    </section>
+
+    <!-- ===== Q2 ===== -->
+    <section class="card qcard" id="q2">
+        <h3>第 2 題｜分析 Ethernet Frame（Hex 拆解實戰）（20 分）<span class="tag tag-a">看圖填空</span><span class="q-badge" id="q2-badge"></span></h3>
+        <p class="q-desc">根據以下 Wireshark Hex Dump 回答 6 小題。批改後會對照高亮封包中對應的 bytes。</p>
+        <div class="hex-dump" id="hex-dump"></div>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(2)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(2)">重設本題</button>
+        </div>
+        <div class="fill-list" id="q2-blanks">
+            <div class="fill-item"><label>1a. Destination MAC（空格分隔或冒號皆可）</label><input class="fill-input" id="q2-a" placeholder="ex: cc 28 aa af 0f e5"></div>
+            <div class="fill-item"><label>1b. Source MAC</label><input class="fill-input" id="q2-b" placeholder="ex: 00 08 e3 ff fd 90"></div>
+            <div class="fill-item"><label>1c. Type = 08 00 裝載什麼封包？</label><input class="fill-input" id="q2-c" placeholder="IP 或 IPv4"></div>
+            <div class="fill-item"><label>2a. Source IP（十進位點分）</label><input class="fill-input" id="q2-d" placeholder="ex: 91.108.56.147"></div>
+            <div class="fill-item"><label>2b. Destination IP（十進位點分）</label><input class="fill-input" id="q2-e" placeholder="ex: 192.168.61.159"></div>
+            <div class="fill-item"><label>3. 首 byte 45：Version = ?</label><input class="fill-input" id="q2-f" placeholder="數字"></div>
+            <div class="fill-item"><label>3. 首 byte 45：IHL = ?</label><input class="fill-input" id="q2-g" placeholder="數字"></div>
+            <div class="fill-item"><label>3. 標頭總長度（bytes）= ?</label><input class="fill-input" id="q2-h" placeholder="數字"></div>
+            <div class="fill-item"><label>4. Payload 長度（bytes）= ?</label><input class="fill-input" id="q2-i" placeholder="Total Length − 標頭長度"></div>
+            <div class="fill-item"><label>5. TTL（十進位）= ?</label><input class="fill-input" id="q2-j" placeholder="數字"></div>
+            <div class="fill-item"><label>6. Protocol = ?（下一層協定）</label><input class="fill-input" id="q2-k" placeholder="ex: TCP"></div>
+        </div>
+        <div class="q-exp" id="q2-exp"><strong>詳解：</strong>前 6 bytes = Destination MAC（cc 28 aa af 0f e5），接著 6 bytes = Source MAC（00 08 e3 ff fd 90），Type 08 00 = IPv4（08 06 則是 ARP）。IP 標頭從第 14 bytes 的 45 開始：Version=4、IHL=5 → 標頭 5×4=20 bytes。Total Length = 00 28<sub>hex</sub> = 40 → Payload = 40 − 20 = 20 bytes。TTL = 32<sub>hex</sub> = 50；Protocol = 06 = TCP。Source IP = 5b 6c 38 93 → 91.108.56.147；Destination IP = c0 a8 3d 9f → 192.168.61.159。</div>
+    </section>
+
+    <!-- ===== Q3 ===== -->
+    <section class="card qcard" id="q3">
+        <h3>第 3 題｜IPv6 標頭格式（20 分）<span class="tag tag-p">拖拉 / 填空</span><span class="q-badge" id="q3-badge"></span></h3>
+        <p class="q-desc">IPv6 固定 40 bytes 標頭，把 8 個欄位拖到正確位置（或切換填空模式）。</p>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(3)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(3)">重設本題</button>
+            <button class="btn btn-ghost" onclick="toggleMode(3)">⇄ 切換填空模式</button>
+        </div>
+        <div id="q3-dnd">
+            <div class="ip-hdr">
+                <div class="bit-scale">
+                    <span style="grid-column:1">0</span><span style="grid-column:5">4</span><span style="grid-column:13">8</span><span style="grid-column:21">16</span><span style="grid-column:30">31</span>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s4" data-accept="version" data-name="Version" data-hint="4b"><span class="hint">4b</span></div>
+                    <div class="d-slot s8" data-accept="trafficclass" data-name="Traffic Class" data-hint="8b"><span class="hint">8b</span></div>
+                    <div class="d-slot s20" data-accept="flowlabel" data-name="Flow Label" data-hint="20b"><span class="hint">20b</span></div>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s16" data-accept="payloadlength" data-name="Payload Length" data-hint="16b"><span class="hint">16b</span></div>
+                    <div class="d-slot s8" data-accept="nextheader" data-name="Next Header" data-hint="8b"><span class="hint">8b</span></div>
+                    <div class="d-slot s8" data-accept="hoplimit" data-name="Hop Limit" data-hint="8b"><span class="hint">8b</span></div>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s32" data-accept="sourceaddress|srcaddress" data-name="Source Address" data-hint="128b"><span class="hint">128b</span></div>
+                </div>
+                <div class="hrow">
+                    <div class="d-slot s32" data-accept="destinationaddress|destaddress" data-name="Destination Address" data-hint="128b"><span class="hint">128b</span></div>
+                </div>
+            </div>
+            <div class="dnd-pool" id="q3-pool"><span class="dnd-pool-label">方塊庫（拖曳或點擊後再點空格）</span></div>
+        </div>
+        <div id="q3-fill" class="fill-list" style="display:none"></div>
+        <div class="q-exp" id="q3-exp"><strong>詳解：</strong>IPv6 固定 40 bytes：第 1 列 Version(4)+Traffic Class(8)+Flow Label(20)=32 bits；第 2 列 Payload Length(16)+Next Header(8)+Hop Limit(8)；後面 Source Address 與 Destination Address 各 128 bits（16 bytes）。對照 IPv4：TTL → Hop Limit、Protocol → Next Header（IPv6 標頭沒有 Header Checksum，交給鏈路層處理）。</div>
+    </section>
+
+    <!-- ===== Q4 ===== -->
+    <section class="card qcard" id="q4">
+        <h3>第 4 題｜Server 與 Port 對應<span class="tag tag-a">填空</span><span class="q-badge" id="q4-badge"></span></h3>
+        <p class="q-desc">填入服務對應的 Port 號。FTP 可填 20、21 或 20/21；DHCP 可填 67、68 或 67/68。</p>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(4)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(4)">全部重設</button>
+            <button class="btn btn-ghost" onclick="renderPorts(5)">🎲 隨機抽 5 題</button>
+            <button class="btn btn-ghost" onclick="renderPorts(10)">📋 全部 10 題</button>
+        </div>
+        <div id="q4-rows"></div>
+        <div class="q-exp" id="q4-exp"><strong>詳解口訣：</strong>「80 網頁 443 加密、20/21 檔傳、22 遠端 SSH、23 旧式 Telnet、25 寄信、53 網域名、67/68 自動拿 IP、110 POP3 與 143 IMAP 收信來」。DNS 以 UDP 為主（區域傳輸才用 TCP）、DHCP 為 UDP；其餘大多走 TCP。</div>
+    </section>
+
+    <!-- ===== Q5 ===== -->
+    <section class="card qcard" id="q5">
+        <h3>第 5 題｜IPv4 封包分割與重組三要素<span class="tag tag-a">填空</span><span class="q-badge" id="q5-badge"></span></h3>
+        <p class="q-desc">IPv4 封包大於 MTU 時需要分割。請寫出標頭「第 2 列」負責分割與重組的三個核心欄位名稱（中英文皆可）。</p>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(5)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(5)">重設本題</button>
+        </div>
+        <div class="fill-list">
+            <div class="fill-item"><label>欄位 1（16 bits）</label><input class="fill-input" id="q5-a" placeholder="ex: Identification"></div>
+            <div class="fill-item"><label>欄位 2（3 bits）</label><input class="fill-input" id="q5-b" placeholder="ex: Flags"></div>
+            <div class="fill-item"><label>欄位 3（13 bits）</label><input class="fill-input" id="q5-c" placeholder="ex: Fragment Offset"></div>
+        </div>
+        <div class="q-exp" id="q5-exp"><strong>詳解：</strong>第 2 列共 32 bits = Identification(16) + Flags(3) + Fragment Offset(13)。同一個大封包的所有分片會帶「相同的 Identification」；Flags 中 MF=1 表示後面還有分片、DF=1 表示禁止分割；Fragment Offset 以 8 bytes 為單位標示此分片在原封包中的位置。</div>
+    </section>
+
+    <!-- ===== Q6 ===== -->
+    <section class="card qcard" id="q6">
+        <h3>第 6 題｜位址長度：IPv4 / IPv6<span class="tag tag-a">填空</span><span class="q-badge" id="q6-badge"></span></h3>
+        <p class="q-desc">IPv4 與 IPv6 位址各佔幾位元（bits）？</p>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(6)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(6)">重設本題</button>
+        </div>
+        <div class="fill-list">
+            <div class="fill-item"><label>IPv4 位址長度（bits）</label><input class="fill-input" id="q6-a" placeholder="ex: 32"></div>
+            <div class="fill-item"><label>IPv6 位址長度（bits）</label><input class="fill-input" id="q6-b" placeholder="ex: 128"></div>
+        </div>
+        <div class="q-exp" id="q6-exp"><strong>詳解：</strong>IPv4 = 32 bits（4 bytes）；IPv6 = 128 bits（16 bytes），是 IPv4 的 4 倍長，位址空間幾乎用不完。</div>
+    </section>
+
+    <!-- ===== Q7 ===== -->
+    <section class="card qcard" id="q7">
+        <h3>第 7 題｜DNS 遞迴／反覆查詢流程（10 分）<span class="tag tag-p">拖拉 / 填空</span><span class="q-badge" id="q7-badge"></span></h3>
+        <p class="q-desc">把下方關鍵字拖進圖中的空白（或「點方塊 → 點空格」）：左半部紅圈是一問到底的遞迴；右半部三色箭頭逐台問的是反覆。</p>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(7)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(7)">重設本題</button>
+            <button class="btn btn-ghost" onclick="toggleMode(7)">⇄ 切換填空模式</button>
+        </div>
+        <div id="q7-dnd">
+            <div class="dns-diagram">
+                <div class="oval oval-red"></div>
+                <div class="oval oval-purple"></div>
+                <div class="dns-inner">
+                    <div class="dns-node">
+                        <div class="icon">💻</div>
+                        <div class="d-slot" data-accept="client|客戶端|pc|電腦" data-name="A（最左側主機）" data-hint="空格 A"><span class="hint">空格 A</span></div>
+                    </div>
+                    <div class="dns-arrow red">⇄</div>
+                    <div class="dns-node">
+                        <div class="icon">🖥️</div>
+                        <div class="d-slot" data-accept="server|伺服器" data-name="B（第一台 DNS 伺服器）" data-hint="空格 B"><span class="hint">空格 B</span></div>
+                    </div>
+                    <div class="dns-arrow blue">⇄</div>
+                    <div class="dns-arrow green">⇄</div>
+                    <div class="dns-arrow orange">⇄</div>
+                    <div class="dns-servers">
+                        <div class="dns-node"><div class="icon">🖧</div><div class="d-slot" data-accept="server|伺服器" data-name="C1" data-hint="C1"><span class="hint">C1</span></div></div>
+                        <div class="dns-node"><div class="icon">🖧</div><div class="d-slot" data-accept="server|伺服器" data-name="C2" data-hint="C2"><span class="hint">C2</span></div></div>
+                        <div class="dns-node"><div class="icon">🖧</div><div class="d-slot" data-accept="server|伺服器" data-name="C3" data-hint="C3"><span class="hint">C3</span></div></div>
+                    </div>
+                </div>
+                <div class="oval-labels red">
+                    <span>英文：<div class="d-slot inline-slot" data-accept="recursivequery|recursive|遞迴查詢|遞迴" data-name="E（紅圈英文）" data-hint="空格 E"><span class="hint">空格 E</span></div></span>
+                    <span>中文：<div class="d-slot inline-slot" data-accept="遞迴查詢|recursivequery|遞迴" data-name="F（紅圈中文）" data-hint="空格 F"><span class="hint">空格 F</span></div></span>
+                </div>
+                <div class="oval-labels purple">
+                    <span>英文：<div class="d-slot inline-slot" data-accept="iterativequery|iterative|反覆查詢|反覆" data-name="G（紫圈英文）" data-hint="空格 G"><span class="hint">空格 G</span></div></span>
+                    <span>中文：<div class="d-slot inline-slot" data-accept="反覆查詢|iterativequery|反覆" data-name="H（紫圈中文）" data-hint="空格 H"><span class="hint">空格 H</span></div></span>
+                </div>
+            </div>
+            <div class="dnd-pool" id="q7-pool"><span class="dnd-pool-label">方塊庫（共 9 塊：1 客戶端、4 伺服器、中英文各一組）</span></div>
+        </div>
+        <div id="q7-fill" class="fill-list" style="display:none"></div>
+        <div class="q-exp" id="q7-exp"><strong>詳解口訣：</strong>「左紅一問到底叫遞迴，右邊三色逐台問叫反覆」。客戶端 → 第一台 DNS 伺服器之間是 Recursive（伺服器「負責問完」再回答案）；第一台伺服器再向根／上層／權威名稱伺服器逐台詢問則是 Iterative（每次都回「去問下一層」）。</div>
+    </section>
+
+    <!-- ===== Q8 ===== -->
+    <section class="card qcard" id="q8">
+        <h3>第 8 題｜IPv4 與 IPv6 傳播的不同<span class="tag tag-a">填空 + 選擇</span><span class="q-badge" id="q8-badge"></span></h3>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(8)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(8)">重設本題</button>
+        </div>
+        <div class="mini-label">a. IPv4 支援的三種傳播方式（中英文皆可，順序 1→3）：</div>
+        <div class="fill-list">
+            <div class="fill-item"><label>第 1 種（單點對單點）</label><input class="fill-input" id="q8-a" placeholder="ex: Unicast"></div>
+            <div class="fill-item"><label>第 2 種（群組）</label><input class="fill-input" id="q8-b" placeholder="ex: Multicast"></div>
+            <div class="fill-item"><label>第 3 種（全網段）</label><input class="fill-input" id="q8-c" placeholder="ex: Broadcast"></div>
+        </div>
+        <div class="mini-label">b. 重點考題：IPv6 取消了哪一種傳播方式？（點選）</div>
+        <div class="chips" id="q8-choice">
+            <button class="chip" data-v="unicast">Unicast 單播</button>
+            <button class="chip" data-v="multicast">Multicast 多播</button>
+            <button class="chip" data-v="broadcast">Broadcast 廣播</button>
+            <button class="chip" data-v="anycast">Anycast 任播</button>
+        </div>
+        <div class="mini-label">c. IPv4 vs IPv6 傳播差異的核心對比是哪兩個字眼？</div>
+        <div class="fill-list">
+            <div class="fill-item"><label>IPv4 有、IPv6 沒有的傳播方式</label><input class="fill-input" id="q8-d" placeholder="ex: Broadcast"></div>
+            <div class="fill-item"><label>IPv6 新增的傳播方式（送給最近一台）</label><input class="fill-input" id="q8-e" placeholder="ex: Anycast"></div>
+        </div>
+        <div class="q-exp" id="q8-exp"><strong>詳解：</strong>IPv4 三種傳播：Unicast（單播）、Multicast（多播）、Broadcast（廣播）。IPv6 取消 Broadcast，改用 Multicast ＋ Anycast；核心對比就是 <strong>Broadcast vs Anycast</strong>——廣播送全網段，任播只送「路由上最近的一台」（典型應用：DNS 根、NTP）。</div>
+    </section>
+
+    <!-- ===== Q9 ===== -->
+    <section class="card qcard" id="q9">
+        <h3>第 9 題｜判斷是否為合法的 IPv6 位址<span class="tag tag-d">選擇</span><span class="q-badge" id="q9-badge"></span></h3>
+        <p class="q-desc">逐一判斷下列 IPv6 位址是否合法（Valid / Invalid）。</p>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(9)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(9)">重設本題</button>
+        </div>
+        <div id="q9-rows"></div>
+        <div class="q-exp" id="q9-exp"><strong>詳解：</strong>① 合法——:: 只壓縮一次連續的 0，正確。② 不合法——一個位址中 :: 雙冒號只能出現一次。③ 不合法——十六進位只能 0-9 a-f，出現了 g。④ 合法——::1 是 Loopback 位址。⑤ 不合法——IPv6 只有 8 組 16-bit 區塊，這裡有 9 組。</div>
+    </section>
+
+    <!-- ===== Q10 ===== -->
+    <section class="card qcard" id="q10">
+        <h3>第 10 題｜網址（URL）中的 IPv6 位址表示法<span class="tag tag-a">填空</span><span class="q-badge" id="q10-badge"></span></h3>
+        <p class="q-desc">IPv6 位址本身用冒號 : 分隔，為避免與 Port 號的冒號混淆，放進 URL 時必須加中括號 [ ]。請把 IPv6 位址 <code>2001:db8::1</code> 寫成完整的 HTTPS 網址。</p>
+        <div class="q-tools">
+            <button class="btn" onclick="checkQ(10)">檢查答案</button>
+            <button class="btn btn-outline" onclick="resetQ(10)">重設本題</button>
+        </div>
+        <div class="fill-item"><label>完整 HTTPS 網址</label><input class="fill-input" id="q10-a" placeholder="https://[....]  記得中括號！" style="max-width:420px"></div>
+        <div class="q-exp" id="q10-exp"><strong>詳解：</strong>正確答案 <code>https://[2001:db8::1]</code>。重點驗證有沒有加上 [ 與 ]；若寫成 <code>https://2001:db8::1</code> 瀏覽器會把 <code>:1</code> 誤認成 Port 號。</div>
+    </section>
+
+    <div class="score-box" id="final-score" style="display:none">
+        <div class="num" id="final-num">0 / 10</div>
+        <div class="lbl">全卷總分（每大題 1 分）</div>
+        <div class="bar-wrap" style="max-width:280px;margin:.6rem auto"><div class="bar-fill" id="final-bar" style="width:0%"></div></div>
+        <div id="final-msg" style="font-size:.9rem;color:var(--text2);margin-bottom:.8rem"></div>
+        <button class="btn" onclick="resetAll()">↻ 全部重寫</button>
+    </div>
+</main>
+
+<script>
+function normKey(s) {
+    return (s || '').toLowerCase().replace(/[\s+\/·．.]/g, '').replace(/[（）()]/g, '');
+}
+function normHex(s) {
+    return (s || '').toLowerCase().replace(/[\s:\-]/g, '');
+}
+function acceptList(slot) {
+    return (slot.dataset.accept || '').split('|').map(x => x.toLowerCase().trim());
+}
+function okFill(val, list) {
+    const n = normKey(val);
+    return n.length > 0 && list.some(a => n === a || n === normKey(a));
+}
+
+/* ===== DnD engine ===== */
+const dndRegs = {};
+let pickedItem = null;
+
+function buildDnd(qid, poolId, items) {
+    const pool = document.getElementById(poolId);
+    pool.querySelectorAll('.d-item').forEach(e => e.remove());
+    const shuffled = items.slice().sort(() => Math.random() - 0.5);
+    shuffled.forEach((it, i) => {
+        const el = document.createElement('div');
+        el.className = 'd-item';
+        el.draggable = true;
+        el.textContent = it.l;
+        el.dataset.val = it.v;
+        el.id = poolId + '-it' + i + '-' + Math.random().toString(36).slice(2, 6);
+        el.addEventListener('click', () => selectItem(el));
+        el.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', el.id);
+            e.dataTransfer.effectAllowed = 'move';
+            el.classList.add('dragging');
+            pickedItem = el;
+        });
+        el.addEventListener('dragend', () => el.classList.remove('dragging'));
+        pool.appendChild(el);
+    });
+    dndRegs[qid] = { poolId: poolId, items: items };
+}
+
+function selectItem(el) {
+    if (pickedItem === el) { el.classList.remove('picked'); pickedItem = null; return; }
+    if (pickedItem) pickedItem.classList.remove('picked');
+    pickedItem = el;
+    el.classList.add('picked');
+}
+
+function slotPlace(slot, item) {
+    if (slot.firstElementChild && slot.firstElementChild.classList.contains('d-item')) {
+        returnToPool(slot.firstElementChild);
+    }
+    slot.innerHTML = '';
+    slot.appendChild(item);
+    item.classList.remove('picked', 'in-slot');
+    item.classList.add('in-slot');
+    slot.classList.remove('slot-ok', 'slot-bad');
+}
+
+function returnToPool(item) {
+    const qid = item.closest('[id^="q"]').id.match(/^q\d+/)[0];
+    const reg = dndRegs[qid];
+    if (reg) document.getElementById(reg.poolId).appendChild(item);
+}
+
+function wireDnd(qid) {
+    document.querySelectorAll('#q' + qid + '-dnd .d-slot').forEach(slot => {
+        slot.addEventListener('click', () => {
+            if (pickedItem) {
+                slotPlace(slot, pickedItem);
+                pickedItem = null;
+            } else if (slot.firstElementChild && slot.firstElementChild.classList.contains('d-item')) {
+                const it = slot.firstElementChild;
+                it.classList.remove('in-slot');
+                it.classList.add('picked');
+                slot.innerHTML = '<span class="hint">' + (slot.dataset.hint || '') + '</span>';
+                returnToPool(it);
+                pickedItem = it;
+            }
+        });
+        slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('over'); });
+        slot.addEventListener('dragleave', () => slot.classList.remove('over'));
+        slot.addEventListener('drop', e => {
+            e.preventDefault();
+            slot.classList.remove('over');
+            const item = document.getElementById(e.dataTransfer.getData('text/plain'));
+            if (item && item.classList.contains('d-item')) {
+                slotPlace(slot, item);
+                pickedItem = null;
+            }
+        });
+    });
+}
+
+function buildFillFromSlots(qid) {
+    const wrap = document.getElementById('q' + qid + '-fill');
+    wrap.innerHTML = '';
+    document.querySelectorAll('#q' + qid + '-dnd .d-slot').forEach((slot, i) => {
+        const div = document.createElement('div');
+        div.className = 'fill-item';
+        div.innerHTML = '<label>' + (slot.dataset.name || '欄位 ' + (i + 1)) + '</label>' +
+            '<input class="fill-input" data-accept="' + slot.dataset.accept + '" placeholder="' + (slot.dataset.name || '') + '">';
+        wrap.appendChild(div);
+    });
+}
+
+function toggleMode(qid) {
+    const dnd = document.getElementById('q' + qid + '-dnd');
+    const fill = document.getElementById('q' + qid + '-fill');
+    const toFill = dnd.style.display !== 'none';
+    dnd.style.display = toFill ? 'none' : '';
+    fill.style.display = toFill ? '' : 'none';
+    if (toFill && !fill.children.length) buildFillFromSlots(qid);
+    clearMarks(qid);
+}
+
+function clearMarks(qid) {
+    document.querySelectorAll('#q' + qid + ' .d-slot').forEach(s => s.classList.remove('slot-ok', 'slot-bad'));
+    document.querySelectorAll('#q' + qid + ' .fill-input').forEach(s => s.classList.remove('in-ok', 'in-bad'));
+    document.querySelectorAll('#q' + qid + ' .chip').forEach(s => s.classList.remove('ok', 'bad', 'disabled'));
+}
+
+/* ===== results ===== */
+const qResults = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null, 10: null };
+
+function setResult(qid, ok) {
+    qResults[qid] = ok;
+    const b = document.getElementById('q' + qid + '-badge');
+    if (b) b.textContent = ok === null ? '' : (ok ? '✅' : '❌');
+    const n = Object.keys(qResults).filter(k => qResults[k] === true).length;
+    document.getElementById('g-score').textContent = '目前得分：' + n + ' / 10';
+    const fs = document.getElementById('final-score');
+    if (Object.values(qResults).every(v => v !== null)) {
+        fs.style.display = 'block';
+        document.getElementById('final-num').textContent = n + ' / 10';
+        document.getElementById('final-bar').style.width = (n * 10) + '%';
+        document.getElementById('final-msg').textContent =
+            n >= 9 ? '🎉 太強了！這份考卷已經準備好上戰場。' :
+            n >= 7 ? '👍 不錯！把錯的題目詳解再看一次。' :
+            n >= 5 ? '💪 及格邊緣，回 115期中考重點 再複習一次。' :
+            '📖 先把 115期中考重點 區塊看完再來挑戰一次！';
+    } else {
+        fs.style.display = 'none';
+    }
+}
+
+/* ===== checkers ===== */
+function checkDndSlots(qid) {
+    const dndEl = document.getElementById('q' + qid + '-dnd');
+    if (dndEl.style.display === 'none') {
+        let allOk = true;
+        document.querySelectorAll('#q' + qid + '-fill .fill-input').forEach(inp => {
+            const list = (inp.dataset.accept || '').split('|');
+            const ok = okFill(inp.value, list);
+            inp.classList.toggle('in-ok', ok);
+            inp.classList.toggle('in-bad', !ok);
+            if (!ok) allOk = false;
+        });
+        return allOk;
+    }
+    let allOk = true;
+    dndEl.querySelectorAll('.d-slot').forEach(slot => {
+        const item = slot.querySelector('.d-item');
+        let ok = false;
+        if (item) ok = acceptList(slot).includes(normKey(item.dataset.val));
+        slot.classList.toggle('slot-ok', ok);
+        slot.classList.toggle('slot-bad', !ok);
+        if (!ok) allOk = false;
+    });
+    return allOk;
+}
+
+function checkQ1() { const ok = checkDndSlots(1); setResult(1, ok); document.getElementById('q1-exp').classList.add('show'); return ok; }
+function checkQ3() { const ok = checkDndSlots(3); setResult(3, ok); document.getElementById('q3-exp').classList.add('show'); return ok; }
+function checkQ7() { const ok = checkDndSlots(7); setResult(7, ok); document.getElementById('q7-exp').classList.add('show'); return ok; }
+
+function fillCheck(id, list) {
+    const inp = document.getElementById(id);
+    const ok = okFill(inp.value, list);
+    inp.classList.toggle('in-ok', ok);
+    inp.classList.toggle('in-bad', !ok);
+    return ok;
+}
+
+function checkQ2() {
+    const hexOkA = normHex(document.getElementById('q2-a').value) === 'cc28aaaf0fe5';
+    const hexOkB = normHex(document.getElementById('q2-b').value) === '0008e3fffd90';
+    const results = [
+        hexOkA, hexOkB,
+        fillCheck('q2-c', ['ip', 'ipv4', 'ipv4封包', 'ip封包']),
+        fillCheck('q2-d', ['91.108.56.147']),
+        fillCheck('q2-e', ['192.168.61.159']),
+        fillCheck('q2-f', ['4']),
+        fillCheck('q2-g', ['5']),
+        fillCheck('q2-h', ['20']),
+        fillCheck('q2-i', ['20']),
+        fillCheck('q2-j', ['50']),
+        fillCheck('q2-k', ['tcp'])
+    ];
+    document.getElementById('q2-a').classList.toggle('in-ok', hexOkA);
+    document.getElementById('q2-a').classList.toggle('in-bad', !hexOkA);
+    document.getElementById('q2-b').classList.toggle('in-ok', hexOkB);
+    document.getElementById('q2-b').classList.toggle('in-bad', !hexOkB);
+    const groups = { 0: [0, 5, 'on'], 1: [6, 11, 'on2'], 2: [12, 13, 'on3'], 3: [26, 29, 'on4'], 4: [30, 33, 'on4'], 5: [14, 14, 'on5'], 8: [16, 17, 'on5'], 9: [22, 22, 'on6'], 10: [23, 23, 'on6'] };
+    Object.keys(groups).forEach(k => {
+        const [a, b, cls] = groups[k];
+        if (!results[k]) return;
+        for (let i = a; i <= b; i++) {
+            const el = document.getElementById('hb-' + i);
+            if (el) el.classList.add(cls);
+        }
+    });
+    const ok = results.every(Boolean);
+    setResult(2, ok);
+    document.getElementById('q2-exp').classList.add('show');
+    return ok;
+}
+
+let portSet = [];
+function renderPorts(n) {
+    const all = [
+        { svc: 'HTTP', desc: '網頁', ans: ['80'], proto: 'TCP' },
+        { svc: 'HTTPS', desc: '加密網頁', ans: ['443'], proto: 'TCP' },
+        { svc: 'FTP', desc: '檔案傳輸', ans: ['20', '21', '20/21', '21/20'], proto: 'TCP' },
+        { svc: 'SSH', desc: '安全連線', ans: ['22'], proto: 'TCP' },
+        { svc: 'Telnet', desc: '遠端登入', ans: ['23'], proto: 'TCP' },
+        { svc: 'SMTP', desc: '寄信', ans: ['25'], proto: 'TCP' },
+        { svc: 'DNS', desc: '網域解析', ans: ['53'], proto: 'UDP 為主' },
+        { svc: 'DHCP', desc: '自動配 IP', ans: ['67', '68', '67/68', '68/67'], proto: 'UDP' },
+        { svc: 'POP3', desc: '收信', ans: ['110'], proto: 'TCP' },
+        { svc: 'IMAP', desc: '收信', ans: ['143'], proto: 'TCP' }
+    ];
+    portSet = n >= 10 ? all : all.slice().sort(() => Math.random() - 0.5).slice(0, n);
+    const wrap = document.getElementById('q4-rows');
+    wrap.innerHTML = '';
+    portSet.forEach((p, i) => {
+        const row = document.createElement('div');
+        row.className = 'port-row';
+        row.innerHTML = '<span class="svc">' + p.svc + '</span><span>' + p.desc + '</span>' +
+            '<span class="proto">' + p.proto + '</span>' +
+            '<input class="fill-input" id="q4-' + i + '" placeholder="Port">';
+        wrap.appendChild(row);
+    });
+    setResult(4, null);
+    document.getElementById('q4-badge').textContent = '';
+    document.getElementById('q4-exp').classList.remove('show');
+}
+
+function checkQ4() {
+    let allOk = true;
+    portSet.forEach((p, i) => {
+        const inp = document.getElementById('q4-' + i);
+        const v = inp.value.trim().replace(/,/g, '/');
+        const ok = p.ans.some(a => v === a);
+        inp.classList.toggle('in-ok', ok);
+        inp.classList.toggle('in-bad', !ok);
+        if (!ok) allOk = false;
+    });
+    setResult(4, allOk);
+    document.getElementById('q4-exp').classList.add('show');
+    return allOk;
+}
+
+function checkQ5() {
+    const a = fillCheck('q5-a', ['identification', '識別碼', '識別', 'id', '識別碼identification']);
+    const b = fillCheck('q5-b', ['flags', '旗標', '旗幟']);
+    const c = fillCheck('q5-c', ['fragmentoffset', 'offset', '分段偏移量', '分片偏移量', '偏移量', '分段偏移', '分片偏移', 'fragmentoffset分段偏移量']);
+    const ok = a && b && c;
+    setResult(5, ok);
+    document.getElementById('q5-exp').classList.add('show');
+    return ok;
+}
+
+function checkQ6() {
+    const a = fillCheck('q6-a', ['32', '32bits', '32位元', '32bit']);
+    const b = fillCheck('q6-b', ['128', '128bits', '128位元', '128bit']);
+    const ok = a && b;
+    setResult(6, ok);
+    document.getElementById('q6-exp').classList.add('show');
+    return ok;
+}
+
+function checkQ8() {
+    const a = fillCheck('q8-a', ['unicast', '單播', '單點傳輸']);
+    const b = fillCheck('q8-b', ['multicast', '多播', '群播', '多點傳輸']);
+    const c = fillCheck('q8-c', ['broadcast', '廣播']);
+    const pick = document.querySelector('#q8-choice .chip.picked');
+    document.querySelectorAll('#q8-choice .chip').forEach(ch => {
+        ch.classList.remove('ok', 'bad');
+        ch.classList.add('disabled');
+        if (ch.dataset.v === 'broadcast') ch.classList.add('ok');
+        else if (ch === pick) ch.classList.add('bad');
+    });
+    const choiceOk = !!pick && pick.dataset.v === 'broadcast';
+    const d = fillCheck('q8-d', ['broadcast', '廣播']);
+    const e = fillCheck('q8-e', ['anycast', '任播', '任意點傳播']);
+    const ok = a && b && c && choiceOk && d && e;
+    setResult(8, ok);
+    document.getElementById('q8-exp').classList.add('show');
+    return ok;
+}
+
+const q9Data = [
+    { addr: '2001:0db8:85a3::8a2e:0370:7334', ans: 'v' },
+    { addr: '2001:db8::1::2', ans: 'i' },
+    { addr: '2001:0db8:85g3:0000:0000:8a2e:0370:7334', ans: 'i' },
+    { addr: '::1', ans: 'v' },
+    { addr: '2001:db8:1:2:3:4:5:6:7', ans: 'i' }
+];
+
+function renderQ9() {
+    const wrap = document.getElementById('q9-rows');
+    wrap.innerHTML = '';
+    q9Data.forEach((d, i) => {
+        const row = document.createElement('div');
+        row.className = 'q9-row';
+        row.innerHTML = '<span class="addr">' + d.addr + '</span>' +
+            '<button class="chip" data-i="' + i + '" data-v="v">✅ 合法</button>' +
+            '<button class="chip" data-i="' + i + '" data-v="i">❌ 不合法</button>';
+        wrap.appendChild(row);
+    });
+    wrap.querySelectorAll('.chip').forEach(ch => {
+        ch.addEventListener('click', () => {
+            wrap.querySelectorAll('.chip[data-i="' + ch.dataset.i + '"]').forEach(x => x.classList.remove('picked'));
+            ch.classList.add('picked');
+        });
+    });
+}
+
+function checkQ9() {
+    let allOk = true;
+    q9Data.forEach((d, i) => {
+        const pick = document.querySelector('#q9-rows .chip.picked[data-i="' + i + '"]');
+        document.querySelectorAll('#q9-rows .chip[data-i="' + i + '"]').forEach(ch => {
+            ch.classList.remove('ok', 'bad');
+            ch.classList.add('disabled');
+            if (ch.dataset.v === d.ans) ch.classList.add('ok');
+            else if (ch === pick) ch.classList.add('bad');
+        });
+        if (!pick || pick.dataset.v !== d.ans) allOk = false;
+    });
+    setResult(9, allOk);
+    document.getElementById('q9-exp').classList.add('show');
+    return allOk;
+}
+
+function checkQ10() {
+    const inp = document.getElementById('q10-a');
+    const v = inp.value.toLowerCase().trim();
+    const ok = v === 'https://[2001:db8::1]' || v === 'http://[2001:db8::1]';
+    inp.classList.toggle('in-ok', ok);
+    inp.classList.toggle('in-bad', !ok);
+    setResult(10, ok);
+    document.getElementById('q10-exp').classList.add('show');
+    return ok;
+}
+
+const checkers = { 1: checkQ1, 2: checkQ2, 3: checkQ3, 4: checkQ4, 5: checkQ5, 6: checkQ6, 7: checkQ7, 8: checkQ8, 9: checkQ9, 10: checkQ10 };
+
+function checkQ(n) { checkers[n](); }
+
+function resetQ(n) {
+    const qid = 'q' + n;
+    document.getElementById(qid).querySelectorAll('.fill-input').forEach(inp => {
+        inp.value = '';
+        inp.classList.remove('in-ok', 'in-bad');
+    });
+    clearMarks(n);
+    document.querySelectorAll('#' + qid + '-dnd .d-slot').forEach(slot => {
+        const item = slot.querySelector('.d-item');
+        if (item) { item.classList.remove('in-slot', 'picked'); returnToPool(item); }
+        slot.classList.remove('slot-ok', 'slot-bad');
+        if (!slot.querySelector('.hint')) slot.innerHTML = '<span class="hint">' + (slot.dataset.hint || '') + '</span>';
+    });
+    if (n === 4) { renderPorts(portSet.length || 10); return; }
+    if (n === 9) { renderQ9(); }
+    if (n === 2) {
+        document.querySelectorAll('#hex-dump .hex-byte').forEach(el => el.classList.remove('on', 'on2', 'on3', 'on4', 'on5', 'on6'));
+    }
+    if (n === 8) {
+        document.querySelectorAll('#q8-choice .chip').forEach(ch => ch.classList.remove('picked', 'ok', 'bad', 'disabled'));
+    }
+    document.getElementById('q' + n + '-exp').classList.remove('show');
+    setResult(n, null);
+    document.getElementById('q' + n + '-badge').textContent = '';
+}
+
+function gradeAll() {
+    for (let i = 1; i <= 10; i++) checkers[i]();
+    document.getElementById('global-bar').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showAllExp() {
+    for (let i = 1; i <= 10; i++) document.getElementById('q' + i + '-exp').classList.add('show');
+}
+
+function resetAll() {
+    for (let i = 1; i <= 10; i++) resetQ(i);
+    document.getElementById('final-score').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ===== hex dump render ===== */
+(function renderHex() {
+    const bytes = 'cc 28 aa af 0f e5 00 08 e3 ff fd 90 08 00 45 00 00 28 ca f9 40 00 32 06 eb 8f 5b 6c 38 93 c0 a8 3d 9f 01 bb ef 18 d0 a6 31 6b 19 98 03 7d 50 10 11 2a fc 68 00 00 00 00 00 00 00 00'.split(' ');
+    const dump = document.getElementById('hex-dump');
+    let html = '';
+    for (let line = 0; line < bytes.length; line += 16) {
+        html += '<div><span class="hex-off">' + line.toString(16).padStart(4, '0') + '</span>';
+        for (let i = line; i < Math.min(line + 16, bytes.length); i++) {
+            html += '<span class="hex-byte" id="hb-' + i + '">' + bytes[i] + '</span> ';
+        }
+        html += '</div>';
+    }
+    dump.innerHTML = html;
+})();
+
+/* ===== sidebar ===== */
+function toggleCollapse() {
+    const collapsed = document.body.classList.toggle('sidebar-collapsed');
+    const btn = document.getElementById('collapse-btn');
+    const label = collapsed ? '展開側邊欄' : '收合側邊欄';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+}
+function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    const open = sb.classList.toggle('open');
+    document.getElementById('backdrop').classList.toggle('show', open);
+    document.getElementById('hamburger').classList.toggle('active', open);
+    document.getElementById('hamburger').setAttribute('aria-expanded', open);
+}
+function closeSidebar() {
+    const sb = document.getElementById('sidebar');
+    if (!sb.classList.contains('open')) return;
+    sb.classList.remove('open');
+    document.getElementById('backdrop').classList.remove('show');
+    document.getElementById('hamburger').classList.remove('active');
+    document.getElementById('hamburger').setAttribute('aria-expanded', 'false');
+}
+document.querySelectorAll('#sidebar a').forEach(a => a.addEventListener('click', closeSidebar));
+
+/* ===== init ===== */
+buildDnd(1, 'q1-pool', [
+    { v: 'Version', l: 'Version' },
+    { v: 'IHL', l: 'IHL' },
+    { v: 'ToS', l: 'ToS' },
+    { v: 'Total Length', l: 'Total Length' },
+    { v: 'Identification', l: 'Identification' },
+    { v: 'Flags', l: 'Flags' },
+    { v: 'Fragment Offset', l: 'Fragment Offset' },
+    { v: 'TTL', l: 'TTL' },
+    { v: 'Protocol', l: 'Protocol' },
+    { v: 'Header Checksum', l: 'Header Checksum' },
+    { v: 'Source IP', l: 'Source IP' },
+    { v: 'Destination IP', l: 'Destination IP' },
+    { v: 'Options + Padding', l: 'Options + Padding' }
+]);
+buildDnd(3, 'q3-pool', [
+    { v: 'Version', l: 'Version' },
+    { v: 'Traffic Class', l: 'Traffic Class' },
+    { v: 'Flow Label', l: 'Flow Label' },
+    { v: 'Payload Length', l: 'Payload Length' },
+    { v: 'Next Header', l: 'Next Header' },
+    { v: 'Hop Limit', l: 'Hop Limit' },
+    { v: 'Source Address', l: 'Source Address' },
+    { v: 'Destination Address', l: 'Destination Address' }
+]);
+buildDnd(7, 'q7-pool', [
+    { v: '客戶端', l: '客戶端' },
+    { v: '伺服器', l: '伺服器' },
+    { v: '伺服器', l: '伺服器' },
+    { v: '伺服器', l: '伺服器' },
+    { v: '伺服器', l: '伺服器' },
+    { v: 'Recursive Query', l: 'Recursive Query' },
+    { v: 'Iterative Query', l: 'Iterative Query' },
+    { v: '遞迴查詢', l: '遞迴查詢' },
+    { v: '反覆查詢', l: '反覆查詢' }
+]);
+wireDnd(1); wireDnd(3); wireDnd(7);
+document.querySelectorAll('#q8-choice .chip').forEach(ch => {
+    ch.addEventListener('click', () => {
+        document.querySelectorAll('#q8-choice .chip').forEach(x => x.classList.remove('picked'));
+        ch.classList.add('picked');
+    });
+});
+renderPorts(10);
+renderQ9();
+document.addEventListener('click', e => {
+    if (pickedItem && !e.target.closest('.d-item') && !e.target.closest('.d-slot')) {
+        pickedItem.classList.remove('picked');
+        pickedItem = null;
+    }
+});
+</script>
+</body>
+</html>
