@@ -294,6 +294,14 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
 .oval-legend .leg-purple { color: #7048e8; }
 .oval-legend .inline-slot { min-width: 150px; }
 
+/* ===== Explanation summary ===== */
+.exp-sum-item { padding: .7rem .9rem; border-radius: 6px; background: var(--surface2); margin-bottom: .6rem; border-left: 4px solid var(--border); }
+.exp-sum-item.sum-ok { border-left-color: var(--success); }
+.exp-sum-item.sum-bad { border-left-color: var(--danger); }
+.exp-sum-title { font-weight: 700; font-size: .88rem; margin-bottom: .25rem; color: var(--text); }
+.exp-sum-body { font-size: .83rem; color: var(--text2); }
+.exp-sum-body strong { color: var(--text); }
+
 /* ===== Choices (Q8, Q9) ===== */
 .chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0; }
 .chip {
@@ -416,7 +424,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="dnd-pool" id="q1-pool"><span class="dnd-pool-label">方塊庫（拖曳或點擊後再點空格）</span></div>
         </div>
         <div id="q1-fill" class="fill-list" style="display:none"></div>
-        <div class="q-exp" id="q1-exp"><strong>詳解：</strong>IPv4 基本標頭 20 bytes（IHL=5×4）。第 1 列 Version(4)+IHL(4)+ToS(8)+Total Length(16)=32 bits；第 2 列是「分割三兄弟」Identification(16)+Flags(3)+Fragment Offset(13)=32 bits；第 3 列 TTL(8)+Protocol(8)+Checksum(16)；第 4、5 列各放一個 32 bits 的 IP 位址。表頭最小 20 bytes、最大 60 bytes（有 Options 時）。</div>
+        <div class="q-exp" id="q1-exp"><strong>第 1 題｜詳解：</strong>IPv4 基本標頭 20 bytes（IHL=5×4）。第 1 列 Version(4)+IHL(4)+ToS(8)+Total Length(16)=32 bits；第 2 列是「分割三兄弟」Identification(16)+Flags(3)+Fragment Offset(13)=32 bits；第 3 列 TTL(8)+Protocol(8)+Checksum(16)；第 4、5 列各放一個 32 bits 的 IP 位址。表頭最小 20 bytes、最大 60 bytes（有 Options 時）。</div>
     </section>
 
     <!-- ===== Q2 ===== -->
@@ -441,7 +449,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="fill-item"><label>5. TTL（十進位）= ?</label><input class="fill-input" id="q2-j" placeholder="數字"></div>
             <div class="fill-item"><label>6. Protocol = ?（下一層協定）</label><input class="fill-input" id="q2-k" placeholder="請輸入答案"></div>
         </div>
-        <div class="q-exp" id="q2-exp"><strong>詳解：</strong>前 6 bytes = Destination MAC（cc 28 aa af 0f e5），接著 6 bytes = Source MAC（00 08 e3 ff fd 90），Type 08 00 = IPv4（08 06 則是 ARP）。IP 標頭從第 14 bytes 的 45 開始：Version=4、IHL=5 → 標頭 5×4=20 bytes。Total Length = 00 28<sub>hex</sub> = 40 → Payload = 40 − 20 = 20 bytes。TTL = 32<sub>hex</sub> = 50；Protocol = 06 = TCP。Source IP = 5b 6c 38 93 → 91.108.56.147；Destination IP = c0 a8 3d 9f → 192.168.61.159。</div>
+        <div class="q-exp" id="q2-exp"><strong>第 2 題｜詳解：</strong>前 6 bytes = Destination MAC（cc 28 aa af 0f e5），接著 6 bytes = Source MAC（00 08 e3 ff fd 90），Type 08 00 = IPv4（08 06 則是 ARP）。IP 標頭從第 14 bytes 的 45 開始：Version=4、IHL=5 → 標頭 5×4=20 bytes。Total Length = 00 28<sub>hex</sub> = 40 → Payload = 40 − 20 = 20 bytes。TTL = 32<sub>hex</sub> = 50；Protocol = 06 = TCP。Source IP = 5b 6c 38 93 → 91.108.56.147；Destination IP = c0 a8 3d 9f → 192.168.61.159。</div>
     </section>
 
     <!-- ===== Q3 ===== -->
@@ -478,7 +486,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="dnd-pool" id="q3-pool"><span class="dnd-pool-label">方塊庫（拖曳或點擊後再點空格）</span></div>
         </div>
         <div id="q3-fill" class="fill-list" style="display:none"></div>
-        <div class="q-exp" id="q3-exp"><strong>詳解：</strong>IPv6 固定 40 bytes：第 1 列 Version(4)+Traffic Class(8)+Flow Label(20)=32 bits；第 2 列 Payload Length(16)+Next Header(8)+Hop Limit(8)；後面 Source Address 與 Destination Address 各 128 bits（16 bytes）。對照 IPv4：TTL → Hop Limit、Protocol → Next Header（IPv6 標頭沒有 Header Checksum，交給鏈路層處理）。</div>
+        <div class="q-exp" id="q3-exp"><strong>第 3 題｜詳解：</strong>IPv6 固定 40 bytes：第 1 列 Version(4)+Traffic Class(8)+Flow Label(20)=32 bits；第 2 列 Payload Length(16)+Next Header(8)+Hop Limit(8)；後面 Source Address 與 Destination Address 各 128 bits（16 bytes）。對照 IPv4：TTL → Hop Limit、Protocol → Next Header（IPv6 標頭沒有 Header Checksum，交給鏈路層處理）。</div>
     </section>
 
     <!-- ===== Q4 ===== -->
@@ -492,7 +500,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn btn-ghost" onclick="renderPorts(10)">📋 全部 10 題</button>
         </div>
         <div id="q4-rows"></div>
-        <div class="q-exp" id="q4-exp"><strong>詳解口訣：</strong>「80 網頁 443 加密、20/21 檔傳、22 遠端 SSH、23 旧式 Telnet、25 寄信、53 網域名、67/68 自動拿 IP、110 POP3 與 143 IMAP 收信來」。DNS 以 UDP 為主（區域傳輸才用 TCP）、DHCP 為 UDP；其餘大多走 TCP。</div>
+        <div class="q-exp" id="q4-exp"><strong>第 4 題｜詳解口訣：</strong>「80 網頁 443 加密、20/21 檔傳、22 遠端 SSH、23 旧式 Telnet、25 寄信、53 網域名、67/68 自動拿 IP、110 POP3 與 143 IMAP 收信來」。DNS 以 UDP 為主（區域傳輸才用 TCP）、DHCP 為 UDP；其餘大多走 TCP。</div>
     </section>
 
     <!-- ===== Q5 ===== -->
@@ -508,7 +516,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="fill-item"><label>欄位 2（3 bits）</label><input class="fill-input" id="q5-b" placeholder="請輸入答案"></div>
             <div class="fill-item"><label>欄位 3（13 bits）</label><input class="fill-input" id="q5-c" placeholder="請輸入答案"></div>
         </div>
-        <div class="q-exp" id="q5-exp"><strong>詳解：</strong>第 2 列共 32 bits = Identification(16) + Flags(3) + Fragment Offset(13)。同一個大封包的所有分片會帶「相同的 Identification」；Flags 中 MF=1 表示後面還有分片、DF=1 表示禁止分割；Fragment Offset 以 8 bytes 為單位標示此分片在原封包中的位置。</div>
+        <div class="q-exp" id="q5-exp"><strong>第 5 題｜詳解：</strong>第 2 列共 32 bits = Identification(16) + Flags(3) + Fragment Offset(13)。同一個大封包的所有分片會帶「相同的 Identification」；Flags 中 MF=1 表示後面還有分片、DF=1 表示禁止分割；Fragment Offset 以 8 bytes 為單位標示此分片在原封包中的位置。</div>
     </section>
 
     <!-- ===== Q6 ===== -->
@@ -523,7 +531,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="fill-item"><label>IPv4 位址長度（bits）</label><input class="fill-input" id="q6-a" placeholder="請輸入答案"></div>
             <div class="fill-item"><label>IPv6 位址長度（bits）</label><input class="fill-input" id="q6-b" placeholder="請輸入答案"></div>
         </div>
-        <div class="q-exp" id="q6-exp"><strong>詳解：</strong>IPv4 = 32 bits（4 bytes）；IPv6 = 128 bits（16 bytes），是 IPv4 的 4 倍長，位址空間幾乎用不完。</div>
+        <div class="q-exp" id="q6-exp"><strong>第 6 題｜詳解：</strong>IPv4 = 32 bits（4 bytes）；IPv6 = 128 bits（16 bytes），是 IPv4 的 4 倍長，位址空間幾乎用不完。</div>
     </section>
 
     <!-- ===== Q7 ===== -->
@@ -568,7 +576,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="dnd-pool" id="q7-pool"><span class="dnd-pool-label">方塊庫（共 9 塊：1 客戶端、4 伺服器、中英文各一組）</span></div>
         </div>
         <div id="q7-fill" class="fill-list" style="display:none"></div>
-        <div class="q-exp" id="q7-exp"><strong>詳解口訣：</strong>「左紅一問到底叫遞迴，右邊三色逐台問叫反覆」。客戶端 → 第一台 DNS 伺服器之間是 Recursive（伺服器「負責問完」再回答案）；第一台伺服器再向根／上層／權威名稱伺服器逐台詢問則是 Iterative（每次都回「去問下一層」）。</div>
+        <div class="q-exp" id="q7-exp"><strong>第 7 題｜詳解口訣：</strong>「左紅一問到底叫遞迴，右邊三色逐台問叫反覆」。客戶端 → 第一台 DNS 伺服器之間是 Recursive（伺服器「負責問完」再回答案）；第一台伺服器再向根／上層／權威名稱伺服器逐台詢問則是 Iterative（每次都回「去問下一層」）。</div>
     </section>
 
     <!-- ===== Q8 ===== -->
@@ -596,7 +604,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <div class="fill-item"><label>IPv4 有、IPv6 沒有的傳播方式</label><input class="fill-input" id="q8-d" placeholder="請輸入答案"></div>
             <div class="fill-item"><label>IPv6 新增的傳播方式（送給最近一台）</label><input class="fill-input" id="q8-e" placeholder="請輸入答案"></div>
         </div>
-        <div class="q-exp" id="q8-exp"><strong>詳解：</strong>IPv4 三種傳播：Unicast（單播）、Multicast（多播）、Broadcast（廣播）。IPv6 取消 Broadcast，改用 Multicast ＋ Anycast；核心對比就是 <strong>Broadcast vs Anycast</strong>——廣播送全網段，任播只送「路由上最近的一台」（典型應用：DNS 根、NTP）。</div>
+        <div class="q-exp" id="q8-exp"><strong>第 8 題｜詳解：</strong>IPv4 三種傳播：Unicast（單播）、Multicast（多播）、Broadcast（廣播）。IPv6 取消 Broadcast，改用 Multicast ＋ Anycast；核心對比就是 <strong>Broadcast vs Anycast</strong>——廣播送全網段，任播只送「路由上最近的一台」（典型應用：DNS 根、NTP）。</div>
     </section>
 
     <!-- ===== Q9 ===== -->
@@ -608,7 +616,7 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn btn-outline" onclick="resetQ(9)">重設本題</button>
         </div>
         <div id="q9-rows"></div>
-        <div class="q-exp" id="q9-exp"><strong>詳解：</strong>① 合法——:: 只壓縮一次連續的 0，正確。② 不合法——一個位址中 :: 雙冒號只能出現一次。③ 不合法——十六進位只能 0-9 a-f，出現了 g。④ 合法——::1 是 Loopback 位址。⑤ 不合法——IPv6 只有 8 組 16-bit 區塊，這裡有 9 組。</div>
+        <div class="q-exp" id="q9-exp"><strong>第 9 題｜詳解：</strong>① 合法——:: 只壓縮一次連續的 0，正確。② 不合法——一個位址中 :: 雙冒號只能出現一次。③ 不合法——十六進位只能 0-9 a-f，出現了 g。④ 合法——::1 是 Loopback 位址。⑤ 不合法——IPv6 只有 8 組 16-bit 區塊，這裡有 9 組。</div>
     </section>
 
     <!-- ===== Q10 ===== -->
@@ -620,7 +628,13 @@ body.sidebar-collapsed .collapse-btn svg { transform: rotate(180deg); }
             <button class="btn btn-outline" onclick="resetQ(10)">重設本題</button>
         </div>
         <div class="fill-item"><label>完整 HTTPS 網址</label><input class="fill-input" id="q10-a" placeholder="請輸入完整網址" style="max-width:420px"></div>
-        <div class="q-exp" id="q10-exp"><strong>詳解：</strong>正確答案 <code>https://[2001:db8::1]</code>。重點驗證有沒有加上 [ 與 ]；若寫成 <code>https://2001:db8::1</code> 瀏覽器會把 <code>:1</code> 誤認成 Port 號。</div>
+        <div class="q-exp" id="q10-exp"><strong>第 10 題｜詳解：</strong>正確答案 <code>https://[2001:db8::1]</code>。重點驗證有沒有加上 [ 與 ]；若寫成 <code>https://2001:db8::1</code> 瀏覽器會把 <code>:1</code> 誤認成 Port 號。</div>
+    </section>
+
+    <section class="card" id="exp-summary" style="display:none">
+        <h3>📖 詳解總覽（按題號排列）<button class="btn btn-ghost" style="margin-left:auto" onclick="document.getElementById('exp-summary').style.display='none'">收起</button></h3>
+        <p class="q-desc">按「顯示所有詳解」時會自動整理成這裡，依題號 1～10 排列方便對照。</p>
+        <div id="exp-summary-list"></div>
     </section>
 
     <div class="score-box" id="final-score" style="display:none">
@@ -1028,11 +1042,28 @@ function gradeAll() {
 
 function showAllExp() {
     for (let i = 1; i <= 10; i++) document.getElementById('q' + i + '-exp').classList.add('show');
+    const list = document.getElementById('exp-summary-list');
+    list.innerHTML = '';
+    for (let i = 1; i <= 10; i++) {
+        const card = document.getElementById('q' + i);
+        const title = card.querySelector('h3').textContent.replace(/[✅❌]/g, '').replace(/\s+/g, ' ').replace(/^第 \d+ 題｜/, '').trim();
+        const exp = document.getElementById('q' + i + '-exp').innerHTML;
+        const item = document.createElement('div');
+        item.className = 'exp-sum-item';
+        item.innerHTML = '<div class="exp-sum-title">第 ' + i + ' 題｜' + title + '</div><div class="exp-sum-body">' + exp + '</div>';
+        if (qResults[i] === true) item.classList.add('sum-ok');
+        else if (qResults[i] === false) item.classList.add('sum-bad');
+        list.appendChild(item);
+    }
+    const box = document.getElementById('exp-summary');
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function resetAll() {
     for (let i = 1; i <= 10; i++) resetQ(i);
     document.getElementById('final-score').style.display = 'none';
+    document.getElementById('exp-summary').style.display = 'none';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
