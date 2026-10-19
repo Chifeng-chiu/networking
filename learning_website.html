@@ -2999,11 +2999,11 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
     <section id="midterm115">
         <div class="sec-title">
             <h2>115期中考重點整理</h2>
-            <p>共 7 大題，照白板考試範圍整理 — 可先參考 <a href="#" onclick="showSec('midterm')" style="color:var(--primary);">114期中考重點</a></p>
+            <p>共 10 大題，照白板考試範圍整理 — 可先參考 <a href="#" onclick="showSec('midterm')" style="color:var(--primary);">114期中考重點</a></p>
         </div>
 
         <div class="card">
-            <h3>考試範圍（共 7 大題）</h3>
+            <h3>考試範圍（共 10 大題）</h3>
             <ul>
                 <li><strong>① IPv4 標頭格式</strong>（20 分）</li>
                 <li><strong>② 分析 Ethernet Frame</strong>（20 分）</li>
@@ -3012,6 +3012,9 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li><strong>⑤ IPv4 封包分割與重組</strong>（Identification／Flags／Fragment Offset）</li>
                 <li><strong>⑥ 位址長度</strong>：IPv4／IPv6 各幾位元</li>
                 <li><strong>⑦ 遞迴／反覆查詢流程</strong>（10 分）：畫出流程</li>
+                <li><strong>⑧ IPv4 與 IPv6 傳播的不同</strong></li>
+                <li><strong>⑨ 判斷是否為合法的 IPv6 位址</strong></li>
+                <li><strong>⑩ 網址中的 IPv6 位址要加中括號</strong>：<code>https://[...]</code></li>
             </ul>
         </div>
 
@@ -3383,6 +3386,81 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             <img class="slide-img" src="images/ch08-slide78.jpg" width="1920" height="1080"
                  alt="遞迴查詢與反覆查詢流程圖（照著畫）" loading="lazy">
             <div class="slide-cap">同 8.15 投影片原圖（課堂翻拍為同一張圖），文字解說見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">8.15</a></div>
+        </div>
+
+        <div class="card">
+            <h3>⑧ IPv4 與 IPv6 傳播的不同</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>比較項目</th><th>IPv4</th><th>IPv6</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>封包分割（Fragmentation）</strong></td><td>發送端和<strong>途中的路由器都可以</strong>切割封包（表頭內建 Identification／Flags／Fragment Offset）。</td><td><strong>只有發送端能分割</strong>，路由器一律不切；需要分割時改用<strong>延伸標頭（Fragment Header，Next Header = 44）</strong>。遇到太大的封包就丟棄並回傳 ICMPv6 Packet Too Big。</td></tr>
+                        <tr><td><strong>廣播（Broadcast）</strong></td><td>支援廣播（如 <code>255.255.255.255</code>），ARP 靠廣播問 MAC。</td><td><strong>完全沒有廣播</strong>，改用<strong>多點傳播（Multicast）</strong>與<strong>任意點傳播（Anycast）</strong>取代。</td></tr>
+                        <tr><td><strong>位址解析</strong></td><td>ARP（協定 0x0806）直接問「誰是這個 IP」。</td><td><strong>NDP（Neighbor Discovery Protocol， ICMPv6）</strong>取代 ARP，用 Multicast 查詢。</td></tr>
+                        <tr><td><strong>生存時間欄位</strong></td><td>TTL（8 bits），每過一台路由器減 1。</td><td>Hop Limit（同樣 8 bits），概念相同、名稱不同。</td></tr>
+                        <tr><td><strong>表頭 CHECKSUM</strong></td><td>表頭有 Checksum，每一跳都要重新計算。</td><td>表頭<strong>沒有 Checksum</strong>（交給上層與 Link 層處理），傳播更快。</td></tr>
+                        <tr><td><strong>表頭大小</strong></td><td>固定 20 bytes 起（可加 Options 最長 60），每跳可能變動。</td><td>固定 40 bytes，且<strong>路由器不再修改表頭</strong>（except Hop Limit），處理更有效率。</td></tr>
+                        <tr><td><strong>安全性</strong></td><td>IPsec 為選配。</td><td>IPsec 為<strong>標準內建</strong>功能。</td></tr>
+                        <tr><td><strong>自動組態</strong></td><td>需 DHCP 或手動設定。</td><td>支援 <strong>SLAAC</strong>（ Stateless Address Autoconfiguration）自動取得位址。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote class="ok">口訣：IPv4 路由器會切、有廣播、靠 ARP；IPv6 只有源頭切、沒廣播、靠 NDP。</blockquote>
+            <blockquote>詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">Ch8 網際網路協定</a>。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>⑨ 判斷是否為合法的 IPv6 位址</h3>
+            <h4>基本格式規則</h4>
+            <ul>
+                <li><strong>8 組</strong>、每組 <strong>4 個 hex 位數</strong>（0–9、a–f），共 128 bits，組與組之間用<strong>冒號 <code>:</code> 分隔</strong>。</li>
+                <li>每組開頭的 <strong>0 可以省略</strong>（如 <code>00ab</code> → <code>ab</code>）。</li>
+                <li><strong>連續的全 0 組</strong>可以用 <code>::</code> 一次性壓縮（<strong>整份位址只能用一次</strong>，用兩次就是非法）。</li>
+                <li>冒號有兩種用途要分開：<code>::</code> 是壓縮用；<code>0:</code> 是分隔用——像 <code>2001:db8:0:0:0:0:0:1</code> 只能寫成 <code>2001:db8::1</code>，不能把兩個分隔冒號連在一起寫成 <code>2001:db8:::1</code>。</li>
+                <li>允許嵌入 IPv4 結尾（前 80 bits 全 0 或 <code>::ffff:</code>），如 <code>::ffff:192.168.1.1</code>。</li>
+            </ul>
+            <h4>判斷流程（三步驟）</h4>
+            <ol>
+                <li><strong>數位數</strong>：展開後每組是否 ≤ 4 個 hex 位數？總長是否為 8 組（128 bits）？</li>
+                <li><strong>檢查 <code>::</code></strong>：有沒有用超過一次？壓縮後展開是否剛好補滿 8 組？</li>
+                <li><strong>檢查字元</strong>：是否只出現 0–9、a–f、冒號（及合法的 IPv4 結尾）？</li>
+            </ol>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>位址</th><th>合法性</th><th>原因</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></td><td>✅ 合法</td><td>8 組 × 4 位數，標準完整寫法。</td></tr>
+                        <tr><td><code>2001:db8:85a3:0:0:8a2e:370:7334</code></td><td>✅ 合法</td><td>前導 0 省略，每組仍在 4 位數內。</td></tr>
+                        <tr><td><code>2001:db8::1</code></td><td>✅ 合法</td><td>連續全 0 組用 <code>::</code> 壓縮一次。</td></tr>
+                        <tr><td><code>::1</code></td><td>✅ 合法</td><td>迴路位址（Loopback），等同 IPv4 的 <code>127.0.0.1</code>。</td></tr>
+                        <tr><td><code>2001:db8:::1</code></td><td>❌ 非法</td><td>三個冒號——分隔冒號與壓縮冒號黏在一起，格式錯誤。</td></tr>
+                        <tr><td><code>2001::db8::1</code></td><td>❌ 非法</td><td><code>::</code> 用了兩次，無法確定補幾組 0。</td></tr>
+                        <tr><td><code>2001:db8:85a3::8a2e::7334</code></td><td>❌ 非法</td><td>同上，壓縮只能出現一次。</td></tr>
+                        <tr><td><code>2001:db8:85a3:0:0:8a2e:370:7334:1234</code></td><td>❌ 非法</td><td>展開後 9 組，超過 8 組（128 bits）。</td></tr>
+                        <tr><td><code>2001:db8:85a3:g:0:8a2e:370:7334</code></td><td>❌ 非法</td><td><code>g</code> 不是 hex 位數（只允許 0–9、a–f）。</td></tr>
+                        <tr><td><code>2001db885a3000000008a2e03707334</code></td><td>❌ 非法</td><td>沒有冒號分隔（純 32 位 hex 是 IPv4 的寫法，不是 IPv6）。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote class="ok">口訣：八組四碼、前導 0 可省、<code>::</code> 只能用一次、只准 0-9a-f。</blockquote>
+        </div>
+
+        <div class="card">
+            <h3>⑩ 網址中的 IPv6 位址要加中括號</h3>
+            <p>瀏覽（或撰寫）帶有 IPv6 位址的網站時，位址<strong>必須加上中括號 <code>[ ]</code></strong>：</p>
+            <div class="code-block">
+https://[2001:db8::1]/              ← 沒有 port，也要加中括號
+https://[2001:db8::1]:8080/index.html  ← 帶 port，中括號外再接 :port
+http://[::1]/                       ← 瀏覽本機 IPv6 網站</div>
+            <h4>為什麼要加中括號？</h4>
+            <ul>
+                <li>URI（網址）標準中，<strong>冒號 <code>:</code> 是用來分隔「連線協定」與「port 號」的保留字元</strong>（如 <code>http://example.com:8080</code>）。</li>
+                <li>但 IPv6 位址本身充滿冒號，瀏覽器會分不清哪些冒號是位址、哪些是 port，因此必須用中括號把 IPv6 位址<strong>框起來當成一個整體</strong>。</li>
+                <li>port 號寫在<strong>中括號外面</strong>：先 <code>[位址]</code> 再 <code>:port</code>。</li>
+                <li>IPv4 位址不含冒號，所以<strong>不需要</strong>加中括號（<code>http://192.168.1.1:8080</code>）。</li>
+            </ul>
+            <blockquote class="ok">口訣：網址看到一堆冒號 → 包中括號；port 接在中括號後面。</blockquote>
+            <blockquote>詳細見 <a href="#" onclick="showSec('ch08')" style="color:var(--primary);">Ch8 網際網路協定</a>。</blockquote>
         </div>
     </section>
 
