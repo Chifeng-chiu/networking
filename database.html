@@ -289,6 +289,23 @@
             font-size: .8rem;
         }
 
+        .slide-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin-top: .5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface2);
+        }
+        .slide-img.thin { max-width: 760px; margin-left: auto; margin-right: auto; }
+        .slide-cap {
+            font-size: .78rem;
+            color: var(--text3);
+            margin-top: .35rem;
+            text-align: center;
+        }
+
         @media (max-width: 960px) {
             body.has-sidebar { padding-left: 0; }
             main { max-width: none; padding: 1rem .5rem 3rem; }
@@ -344,6 +361,8 @@
         <button onclick="showSec('u5')">單元五 關聯代數／微積分</button>
         <button onclick="showSec('u6')">單元六 正規化 I</button>
         <button onclick="showSec('u7')">單元七 正規化 II</button>
+        <div class="nav-group">考試</div>
+        <button onclick="showSec('midterm')" style="color: #e03131; font-weight: bold;">期中考重點（CH02）</button>
     </div>
 </nav>
 
@@ -382,6 +401,10 @@
         <div class="card link-card" data-sec="u7" tabindex="0" role="button" aria-label="前往單元七">
             <h3>單元七：正規化 II</h3>
             <p>1NF 三規則、2NF/3NF/BCNF 實作、訂購單正規化實戰、反正規化的另類思考。</p>
+        </div>
+        <div class="card link-card" data-sec="midterm" tabindex="0" role="button" aria-label="前往期中考重點">
+            <h3>期中考重點（CH02 圖解）</h3>
+            <p>ANSI-SPARC 三層架構、資料獨立性、兩層與三層主從——投影片圖片＋重點整理。</p>
         </div>
     </div>
 </section>
@@ -1117,6 +1140,160 @@
             <li><strong>人工的分割</strong>：為增加效率，會將已符合 3NF 的資料表再做分割。例如欄位很多且多數很少使用時，把少用欄位分離到另一資料表（一個存常用、一個存罕用），欄位變少可提升存取效率。</li>
         </ul>
         <blockquote class="ok">💡 生活化舉例：常用資料放錢包、少用資料鎖抽屜，需要時再合併查詢。</blockquote>
+    </div>
+</section>
+
+<section id="midterm">
+    <div class="sec-title">
+        <h2>期中考重點 — CH02 投影片圖解整理</h2>
+        <p>照 CH02 圖片順序整理：ANSI-SPARC 三層架構、資料獨立性、兩層與三層主從 — 可搭配 <a href="#" onclick="showSec('u2')" style="color:var(--primary);">單元二 資料庫環境</a> 一起複習</p>
+    </div>
+
+    <div class="card">
+        <h3>圖 1：ANSI-SPARC 三層架構總覽 <span class="tag tag-d">必考</span></h3>
+        <img class="slide-img" src="images/db-ch02-01.png" alt="ANSI-SPARC Three-Level Architecture 架構圖" loading="lazy">
+        <div class="slide-cap">CH02 投影片：ANSI-SPARC Three-Level Architecture</div>
+        <ul>
+            <li><strong>上層—External Level</strong>：每個使用者有自己的視觀（Use view 1 ～ Use view n，External view 1～n），只看到與自己相關的資料。</li>
+            <li><strong>中層—Conceptual Level</strong>：整個社群的視觀，對應 <strong>Conceptual Schema（概念綱要）</strong>，描述資料庫「存了什麼資料、資料之間的關聯」。</li>
+            <li><strong>下層—Internal Level</strong>：對應 <strong>Internal Schema（內部綱要）</strong>，描述 <strong>Physical data organization（資料實體組織）</strong>。</li>
+            <li>最下方是 <strong>Database（資料庫本體）</strong>——三層都是它的描述，不是三份資料。</li>
+        </ul>
+        <blockquote class="ok">💡 口訣：外部＝我的視觀、概念＝資料庫的本質、內部＝硬碟怎麼存。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>圖 2：三層各層「描述的內容」差異 <span class="tag tag-d">必考</span></h3>
+        <img class="slide-img" src="images/db-ch02-02.png" alt="Differences between Three Levels of ANSI-SPARC Architecture" loading="lazy">
+        <div class="slide-cap">CH02 投影片：Differences between Three Levels</div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>層級</th><th>描述的內容</th><th>圖中範例</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>外部層</strong><br>(External level)</td>
+                        <td>每位使用者「自己的欄位子集」——不同使用者看到不同欄位組合。</td>
+                        <td>視觀1：<code>sNO, fName, lName</code>；視觀2：<code>staffNo, age, salary, lName, branchNo</code>、<code>DOB</code>…</td>
+                    </tr>
+                    <tr>
+                        <td><strong>概念層</strong><br>(Conceptual level)</td>
+                        <td>資料的完整邏輯結構（Conceptual Schema）：所有屬性、型別、關聯。</td>
+                        <td><code>struct STAFF { int staffNo; int branchNo; char fName[5]; char lName[15]; date dateOfBirth; float salary; ... }</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>內部層</strong><br>(Internal level)</td>
+                        <td>資料如何實體儲存（Internal Schema）：索引、指標、記錄配置。</td>
+                        <td><code>index staffNo;</code>、<code>index branchNo;</code>、<code>struct STAFF *next;</code>（指到下一筆）、<code>pointer to next staff record</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <blockquote class="ok">💡 考法：給你三個層級的描述（欄位清單／struct／index），問你是哪一層——看到 <strong>index、pointer</strong> 就是內部層，看到 <strong>C struct 完整宣告</strong>就是概念層，看到「只挑幾個欄位」就是外部層。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>圖 3：對映與資料獨立性 <span class="tag tag-d">必考</span></h3>
+        <img class="slide-img" src="images/db-ch02-03.png" alt="Data Independence and the ANSI-SPARC Three-Level Architecture" loading="lazy">
+        <div class="slide-cap">CH02 投影片：Data Independence and the ANSI-SPARC Architecture</div>
+        <ul>
+            <li>三層之間靠兩個「對映 (Mapping)」銜接：
+                <ul>
+                    <li><strong>External/Conceptual Mapping</strong>（外部↔概念之間）</li>
+                    <li><strong>Conceptual/Internal Mapping</strong>（概念↔內部之間）</li>
+                </ul>
+            </li>
+            <li><strong>邏輯資料獨立性 (Logical data independence)</strong>：靠「外部/概念對映」保護——概念綱要改了（加欄位、拆表），只需重設對映，<strong>外部綱要與應用程式不用改</strong>。</li>
+            <li><strong>實體資料獨立性 (Physical data independence)</strong>：靠「概念/內部對映」保護——內部儲存改了（換索引、換檔案組織），<strong>概念綱要與外部綱要都不用改</strong>。</li>
+        </ul>
+        <blockquote class="ok">💡 圖形記法：箭頭由外往內數——第一個對映管邏輯獨立性，第二個對映管實體獨立性。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>圖 4：兩層主從架構（運作圖） <span class="tag tag-d">必考</span></h3>
+        <img class="slide-img thin" src="images/db-ch02-04.png" alt="Traditional Two-Tier Client-Server 架構圖" loading="lazy">
+        <div class="slide-cap">CH02 投影片：Traditional Two-Tier Client-Server（1/N）</div>
+        <ul>
+            <li><strong>Client 1～3</strong> 經由 <strong>LAN</strong> 向 <strong>Database Server（含 DBMS）</strong>送出 <strong>Requests for data</strong>。</li>
+            <li>伺服器處理後把 <strong>Selected data returned</strong>（挑選後的資料）回傳——<strong>只回需要的資料，不是整座資料庫</strong>。</li>
+            <li>兩層＝第一層客戶端 + 第二層資料庫伺服器。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>圖 5：兩層主從—各層任務分工 <span class="tag tag-d">必考</span></h3>
+        <img class="slide-img thin" src="images/db-ch02-05.png" alt="Two-Tier Client-Server 第一層與第二層任務" loading="lazy">
+        <div class="slide-cap">CH02 投影片：Traditional Two-Tier Client-Server（2/N）</div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>層級</th><th>角色</th><th>Tasks（任務）</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>First Tier</strong></td><td>Client（客戶端）</td><td><strong>User interface</strong>（使用者介面）＋<strong>Main business and data processing logic</strong>（主要商業與資料處理邏輯）</td></tr>
+                    <tr><td><strong>Second Tier</strong></td><td>Database server（資料庫伺服器）</td><td><strong>Server-side validation</strong>（伺服器端驗證）＋<strong>Database access</strong>（資料庫存取）</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <blockquote class="ok">💡 關鍵：兩層架構把「商業邏輯」放在客戶端 → 客戶端變胖（Fat Client），這是催生三層的原因。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>圖 6：三層主從—為何需要第三層？ <span class="tag tag-d">必考</span></h3>
+        <img class="slide-img" src="images/db-ch02-06.png" alt="Three-Tier Client-Server 動機" loading="lazy">
+        <div class="slide-cap">CH02 投影片：Three-Tier Client-Server（1/N）</div>
+        <p>傳統（兩層）客戶端出現兩個阻礙<strong>真正可擴充性 (true scalability)</strong> 的問題：</p>
+        <ul>
+            <li><strong>Fat client（胖客戶端）</strong>：應用程式在客戶端執行，需要客戶端電腦有<strong>相當高的資源</strong>才能順暢運作。</li>
+            <li><strong>客戶端管理負擔過重</strong>（Significant client side administration overhead）：每台客戶端都要安裝、升級、維護。</li>
+            <li><strong>1995 年</strong>提出三層架構，<strong>每一層可執行在不同的平台</strong>上（each potentially running on different platform）。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>圖 7：三層主從的優點 <span class="tag tag-d">必考</span></h3>
+        <img class="slide-img" src="images/db-ch02-07.png" alt="Three-Tier Client-Server Advantages" loading="lazy">
+        <div class="slide-cap">CH02 投影片：Three-Tier Client-Server（2/N）</div>
+        <ul>
+            <li><strong>Thin client（精簡客戶端）</strong>：客戶端需要的硬體較便宜（less expensive hardware）。</li>
+            <li><strong>應用程式維護集中化</strong>（Application maintenance centralized）。</li>
+            <li><strong>容易修改或替換單一層</strong>，且不會影響其他層（modify or replace one tier without affecting others）。</li>
+            <li>把<strong>商業邏輯與資料庫功能分離</strong>，更容易實作<strong>負載平衡</strong>（load balancing）。</li>
+            <li><strong>天然對應 Web 環境</strong>（Maps quite naturally to Web environment）。</li>
+        </ul>
+        <blockquote class="ok">💡 五個優點口訣：薄客戶端、集中維護、單層可換、可負載平衡、對應 Web。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>圖 8：三層主從—各層任務分工 <span class="tag tag-d">必考</span></h3>
+        <img class="slide-img" src="images/db-ch02-08.png" alt="Three-Tier Client-Server 三層任務" loading="lazy">
+        <div class="slide-cap">CH02 投影片：Three-Tier Client-Server（3/N）</div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>層級</th><th>角色</th><th>Tasks（任務）</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>First Tier</strong></td><td>Client（客戶端）</td><td><strong>User interface</strong>（使用者介面）</td></tr>
+                    <tr><td><strong>Second Tier</strong></td><td>Application server（應用伺服器）</td><td><strong>Business &amp; data processing logic</strong>（商業與資料處理邏輯）</td></tr>
+                    <tr><td><strong>Third Tier</strong></td><td>Database server（資料庫伺服器）</td><td><strong>Data validation</strong>（資料驗證）＋<strong>Database access</strong>（資料庫存取）</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <blockquote class="ok">💡 對比兩層：兩層把「商業邏輯」塞在 Client；三層把它移到中間的 Application server——這就是 Thin client 的關鍵。</blockquote>
+    </div>
+
+    <div class="card">
+        <h3>兩層 vs 三層 快速比較 <span class="tag tag-d">必考</span></h3>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>比較項目</th><th>兩層 (Two-Tier)</th><th>三層 (Three-Tier)</th></tr></thead>
+                <tbody>
+                    <tr><td>層級</td><td>Client＋DB Server</td><td>Client＋App Server＋DB Server</td></tr>
+                    <tr><td>商業邏輯位置</td><td>在客戶端（Fat client）</td><td>在應用伺服器（Thin client）</td></tr>
+                    <tr><td>客戶端需求</td><td>資源需求高、管理負擔重</td><td>硬體便宜、只需介面</td></tr>
+                    <tr><td>維護</td><td>每台客戶端都要更新</td><td>集中於伺服器端維護</td></tr>
+                    <tr><td>擴充性</td><td>難以真正擴充 (true scalability)</td><td>可負載平衡、單層可獨立更換</td></tr>
+                    <tr><td>Web 適合度</td><td>較差</td><td>天然對應 Web 環境</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <blockquote>詳細觀念見 <a href="#" onclick="showSec('u2')" style="color:var(--primary);">單元二</a>、<a href="#" onclick="showSec('u3')" style="color:var(--primary);">單元三</a>。</blockquote>
     </div>
 </section>
 
