@@ -268,6 +268,7 @@
         .tag-a { background: var(--accent-light); color: #b88500; }
         .tag-s { background: var(--success-light); color: var(--success); }
         .tag-d { background: var(--danger-light); color: var(--danger); }
+        .tag-d { background: var(--danger-light); color: var(--danger); }
 
         .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
 
@@ -542,6 +543,8 @@
         <button onclick="showSec('quiz')">練習題庫</button>
         <button onclick="showSec('exampaper')" style="color: #e03131; font-weight: bold;">🎯 考試練習（四份考卷）</button>
         <button onclick="location.href='midterm-practice.html'" style="color: #e03131; font-weight: bold;">🏆 期中考十大題模擬</button>
+        <div class="nav-group">筆記</div>
+        <button onclick="showSec('notes')">📝 隨堂筆記</button>
     </div>
 </nav>
 
@@ -3944,6 +3947,84 @@ http://[::1]/                       ← 瀏覽本機 IPv6 網站</div>
             <div id="exam-score-msg" style="font-size:.9rem;color:var(--text2);margin-bottom:.8rem"></div>
             <button class="btn" onclick="retakeExam()">↻ 重考這一份</button>
             <button class="btn btn-outline" onclick="backToPicker()">其它考卷</button>
+        </div>
+    </section>
+
+    <section id="notes">
+        <div class="sec-title">
+            <h2>📝 隨堂筆記</h2>
+            <p>上課補充的實務筆記 — 實作網站、串接 API 時最好用的對照表</p>
+        </div>
+
+        <div class="card">
+            <h3>HTTP 狀態碼（Status Code）</h3>
+            <p>
+                HTTP 狀態碼就像是<strong>伺服器對你說的話</strong>：用三位數字告訴你剛剛送出的請求結果如何。
+                判斷時只看<strong>第一位數字</strong>就能抓到方向 —— 2 開頭是好事、3 開頭要再動作一次、4 開頭是自己的問題、5 開頭是伺服器的問題。
+            </p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>系列</th>
+                            <th>類別意義</th>
+                            <th>簡單來說</th>
+                            <th>常見的經典例子</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="tag tag-s">2xx</span></td>
+                            <td><strong>成功</strong><br><span style="color:var(--text3)">Success</span></td>
+                            <td>伺服器成功收到、理解並順利處理了你的請求。</td>
+                            <td>
+                                <code>200 OK</code>：一切順利，請求成功<br>
+                                <code>201 Created</code>：成功在伺服器上建立新資源（例如新增一筆資料）
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="tag tag-a">3xx</span></td>
+                            <td><strong>重新導向</strong><br><span style="color:var(--text3)">Redirection</span></td>
+                            <td>你要找的東西換位置了，需要再做一個額外的動作才拿得到。</td>
+                            <td>
+                                <code>301 Moved Permanently</code>：網頁永久搬家，以後請去新網址<br>
+                                <code>302 Found</code>：網頁暫時搬家，這次先去新網址<br>
+                                <code>304 Not Modified</code>：東西沒變，直接用你電腦裡快取的檔案就好
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="tag tag-d">4xx</span></td>
+                            <td><strong>客戶端錯誤</strong><br><span style="color:var(--text3)">Client Error</span></td>
+                            <td>你發出的請求有問題（例如網址打錯、沒有權限），伺服器無法處理。</td>
+                            <td>
+                                <code>400 Bad Request</code>：請求語法有錯，伺服器看不懂<br>
+                                <code>401 Unauthorized</code>：還沒登入或認證失敗<br>
+                                <code>403 Forbidden</code>：有登入，但權限不夠，被禁止存取<br>
+                                <code>404 Not Found</code>：最常見，找不到你請求的網頁
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="tag tag-d">5xx</span></td>
+                            <td><strong>伺服器錯誤</strong><br><span style="color:var(--text3)">Server Error</span></td>
+                            <td>你的請求沒問題，但是伺服器自己出包或壞掉了。</td>
+                            <td>
+                                <code>500 Internal Server Error</code>：伺服器內部發生未知錯誤（通常是程式寫錯或當機）<br>
+                                <code>502 Bad Gateway</code>：伺服器作為閘道器時，從上游伺服器收到無效回應<br>
+                                <code>503 Service Unavailable</code>：伺服器目前超載或維護中，暫時無法處理請求
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>抓漏小抄</h4>
+            <ul>
+                <li><strong>2xx</strong>：不用管，成功了。</li>
+                <li><strong>3xx</strong>：程式或瀏覽器要「再送一次」到新位置；304 則是好事，省頻寬。</li>
+                <li><strong>4xx</strong>：先檢查<strong>自己</strong>的請求 —— 網址、參數、Token／Cookie、權限。</li>
+                <li><strong>5xx</strong>：問題在<strong>伺服器</strong>，看伺服器 log，不是改你的請求就能解決。</li>
+            </ul>
+            <blockquote>之後實作網站或串接 API 遇到報錯，先回來對照這張表，就能快速判斷是「自己送錯」還是「對方壞了」。</blockquote>
         </div>
     </section>
 </main>
