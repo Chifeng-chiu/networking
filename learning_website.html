@@ -474,6 +474,30 @@
             color: var(--text3);
             margin-top: .35rem;
         }
+
+        /* ch9 9.2 埠編號：多工示意圖 */
+        .portmap-wrap {
+            margin: .75rem 0 .25rem;
+            padding: .5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface2);
+            overflow-x: auto;
+        }
+        .portmap-svg { display: block; width: 100%; min-width: 600px; height: auto; }
+        .portmap-svg text {
+            font-family: inherit;
+            font-size: 11px;
+            fill: #343a40;
+            text-anchor: middle;
+        }
+        .portmap-svg .pm-title { font-size: 13px; font-weight: 700; fill: var(--text); }
+        .portmap-svg .pm-layer { font-size: 12.5px; font-weight: 700; fill: #1b2a3a; }
+        .portmap-svg .pm-dot { font-size: 10px; font-weight: 700; fill: #fff; }
+        .portmap-svg .pm-small { font-size: 10px; }
+        .pm-legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; margin: .5rem 0 .25rem; font-size: .82rem; color: var(--text2); }
+        .pm-legend span { display: inline-flex; align-items: center; gap: .35rem; }
+        .pm-swatch { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
     </style>
 </head>
 <body class="has-sidebar">
@@ -2242,6 +2266,132 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 </table>
             </div>
             <blockquote>埠編號規範針對 <strong>伺服端</strong>；客戶端埠與伺服端埠分開、互不衝突。</blockquote>
+
+            <h4>圖解：同一節點上的多條連線怎麼區分？</h4>
+            <p>IP 層只負責把封包送到正確的<strong>節點</strong>（節點 A、節點 B）；封包進到節點後要交給哪一個<strong>應用程式</strong>，靠的就是傳輸層的<strong>埠編號</strong>。因此同一台主機可以同時跑 FTP、Telnet、使用者自訂程式，各自佔用不同埠號，互不干擾。</p>
+
+            <div class="portmap-wrap">
+                <svg class="portmap-svg" viewBox="0 0 760 250" role="img"
+                     aria-label="節點 A 與節點 B 之間三條 TCP 連線的埠編號示意圖">
+                    <defs>
+                        <marker id="pmArrowBlue" viewBox="0 0 10 10" refX="9" refY="5"
+                                markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#1c3f94"/>
+                        </marker>
+                        <marker id="pmArrowRed" viewBox="0 0 10 10" refX="9" refY="5"
+                                markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#c92a2a"/>
+                        </marker>
+                        <marker id="pmArrowGreen" viewBox="0 0 10 10" refX="9" refY="5"
+                                markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#2b8a3e"/>
+                        </marker>
+                    </defs>
+
+                    <text x="190" y="20" class="pm-title">節點 A</text>
+                    <text x="570" y="20" class="pm-title">節點 B</text>
+
+                    <!-- 節點 A：上層應用程式 -->
+                    <g>
+                        <rect x="40" y="34" width="75" height="76" rx="4" fill="#f6b26b" stroke="#e69138"/>
+                        <text x="77.5" y="58">User</text>
+                        <text x="77.5" y="74">#1</text>
+                        <text x="77.5" y="90" class="pm-small">(port=1050)</text>
+
+                        <rect x="115" y="34" width="75" height="76" rx="4" fill="#b6d7a8" stroke="#82b366"/>
+                        <text x="152.5" y="66">FTP</text>
+                        <text x="152.5" y="82" class="pm-small">(Port=21)</text>
+
+                        <rect x="190" y="34" width="75" height="76" rx="4" fill="#ffe599" stroke="#e0b800"/>
+                        <text x="227.5" y="58">User</text>
+                        <text x="227.5" y="74">#25</text>
+                        <text x="227.5" y="90" class="pm-small">(port=2001)</text>
+
+                        <rect x="265" y="34" width="75" height="76" rx="4" fill="#f4b6c2" stroke="#d98ba0"/>
+                        <text x="302.5" y="76">……</text>
+                    </g>
+
+                    <!-- 節點 B：上層應用程式 -->
+                    <g>
+                        <rect x="420" y="34" width="75" height="76" rx="4" fill="#f6b26b" stroke="#e69138"/>
+                        <text x="457.5" y="66">Telnet</text>
+                        <text x="457.5" y="82" class="pm-small">(port=23)</text>
+
+                        <rect x="495" y="34" width="75" height="76" rx="4" fill="#b6d7a8" stroke="#82b366"/>
+                        <text x="532.5" y="58">User</text>
+                        <text x="532.5" y="74">#21</text>
+                        <text x="532.5" y="90" class="pm-small">(Port=3125)</text>
+
+                        <rect x="570" y="34" width="75" height="76" rx="4" fill="#f4b6c2" stroke="#d98ba0"/>
+                        <text x="607.5" y="76">……</text>
+
+                        <rect x="645" y="34" width="75" height="76" rx="4" fill="#b6d7a8" stroke="#82b366"/>
+                        <text x="682.5" y="66">FTP</text>
+                        <text x="682.5" y="82" class="pm-small">(port=21)</text>
+                    </g>
+
+                    <!-- 節點 A：協定層 -->
+                    <g>
+                        <rect x="40" y="110" width="300" height="30" fill="#6fa8dc" stroke="#3d85c6"/>
+                        <text x="190" y="125" class="pm-layer" dominant-baseline="middle">TCP 處理程序</text>
+                        <rect x="40" y="140" width="300" height="30" fill="#93c47d" stroke="#6aa84f"/>
+                        <text x="190" y="155" class="pm-layer" dominant-baseline="middle">IP 處理程序</text>
+                        <rect x="40" y="170" width="300" height="30" fill="#e6a0b4" stroke="#c2718a"/>
+                        <text x="190" y="185" class="pm-layer" dominant-baseline="middle">Ethernet 處理程序</text>
+                    </g>
+
+                    <!-- 節點 B：協定層 -->
+                    <g>
+                        <rect x="420" y="110" width="300" height="30" fill="#6fa8dc" stroke="#3d85c6"/>
+                        <text x="570" y="125" class="pm-layer" dominant-baseline="middle">TCP 處理程序</text>
+                        <rect x="420" y="140" width="300" height="30" fill="#93c47d" stroke="#6aa84f"/>
+                        <text x="570" y="155" class="pm-layer" dominant-baseline="middle">IP 處理程序</text>
+                        <rect x="420" y="170" width="300" height="30" fill="#e6a0b4" stroke="#c2718a"/>
+                        <text x="570" y="185" class="pm-layer" dominant-baseline="middle">Ethernet 處理程序</text>
+                    </g>
+
+                    <!-- 三條連線：A 端應用程式 → 封裝後經網路 → B 端 TCP 交給目的應用程式 -->
+                    <g fill="none" stroke-width="2" stroke-linejoin="round">
+                        <path d="M50 110 V210 H430 V141" stroke="#1c3f94" marker-end="url(#pmArrowBlue)"/>
+                        <path d="M125 110 V218 H505 V141" stroke="#c92a2a" marker-end="url(#pmArrowRed)"/>
+                        <path d="M200 110 V226 H655 V141" stroke="#2b8a3e" marker-end="url(#pmArrowGreen)"/>
+                    </g>
+                    <g>
+                        <circle cx="240" cy="210" r="8" fill="#1c3f94"/>
+                        <text x="240" y="210" class="pm-dot" dominant-baseline="middle">1</text>
+                        <circle cx="315" cy="218" r="8" fill="#c92a2a"/>
+                        <text x="315" y="218" class="pm-dot" dominant-baseline="middle">2</text>
+                        <circle cx="427" cy="226" r="8" fill="#2b8a3e"/>
+                        <text x="427" y="226" class="pm-dot" dominant-baseline="middle">3</text>
+                    </g>
+                </svg>
+            </div>
+            <div class="pm-legend">
+                <span><i class="pm-swatch" style="background:#1c3f94"></i>① A 的 User #1（1050）↔ B 的 Telnet（23）</span>
+                <span><i class="pm-swatch" style="background:#c92a2a"></i>② A 的 FTP（21）↔ B 的 User #21（3125）</span>
+                <span><i class="pm-swatch" style="background:#2b8a3e"></i>③ A 的 User #25（2001）↔ B 的 FTP（21）</span>
+            </div>
+            <div class="slide-cap">圖：節點 A 與節點 B 之間的三條 TCP 連線（依教材 9.2 埠編號示意圖重繪）</div>
+
+            <h4>三條連線的位址對照</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>連線</th><th>來源（節點 A）</th><th>目的（節點 B）</th><th>服務</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="tag tag-p">①</span></td><td>User #1，來源埠 1050</td><td>Telnet，目的埠 23</td><td>遠端登入</td></tr>
+                        <tr><td><span class="tag tag-s">②</span></td><td>FTP 客戶端，來源埠 21</td><td>User #21，目的埠 3125</td><td>檔案傳輸</td></tr>
+                        <tr><td><span class="tag tag-a">③</span></td><td>User #25，來源埠 2001</td><td>FTP 伺服器，目的埠 21</td><td>檔案傳輸</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>從圖可看出的四個重點</h4>
+            <ul>
+                <li>一條連線由 <strong>四個值</strong>唯一辨識：<span class="kword">來源 IP + 來源埠 + 目的 IP + 目的埠</span>（socket pair／四元組），所以兩端同時存在多條連線也不會搞混。</li>
+                <li><strong>同一個埠號可以同時出現兩次</strong>：A 的 FTP 用埠 21 當「客戶端埠」連到 B 的 3125；B 的 FTP 也用埠 21 當「伺服端埠」接受 A 的 2001。因為 IP 不同，兩者不算衝突。</li>
+                <li><strong>伺服端埠固定、客戶端埠浮動</strong>：21（FTP）、23（Telnet）是公認埠，伺服器固定監聽；1050、2001、3125 屬於動態埠，由客戶端系統隨機指派。</li>
+                <li><strong>多工與解多工</strong>：多個應用程式共用同一個 TCP/IP 堆疊叫<strong>多工（Multiplexing）</strong>；封包抵達後依「目的埠」交給對應處理程序叫<strong>解多工（Demultiplexing）</strong>。</li>
+            </ul>
         </div>
 
         <div class="card">

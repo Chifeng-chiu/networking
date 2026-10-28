@@ -1,0 +1,14 @@
+# 本機教材與工具（不進 Git，避免超過 GitHub 100MB 限制）
+學習網頁/
+教材/
+PNET4.2.10/
+
+# 壓縮檔
+*.rar
+*.zip
+*.7z
+
+# 系統檔
+Thumbs.db
+desktop.ini
+.DS_Store
