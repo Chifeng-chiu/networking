@@ -3953,7 +3953,74 @@ http://[::1]/                       ← 瀏覽本機 IPv6 網站</div>
     <section id="notes">
         <div class="sec-title">
             <h2>📝 隨堂筆記</h2>
-            <p>上課補充的實務筆記 — 實作網站、串接 API 時最好用的對照表</p>
+            <p>上課補充的實務筆記 — HTTP 方法、狀態碼等實作網站、串接 API 時最好用的對照表</p>
+        </div>
+
+        <div class="card">
+            <h3>HTTP 方法（Method）與 CRUD 對照</h3>
+            <p>
+                同一個網址，用不同的<strong>方法</strong>就代表不同的動作。設計 API 時通常把方法對應到 CRUD：
+                <strong>C</strong>reate 新增、<strong>R</strong>ead 讀取、<strong>U</strong>pdate 更新、<strong>D</strong>elete 刪除。
+            </p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>HTTP 方法</th>
+                            <th>CRUD 動作</th>
+                            <th>主要用途</th>
+                            <th>有 Request Body？</th>
+                            <th>Safe？</th>
+                            <th>Idempotent？</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>GET</code></td>
+                            <td>Read（讀取）</td>
+                            <td>從伺服器取回資料。</td>
+                            <td>沒有（參數放在 URL 上）</td>
+                            <td><strong>是</strong></td>
+                            <td><strong>是</strong></td>
+                        </tr>
+                        <tr>
+                            <td><code>POST</code></td>
+                            <td>Create（新增）</td>
+                            <td>送出資料，在伺服器上建立新資源。</td>
+                            <td>有（JSON、表單資料等）</td>
+                            <td>否</td>
+                            <td>否</td>
+                        </tr>
+                        <tr>
+                            <td><code>PUT</code></td>
+                            <td>Update（更新）</td>
+                            <td>整個取代一個已存在的資源。</td>
+                            <td>有（完整的資源物件）</td>
+                            <td>否</td>
+                            <td><strong>是</strong></td>
+                        </tr>
+                        <tr>
+                            <td><code>DELETE</code></td>
+                            <td>Delete（刪除）</td>
+                            <td>刪除指定的資源。</td>
+                            <td>選用（通常不用）</td>
+                            <td>否</td>
+                            <td><strong>是</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>兩個常考名詞</h4>
+            <ul>
+                <li><strong>Safe（安全）</strong>：呼叫後<strong>不會改變</strong>伺服器上的資料狀態，只是「讀」。所以 GET 是 Safe，其他三個都不是。</li>
+                <li><strong>Idempotent（冪等）</strong>：同樣的請求送 1 次和送 100 次，<strong>結果都一樣</strong>。
+                    GET、PUT、DELETE 是冪等（刪除兩次結果一樣是「已刪除」）；
+                    <strong>POST 不是冪等</strong>，連按兩次「新增」就會產生兩筆資料。
+                </li>
+                <li>PUT 是「整個換掉」，若只想改部分欄位，實務上會用 <code>PATCH</code>（部分更新）；<code>HEAD</code> 只取標頭、<code>OPTIONS</code> 查可用方法。</li>
+            </ul>
+            <blockquote>面試常見題：為什麼送出表單要重新整理時會跳出「是否重新送出」？因為 <code>POST</code> 不是冪等，重送就會再建立一筆資料。</blockquote>
         </div>
 
         <div class="card">
