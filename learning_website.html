@@ -499,6 +499,102 @@
         .pm-legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; margin: .5rem 0 .25rem; font-size: .82rem; color: var(--text2); }
         .pm-legend span { display: inline-flex; align-items: center; gap: .35rem; }
         .pm-swatch { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+
+        /* ===== 9.2 延伸：TCP vs UDP 互動模擬 ===== */
+        .tu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: .9rem 0 .75rem; }
+        .tu-panel {
+            --tu-accent: #22d3ee;
+            background: radial-gradient(120% 130% at 0% 0%, #172554 0%, #0f172a 42%, #0b1220 100%);
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: .75rem;
+            color: #e2e8f0;
+            box-shadow: 0 10px 26px rgba(2, 6, 23, .28);
+        }
+        .tu-panel.tu-udp { --tu-accent: #a3e635; }
+        .tu-panel header { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .55rem; }
+        .tu-panel h4 { margin: 0; font-size: .92rem; color: #f8fafc; }
+        .tu-badge {
+            font-size: .66rem; padding: .12rem .45rem; border-radius: 999px;
+            color: var(--tu-accent); border: 1px solid currentColor; white-space: nowrap;
+        }
+
+        .tu-stage { display: flex; align-items: stretch; gap: .4rem; }
+        .tu-node {
+            flex: 0 0 62px; border-radius: 10px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .1rem;
+            font-size: .62rem; color: #94a3b8;
+            border: 1px solid #334155; background: linear-gradient(180deg, #1e293b, #0f172a);
+        }
+        .tu-node b { font-size: .74rem; color: #f1f5f9; }
+        .tu-panel .tu-node { border-color: var(--tu-accent); box-shadow: inset 0 0 16px rgba(148, 163, 184, .1); }
+
+        .tu-track {
+            position: relative; flex: 1 1 auto; height: 136px;
+            border-radius: 8px; overflow: hidden; border: 1px dashed #263449;
+            background:
+                repeating-linear-gradient(90deg, rgba(148, 163, 184, .09) 0 1px, transparent 1px 26px),
+                linear-gradient(90deg, rgba(30, 41, 59, .6), rgba(15, 23, 42, .45));
+        }
+        .tu-pkt { position: absolute; top: 0; left: 0; will-change: transform; }
+        .tu-chip {
+            display: inline-flex; align-items: center; justify-content: center;
+            height: 22px; min-width: 46px; padding: 0 .45rem; border-radius: 6px;
+            font-size: .62rem; font-weight: 700; letter-spacing: .02em; white-space: nowrap;
+            transition: opacity .25s ease, filter .25s ease;
+        }
+        .tu-chip-data { background: linear-gradient(180deg, #67e8f9, #06b6d4); color: #052e36; box-shadow: 0 0 12px rgba(34, 211, 238, .55); }
+        .tu-chip-ack  { background: rgba(45, 212, 191, .12); color: #5eead4; border: 1px solid #2dd4bf; }
+        .tu-chip-ctrl { background: linear-gradient(180deg, #fde68a, #f59e0b); color: #3b2500; box-shadow: 0 0 12px rgba(245, 158, 11, .45); }
+        .tu-chip-udp  { background: linear-gradient(180deg, #bef264, #65a30d); color: #14290a; box-shadow: 0 0 12px rgba(163, 230, 53, .5); }
+        .tu-chip-drop { background: rgba(248, 113, 113, .15); color: #fca5a5; border: 1px dashed #f87171; }
+        .tu-chip.is-lost { animation: tuLost .38s ease forwards; }
+        .tu-chip.is-ok   { animation: tuOk .36s ease; }
+        @keyframes tuLost {
+            0% { opacity: 1; }
+            55% { opacity: .65; }
+            100% { opacity: 0; filter: blur(2px); }
+        }
+        @keyframes tuOk {
+            0% { filter: brightness(1); }
+            45% { filter: brightness(1.9); }
+            100% { filter: brightness(1); }
+        }
+
+        .tu-stats { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .85rem; margin-top: .55rem; font-size: .72rem; color: #94a3b8; }
+        .tu-stats b { color: var(--tu-accent); }
+        .tu-state {
+            margin-left: auto; padding: .05rem .45rem; border-radius: 999px;
+            font-size: .68rem; color: #cbd5e1; background: rgba(148, 163, 184, .12);
+        }
+        .tu-state.is-live { color: var(--tu-accent); background: rgba(148, 163, 184, .18); }
+
+        .tu-log {
+            margin-top: .5rem; height: 92px; overflow-y: auto; padding-top: .4rem;
+            border-top: 1px solid #1e293b; font-size: .72rem; line-height: 1.55; color: #94a3b8;
+        }
+        .tu-log-line { display: flex; gap: .3rem; }
+        .tu-log-line.is-ok { color: #5eead4; }
+        .tu-log-line.is-warn { color: #fca5a5; }
+        .tu-log-line.is-info { color: #cbd5e1; }
+
+        .tu-controls { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+        .tu-btn {
+            border: none; cursor: pointer; border-radius: 8px; padding: .5rem 1.05rem;
+            font-size: .85rem; font-weight: 700; color: #04131f;
+            background: linear-gradient(180deg, #67e8f9, #22d3ee);
+            box-shadow: 0 6px 18px rgba(34, 211, 238, .3);
+            transition: transform .12s, box-shadow .12s, opacity .12s;
+        }
+        .tu-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(34, 211, 238, .4); }
+        .tu-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+        .tu-btn-ghost { background: transparent; color: #334155; border: 1.5px solid #cbd5e1; box-shadow: none; }
+        .tu-btn-ghost:hover { border-color: #94a3b8; background: #f1f3f5; box-shadow: none; }
+        .tu-tip { font-size: .75rem; color: var(--text3); }
+
+        @media (max-width: 900px) {
+            .tu-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body class="has-sidebar">
@@ -2395,6 +2491,62 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li><strong>伺服端埠固定、客戶端埠浮動</strong>：21（FTP）、23（Telnet）是公認埠，伺服器固定監聽；1050、2001、3125 屬於動態埠，由客戶端系統隨機指派。</li>
                 <li><strong>多工與解多工</strong>：多個應用程式共用同一個 TCP/IP 堆疊叫<strong>多工（Multiplexing）</strong>；封包抵達後依「目的埠」交給對應處理程序叫<strong>解多工（Demultiplexing）</strong>。</li>
             </ul>
+        </div>
+
+        <!-- ===== 9.2 延伸：TCP vs UDP 互動動畫 ===== -->
+        <div class="card" id="tu-demo">
+            <h3>🎬 互動模擬：TCP 與 UDP 傳輸方式比較</h3>
+            <p>
+                左邊 <strong>TCP</strong> 先做三次握手，之後每送出一個封包都要等對方回 <strong>ACK</strong>；中途刻意讓一個封包遺失，觀察它如何<strong>逾時重傳</strong>。
+                右邊 <strong>UDP</strong> 不握手、不確認，封包像灑水一樣連發，掉了也不管 —— 這就是「可靠」與「快速」的差別。
+            </p>
+
+            <div class="tu-grid">
+                <!-- ---------- TCP 面板 ---------- -->
+                <section class="tu-panel tu-tcp" aria-label="TCP 傳輸模擬">
+                    <header>
+                        <h4>TCP（可靠傳輸）</h4>
+                        <span class="tu-badge">握手 + ACK + 重傳</span>
+                    </header>
+                    <div class="tu-stage">
+                        <div class="tu-node"><b>Node A</b><span>發送端</span></div>
+                        <div class="tu-track" id="tu-tcp-track"></div>
+                        <div class="tu-node"><b>Node B</b><span>接收端</span></div>
+                    </div>
+                    <div class="tu-stats">
+                        <span>送達 <b id="tu-tcp-ok">0</b>/4</span>
+                        <span>遺失 <b id="tu-tcp-lost">0</b></span>
+                        <span>重傳 <b id="tu-tcp-retx">0</b></span>
+                        <span class="tu-state" id="tu-tcp-state">待命</span>
+                    </div>
+                    <div class="tu-log" id="tu-tcp-log" aria-live="polite"></div>
+                </section>
+
+                <!-- ---------- UDP 面板 ---------- -->
+                <section class="tu-panel tu-udp" aria-label="UDP 傳輸模擬">
+                    <header>
+                        <h4>UDP（不可靠、求快）</h4>
+                        <span class="tu-badge">無連線 + 無 ACK</span>
+                    </header>
+                    <div class="tu-stage">
+                        <div class="tu-node"><b>Node A</b><span>發送端</span></div>
+                        <div class="tu-track" id="tu-udp-track"></div>
+                        <div class="tu-node"><b>Node B</b><span>接收端</span></div>
+                    </div>
+                    <div class="tu-stats">
+                        <span>送達 <b id="tu-udp-ok">0</b>/10</span>
+                        <span>遺失 <b id="tu-udp-lost">0</b></span>
+                        <span class="tu-state" id="tu-udp-state">待命</span>
+                    </div>
+                    <div class="tu-log" id="tu-udp-log" aria-live="polite"></div>
+                </section>
+            </div>
+
+            <div class="tu-controls">
+                <button class="tu-btn" id="tu-start" type="button">▶ 開始動畫</button>
+                <button class="tu-btn tu-btn-ghost" id="tu-reset" type="button">⟲ 重置</button>
+                <span class="tu-tip">提示：TCP 每次都要「等 ACK」，UDP 則是「講完就跑」。</span>
+            </div>
         </div>
 
         <div class="card">
@@ -4475,6 +4627,328 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickExam(c.dataset.exam); }
         });
     });
+</script>
+
+<!-- ==========================================================
+     9.2 延伸：TCP / UDP 傳輸方式比較動畫（獨立區塊，方便整段複製）
+     重點設計：
+       1. 封包位置用 transform: translate() + requestAnimationFrame 逐格更新，
+          只觸發動畫合成，不會造成版面重排（reflow）。
+       2. 世代編號 gen：每次「開始 / 重置」都會 +1，
+          舊的動畫流程發現世代不符就自行 return，避免殘影與重複播放。
+       3. TCP：三次握手 → 4 個 DATA，第 2 個故意在 55% 處遺失 → 逾時重傳。
+       4. UDP：連發 10 個，隨機掉 2~4 個，沒有任何 ACK 與重傳。
+     ========================================================== -->
+<script>
+(function () {
+    'use strict';
+
+    const $ = (id) => document.getElementById(id);
+
+    /* ---------- 取得 DOM ---------- */
+    const tcpTrack = $('tu-tcp-track');
+    const udpTrack = $('tu-udp-track');
+    if (!tcpTrack || !udpTrack) return;   // 萬一元件不存在就安全結束
+
+    const tcpLog   = $('tu-tcp-log');
+    const udpLog   = $('tu-udp-log');
+    const tcpState = $('tu-tcp-state');
+    const udpState = $('tu-udp-state');
+    const tcpOkEl  = $('tu-tcp-ok');
+    const tcpLostEl = $('tu-tcp-lost');
+    const tcpRetxEl = $('tu-tcp-retx');
+    const udpOkEl  = $('tu-udp-ok');
+    const udpLostEl = $('tu-udp-lost');
+    const startBtn = $('tu-start');
+    const resetBtn = $('tu-reset');
+
+    /* ---------- 狀態 ---------- */
+    let gen = 0;                      // 世代編號
+    let running = false;              // 是否播放中
+    let rafs = [];                    // 進行中的 rAF handle
+    let timers = [];                  // 進行中的 setTimeout handle
+    let tcpStats = { ok: 0, lost: 0, retx: 0 };
+    let udpStats = { ok: 0, lost: 0 };
+
+    // 五條水平線，避免同時飛行的封包互相重疊
+    const LANES = [6, 32, 58, 84, 110];
+    let laneIdx = 0;
+    const nextLane = () => LANES[laneIdx++ % LANES.length];
+
+    /* ---------- 小工具 ---------- */
+    const sleep = (ms) => new Promise((res) => {
+        const id = setTimeout(() => {
+            timers = timers.filter((t) => t !== id);
+            res();
+        }, ms);
+        timers.push(id);
+    });
+
+    function log(box, text, type) {
+        const line = document.createElement('div');
+        line.className = 'tu-log-line' + (type ? ' is-' + type : '');
+        line.textContent = text;
+        box.appendChild(line);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function setState(el, text, live) {
+        el.textContent = text;
+        el.classList.toggle('is-live', !!live);
+    }
+
+    /**
+     * 建立並移動一個封包
+     * @param {Object}  o
+     * @param {Element} o.track    軌道容器
+     * @param {string}  o.label    封包上的文字
+     * @param {string}  o.kind     樣式：data / ack / ctrl / udp
+     * @param {string}  o.dir      'AB' 由 A→B；'BA' 由 B→A
+     * @param {number}  o.duration 飛行時間 (ms)
+     * @param {number} [o.dieAt]   0~1，飛到幾成時「遺失」（不給代表一定送達）
+     * @param {number}  o.myGen    此流程所屬的世代
+     * @returns {Promise<'ok'|'lost'|'abort'>}
+     */
+    function fly(o) {
+        return new Promise((resolve) => {
+            const track = o.track;
+
+            // 外層 div 只負責位置（transform），內層 chip 負責外觀（顏色/動畫）
+            const pkt = document.createElement('div');
+            pkt.className = 'tu-pkt';
+            const chip = document.createElement('span');
+            chip.className = 'tu-chip tu-chip-' + o.kind;
+            chip.textContent = o.label;
+            pkt.appendChild(chip);
+            track.appendChild(pkt);
+
+            const laneY = nextLane();
+            const travel = Math.max(track.clientWidth - chip.offsetWidth - 4, 40);
+            const fromX = o.dir === 'AB' ? 2 : travel;
+            const toX   = o.dir === 'AB' ? travel : 2;
+            pkt.style.transform = `translate(${fromX}px, ${laneY}px)`;
+
+            const t0 = performance.now();
+
+            const step = (now) => {
+                // 世代被換掉（使用者按了重置或重新開始）→ 直接收工
+                if (o.myGen !== gen) {
+                    pkt.remove();
+                    resolve('abort');
+                    return;
+                }
+
+                const t = Math.min((now - t0) / o.duration, 1);
+
+                // 到達「遺失點」：變成紅色虛線 ✕ 並淡出
+                if (o.dieAt != null && t >= o.dieAt) {
+                    chip.className = 'tu-chip tu-chip-drop is-lost';
+                    chip.textContent = '✕ 遺失';
+                    setTimeout(() => pkt.remove(), 420);
+                    resolve('lost');
+                    return;
+                }
+
+                pkt.style.transform = `translate(${fromX + (toX - fromX) * t}px, ${laneY}px)`;
+
+                if (t < 1) {
+                    rafs.push(requestAnimationFrame(step));
+                } else {
+                    chip.classList.add('is-ok');      // 抵達時閃一下
+                    setTimeout(() => pkt.remove(), 340);
+                    resolve('ok');
+                }
+            };
+
+            rafs.push(requestAnimationFrame(step));
+        });
+    }
+
+    /* ======================================================
+       TCP：可靠傳輸（三次握手 → DATA/ACK → 逾時重傳）
+       ====================================================== */
+    async function runTcp(myGen) {
+        const base = { track: tcpTrack, myGen };
+        const TOTAL = 4;                 // 要傳 4 個資料封包
+        const LOST_AT = 2;               // 故意讓第 2 個封包遺失
+
+        /* --- 階段一：三次握手 --- */
+        setState(tcpState, '三次握手', true);
+        log(tcpLog, '— 開始建立連線 —', 'info');
+
+        log(tcpLog, '① A → B：SYN（我想建立連線，序號 seq = x）');
+        await fly({ ...base, label: 'SYN', kind: 'ctrl', dir: 'AB', duration: 780 });
+        if (myGen !== gen) return;
+
+        log(tcpLog, '② B → A：SYN + ACK（同意，seq = y、ack = x+1）');
+        await fly({ ...base, label: 'SYN-ACK', kind: 'ctrl', dir: 'BA', duration: 780 });
+        if (myGen !== gen) return;
+
+        log(tcpLog, '③ A → B：ACK（ack = y+1）→ 連線建立 ✅', 'ok');
+        await fly({ ...base, label: 'ACK', kind: 'ctrl', dir: 'AB', duration: 620 });
+        if (myGen !== gen) return;
+
+        /* --- 階段二：資料傳輸 --- */
+        setState(tcpState, '資料傳輸', true);
+
+        for (let i = 1; i <= TOTAL; i++) {
+            const label = 'DATA ' + i;
+
+            log(tcpLog, `A → B：送出 ${label}（seq = ${i * 100}）`);
+            let result = await fly({
+                ...base, label, kind: 'data', dir: 'AB', duration: 900,
+                dieAt: i === LOST_AT ? 0.55 : null,
+            });
+            if (myGen !== gen) return;
+
+            // 封包遺失 → 等待逾時 → 重傳
+            if (result === 'lost') {
+                tcpStats.lost++;
+                tcpLostEl.textContent = tcpStats.lost;
+                log(tcpLog, `${label} 在半路消失了… A 等不到 ACK`, 'warn');
+                setState(tcpState, '等待 ACK（逾時計時中）', true);
+
+                await sleep(1100);                 // 模擬逾時計時器
+                if (myGen !== gen) return;
+
+                tcpStats.retx++;
+                tcpRetxEl.textContent = tcpStats.retx;
+                log(tcpLog, `⏱ 逾時未收到 ACK → 重新傳送 ${label}`, 'warn');
+
+                result = await fly({ ...base, label: label + ' 重傳', kind: 'data', dir: 'AB', duration: 900 });
+                if (myGen !== gen) return;
+            }
+
+            // B 收到後回 ACK
+            log(tcpLog, `B 收到 ${label} → 回傳 ACK`, 'ok');
+            await fly({ ...base, label: 'ACK', kind: 'ack', dir: 'BA', duration: 620 });
+            if (myGen !== gen) return;
+
+            tcpStats.ok++;
+            tcpOkEl.textContent = tcpStats.ok;
+
+            await sleep(180);                      // 節奏放慢一點，看得清楚
+            if (myGen !== gen) return;
+        }
+
+        setState(tcpState, '完成 ✅', false);
+        log(tcpLog, `— 完成：${TOTAL} 個封包全部送達（共送出 ${TOTAL + tcpStats.retx} 次）—`, 'ok');
+    }
+
+    /* ======================================================
+       UDP：不可靠傳輸（不握手、不等待、掉包不管）
+       ====================================================== */
+    async function runUdp(myGen) {
+        const base = { track: udpTrack, myGen };
+        const TOTAL = 10;
+
+        // 隨機挑 2~4 個封包，讓它們在途中消失
+        const dropCount = 2 + Math.floor(Math.random() * 3);
+        const order = Array.from({ length: TOTAL }, (_, i) => i + 1)
+            .sort(() => Math.random() - 0.5);
+        const dropSet = new Set(order.slice(0, dropCount));
+
+        setState(udpState, '傳送中（不等待回應）', true);
+        log(udpLog, '不需要握手、不用確認，直接把資料往外丟 →', 'info');
+
+        const flights = [];
+
+        for (let i = 1; i <= TOTAL; i++) {
+            const willDrop = dropSet.has(i);
+
+            // 每個封包各自獨立飛行，互不等待 → 這正是 UDP 的「快」
+            flights.push((async () => {
+                const result = await fly({
+                    ...base,
+                    label: 'UDP ' + i,
+                    kind: 'udp',
+                    dir: 'AB',
+                    duration: 820,
+                    // 遺失點隨機（30%~70% 處），看起來更自然
+                    dieAt: willDrop ? 0.3 + Math.random() * 0.4 : null,
+                });
+                if (myGen !== gen) return;
+
+                if (result === 'lost') {
+                    udpStats.lost++;
+                    udpLostEl.textContent = udpStats.lost;
+                    log(udpLog, `UDP ${i} 掉包了 → A 不知情，也不重送`, 'warn');
+                } else {
+                    udpStats.ok++;
+                    udpOkEl.textContent = udpStats.ok;
+                }
+            })());
+
+            await sleep(165);       // 極快連發（約 6 個/秒 × 多個並行）
+            if (myGen !== gen) return;
+        }
+
+        await Promise.all(flights);
+        if (myGen !== gen) return;
+
+        setState(udpState, '完成（不保證送達）', false);
+        log(udpLog, `— 結束：送出 ${TOTAL} 個、送達 ${udpStats.ok} 個、遺失 ${udpStats.lost} 個 —`, 'info');
+        log(udpLog, 'UDP 沒有重傳機制，掉的就是掉了（要可靠得靠上層自己做）', 'warn');
+    }
+
+    /* ======================================================
+       控制：開始 / 重置
+       ====================================================== */
+    function resetAll(silent) {
+        gen++;                              // 讓所有進行中的流程失效
+        rafs.forEach(cancelAnimationFrame);
+        rafs = [];
+        timers.forEach(clearTimeout);
+        timers = [];
+
+        running = false;
+        tcpStats = { ok: 0, lost: 0, retx: 0 };
+        udpStats = { ok: 0, lost: 0 };
+        laneIdx = 0;
+
+        tcpOkEl.textContent = '0';
+        tcpLostEl.textContent = '0';
+        tcpRetxEl.textContent = '0';
+        udpOkEl.textContent = '0';
+        udpLostEl.textContent = '0';
+
+        [tcpTrack, udpTrack].forEach((track) => {
+            track.querySelectorAll('.tu-pkt').forEach((p) => p.remove());
+        });
+        tcpLog.innerHTML = '';
+        udpLog.innerHTML = '';
+
+        setState(tcpState, '待命', false);
+        setState(udpState, '待命', false);
+        startBtn.disabled = false;
+        startBtn.textContent = '▶ 開始動畫';
+
+        if (!silent) {
+            log(tcpLog, '已重置，按「開始動畫」重新播放', 'info');
+            log(udpLog, '已重置，按「開始動畫」重新播放', 'info');
+        }
+    }
+
+    async function start() {
+        if (running) return;
+
+        resetAll(true);
+        running = true;
+        startBtn.disabled = true;
+        startBtn.textContent = '播放中…';
+
+        const myGen = gen;                  // 記住本次播放的世代
+        await Promise.all([runTcp(myGen), runUdp(myGen)]);
+
+        if (myGen !== gen) return;           // 中途被重置就不用收尾
+        running = false;
+        startBtn.disabled = false;
+        startBtn.textContent = '▶ 再播一次';
+    }
+
+    startBtn.addEventListener('click', start);
+    resetBtn.addEventListener('click', () => resetAll(false));
+})();
 </script>
 </body>
 </html>
