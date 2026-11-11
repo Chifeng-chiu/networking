@@ -3008,6 +3008,10 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <strong>口訣：</strong>ARP 是拿「<strong>對方的 IP</strong>」換「<strong>對方的 MAC</strong>」；
                 RARP 是拿「<strong>自己的 MAC</strong>」換「<strong>自己的 IP</strong>」。
             </blockquote>
+
+            <blockquote class="warn">
+                ARP 沒有任何身分驗證 —— 任何人都能送假回應，這就是 <strong>ARP 欺騙（Spoofing／Poisoning）</strong>，詳見 <strong>10.9</strong>。
+            </blockquote>
         </div>
 
         <div class="card">
@@ -3345,6 +3349,209 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="card">
+            <h3>10.9 ARP 補充：ARP 欺騙（ARP Spoofing／Poisoning）</h3>
+            <p>
+                ARP 的設計只有「問與答」，<strong>沒有任何身分驗證</strong> —— 任何人送來「某個 IP 對應這個 MAC」的回應，
+                電腦都會直接相信並更新 ARP 快取。駭客就利用這一點，把自己塞進受害者與閘道之間，
+                變成<strong>中間人（Man-in-the-Middle, MitM）</strong>。
+            </p>
+
+            <h4>圖解：一次 ARP 欺騙是怎麼發生的<span class="flow-hint">（可左右滑動查看完整圖）</span></h4>
+            <div class="flow-wrap">
+                <svg class="flow-svg" viewBox="0 0 760 660" role="img"
+                     aria-label="ARP 欺騙示意圖：駭客雙向發送假 ARP，把受害者的 ARP 表與路由器的紀錄都改成 MAC_C，流量因此先經過駭客，形成中間人攻擊">
+                    <defs>
+                        <marker id="spArrow" viewBox="0 0 10 10" refX="9" refY="5"
+                                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#e03131"></path>
+                        </marker>
+                        <g id="spLaptop">
+                            <rect x="-34" y="-30" width="68" height="46" rx="4" fill="#e7f5ff" stroke="#1c7ed6" stroke-width="2.5"></rect>
+                            <rect x="-28" y="-24" width="56" height="34" rx="2" fill="#ffffff" stroke="#a5d8ff" stroke-width="1.5"></rect>
+                            <rect x="-23" y="-18" width="24" height="3.5" rx="1.75" fill="#74c0fc"></rect>
+                            <rect x="-23" y="-10" width="38" height="3.5" rx="1.75" fill="#a5d8ff"></rect>
+                            <rect x="-23" y="-2" width="30" height="3.5" rx="1.75" fill="#a5d8ff"></rect>
+                            <path d="M-44 16 H44 L36 27 H-36 Z" fill="#d0ebff" stroke="#1c7ed6" stroke-width="2.5" stroke-linejoin="round"></path>
+                        </g>
+                        <g id="spRouter">
+                            <ellipse cx="0" cy="-16" rx="28" ry="9" fill="#dbe4ff" stroke="#4263eb" stroke-width="2"></ellipse>
+                            <path d="M-28 -16 V16 A28 9 0 0 0 28 16 V-16" fill="#edf2ff" stroke="#4263eb" stroke-width="2"></path>
+                            <path d="M-12 -4 H12 M12 -4 L7 -9 M12 -4 L7 1" fill="none" stroke="#4263eb" stroke-width="2"></path>
+                            <path d="M12 7 H-12 M-12 7 L-7 2 M-12 7 L-7 12" fill="none" stroke="#4263eb" stroke-width="2"></path>
+                        </g>
+                        <g id="spSwitch">
+                            <rect x="-26" y="-16" width="52" height="32" rx="6" fill="#dbe4ff" stroke="#4263eb" stroke-width="2"></rect>
+                            <path d="M-14 -4 H10 M10 -4 L5 -9 M10 -4 L5 1" fill="none" stroke="#4263eb" stroke-width="2"></path>
+                            <path d="M14 6 H-10 M-10 6 L-5 1 M-10 6 L-5 11" fill="none" stroke="#4263eb" stroke-width="2"></path>
+                        </g>
+                        <g id="spHacker">
+                            <rect x="-36" y="-32" width="72" height="48" rx="4" fill="#ffe3e3" stroke="#e03131" stroke-width="2.5"></rect>
+                            <rect x="-30" y="-26" width="60" height="36" rx="2" fill="#fff5f5" stroke="#ffa8a8" stroke-width="1.5"></rect>
+                            <rect x="-24" y="-19" width="26" height="3.5" rx="1.75" fill="#ff8787"></rect>
+                            <rect x="-24" y="-11" width="40" height="3.5" rx="1.75" fill="#ffc9c9"></rect>
+                            <path d="M-46 16 H46 L38 28 H-38 Z" fill="#ffc9c9" stroke="#e03131" stroke-width="2.5" stroke-linejoin="round"></path>
+                            <circle cx="0" cy="-44" r="10" fill="#ffffff" stroke="#e03131" stroke-width="2"></circle>
+                            <circle cx="-4" cy="-46" r="2" fill="#e03131"></circle>
+                            <circle cx="4" cy="-46" r="2" fill="#e03131"></circle>
+                            <path d="M-3 -39 h6" stroke="#e03131" stroke-width="1.5"></path>
+                        </g>
+                    </defs>
+
+                    <!-- 標題 -->
+                    <text x="380" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#0b2a4a">資安焦點：ARP 欺騙</text>
+                    <text x="380" y="62" text-anchor="middle" font-size="14" fill="#6b7280">ARP Spoofing / Poisoning</text>
+                    <rect x="40" y="74" width="680" height="34" rx="17" fill="#e7f5ff" stroke="#74c0fc" stroke-width="1.5"></rect>
+                    <text x="380" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#1864ab">利用 ARP 無身分驗證的漏洞，進行「中間人攻擊（MitM）」</text>
+
+                    <!-- 兩個致命前提 -->
+                    <rect x="20" y="122" width="350" height="54" rx="8" fill="#fff4e6" stroke="#f0a04b" stroke-width="1.5"></rect>
+                    <text x="38" y="143" font-size="11.5" font-weight="700" fill="#b35c00">⚠ 致命漏洞：ARP 只有問與答</text>
+                    <text x="38" y="163" font-size="11.5" fill="#8a5a00">沒有任何身分驗證機制！</text>
+
+                    <rect x="390" y="122" width="350" height="54" rx="8" fill="#fffbe6" stroke="#e8c547" stroke-width="1.5"></rect>
+                    <text x="408" y="143" font-size="11.5" font-weight="700" fill="#8a6d00">💡 只要收到 ARP 回應</text>
+                    <text x="408" y="163" font-size="11.5" fill="#8a6d00">電腦就無條件相信並更新 ARP Cache！</text>
+
+                    <!-- 節點名稱 -->
+                    <text x="110" y="206" text-anchor="middle" font-size="13" font-weight="700" fill="#0b2a4a">受害者電腦 A</text>
+                    <text x="110" y="222" text-anchor="middle" font-size="10.5" fill="#6b7280">（Victim）</text>
+                    <text x="650" y="206" text-anchor="middle" font-size="13" font-weight="700" fill="#0b2a4a">預設閘道</text>
+                    <text x="650" y="222" text-anchor="middle" font-size="10.5" fill="#6b7280">（Router 路由器）</text>
+
+                    <!-- 步驟 1 -->
+                    <circle cx="300" cy="252" r="10" fill="#e03131"></circle>
+                    <text x="300" y="256" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">1</text>
+                    <text x="316" y="256" font-size="12" font-weight="700" fill="#c92a2a">雙向發送假 ARP（欺騙）</text>
+
+                    <!-- 連線 -->
+                    <line x1="156" y1="300" x2="352" y2="300" stroke="#adb5bd" stroke-width="2"></line>
+                    <line x1="408" y1="300" x2="608" y2="300" stroke="#adb5bd" stroke-width="2"></line>
+                    <line x1="380" y1="318" x2="380" y2="430" stroke="#adb5bd" stroke-width="2"></line>
+
+                    <!-- 節點 -->
+                    <use href="#spLaptop" transform="translate(110,300)"></use>
+                    <use href="#spSwitch" transform="translate(380,300)"></use>
+                    <use href="#spRouter" transform="translate(650,300)"></use>
+                    <use href="#spHacker" transform="translate(380,490)"></use>
+
+                    <!-- 位址 -->
+                    <text x="62" y="292" text-anchor="end" font-size="11.5" font-weight="700" fill="#0b2a4a">IP_A</text>
+                    <text x="62" y="310" text-anchor="end" font-size="11.5" font-weight="700" fill="#0b2a4a">MAC_A</text>
+                    <text x="686" y="292" font-size="11" font-weight="700" fill="#0b2a4a">IP_Router</text>
+                    <text x="686" y="310" font-size="11" font-weight="700" fill="#0b2a4a">MAC_Router</text>
+
+                    <!-- 假 ARP -->
+                    <line x1="342" y1="464" x2="172" y2="336" stroke="#e03131" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#spArrow)"></line>
+                    <line x1="418" y1="464" x2="588" y2="336" stroke="#e03131" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#spArrow)"></line>
+                    <g text-anchor="middle" fill="#c92a2a" stroke="#ffffff" stroke-width="4.5"
+                       stroke-linejoin="round" paint-order="stroke">
+                        <text x="305" y="366" font-size="11.5" font-weight="700">我是路由器！</text>
+                        <text x="305" y="382" font-size="9.5">（MAC_C 假冒 IP_Router）</text>
+                        <text x="465" y="366" font-size="11.5" font-weight="700">我是電腦 A！</text>
+                        <text x="465" y="382" font-size="9.5">（MAC_C 假冒 IP_A）</text>
+                    </g>
+
+                    <!-- 被毒化的 ARP 表 -->
+                    <text x="112" y="374" text-anchor="middle" font-size="12" font-weight="700" fill="#c92a2a">被毒化的 ARP 表</text>
+                    <rect x="14" y="382" width="200" height="58" rx="8" fill="#fff5f5" stroke="#e03131" stroke-width="2"></rect>
+                    <text x="30" y="408" font-size="11" fill="#333333">路由器 IP → 駭客</text>
+                    <text x="30" y="428" font-size="11" font-weight="700" fill="#e03131">MAC_C ✗（誤）</text>
+
+                    <!-- 步驟 2 -->
+                    <circle cx="28" cy="468" r="10" fill="#e03131"></circle>
+                    <text x="28" y="472" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">2</text>
+                    <text x="44" y="472" font-size="12" font-weight="700" fill="#c92a2a">流量被悄悄劫持（攔截）</text>
+
+                    <g font-size="9.5" font-weight="700" fill="#ffffff" text-anchor="middle">
+                        <rect x="20" y="480" width="64" height="56" fill="#1b2a4a"></rect>
+                        <text x="52" y="499" font-size="9">目的</text>
+                        <text x="52" y="515">MAC_C</text>
+                        <text x="52" y="529" font-size="8.5" fill="#ffc9c9">（駭客）</text>
+                        <rect x="84" y="480" width="58" height="56" fill="#e8590c"></rect>
+                        <text x="113" y="499" font-size="9">來源</text>
+                        <text x="113" y="515">MAC_A</text>
+                        <rect x="142" y="480" width="52" height="56" fill="#f08c00"></rect>
+                        <text x="168" y="499" font-size="9">來源</text>
+                        <text x="168" y="515">IP_A</text>
+                        <rect x="194" y="480" width="70" height="56" fill="#1971c2"></rect>
+                        <text x="229" y="499" font-size="9">目的</text>
+                        <text x="229" y="515">IP_B</text>
+                        <text x="229" y="529" font-size="8.5" fill="#c5d9f1">（外網）</text>
+                    </g>
+
+                    <!-- 步驟 3 -->
+                    <circle cx="504" cy="468" r="10" fill="#e03131"></circle>
+                    <text x="504" y="472" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">3</text>
+                    <text x="520" y="472" font-size="12" font-weight="700" fill="#c92a2a">竊聽、竄改或丟棄</text>
+
+                    <g font-size="9.5" font-weight="700" fill="#ffffff" text-anchor="middle">
+                        <rect x="496" y="480" width="78" height="56" fill="#1b2a4a"></rect>
+                        <text x="535" y="499" font-size="9">目的</text>
+                        <text x="535" y="515">MAC_Router</text>
+                        <rect x="574" y="480" width="58" height="56" fill="#e8590c"></rect>
+                        <text x="603" y="499" font-size="9">來源</text>
+                        <text x="603" y="515">MAC_C</text>
+                        <rect x="632" y="480" width="52" height="56" fill="#f08c00"></rect>
+                        <text x="658" y="499" font-size="9">來源</text>
+                        <text x="658" y="515">IP_A</text>
+                        <rect x="684" y="480" width="56" height="56" fill="#1971c2"></rect>
+                        <text x="712" y="499" font-size="9">目的</text>
+                        <text x="712" y="515">IP_B</text>
+                    </g>
+
+                    <!-- 流量方向 -->
+                    <line x1="268" y1="508" x2="330" y2="508" stroke="#e03131" stroke-width="2" marker-end="url(#spArrow)"></line>
+                    <line x1="430" y1="508" x2="492" y2="508" stroke="#e03131" stroke-width="2" marker-end="url(#spArrow)"></line>
+
+                    <!-- 駭客標示 -->
+                    <text x="380" y="540" text-anchor="middle" font-size="12" font-weight="700" fill="#0b2a4a">IP_C</text>
+                    <text x="380" y="557" text-anchor="middle" font-size="12" font-weight="700" fill="#0b2a4a">MAC_C</text>
+                    <text x="380" y="578" text-anchor="middle" font-size="12" font-weight="700" fill="#e03131">紅色駭客電腦</text>
+                    <text x="380" y="594" text-anchor="middle" font-size="10" fill="#6b7280">（Man-in-the-Middle）</text>
+
+                    <text x="20" y="558" font-size="10.5" fill="#6b7280">電腦 A 發出上網封包，因 MAC 被毒化 → 先送到駭客</text>
+                    <text x="496" y="558" font-size="10.5" fill="#6b7280">駭客側錄／修改後，再用 MAC_C 轉給路由器</text>
+
+                    <rect x="40" y="608" width="680" height="34" rx="17" fill="#fff5f5" stroke="#e03131" stroke-width="1.5"></rect>
+                    <text x="380" y="630" text-anchor="middle" font-size="12" font-weight="700" fill="#c92a2a">受害者完全無感：IP 沒變、連線看起來也正常 —— 這就是中間人攻擊可怕的地方</text>
+                </svg>
+            </div>
+            <div class="slide-cap">
+                圖：駭客雙向送出假 ARP，把 A 的 ARP 表與路由器的紀錄都改成 MAC_C，流量因此繞進駭客電腦，再轉給真正的目的地。
+            </div>
+
+            <h4>三步驟看懂攻擊</h4>
+            <ol>
+                <li><strong>雙向發送假 ARP</strong>：對 A 說「我是路由器（IP_Router 的 MAC 是 MAC_C）」，同時對路由器說「我是電腦 A（IP_A 的 MAC 是 MAC_C）」。</li>
+                <li><strong>流量被劫持</strong>：A 的 ARP 表變成「路由器 IP → MAC_C」，之後要上網的封包目的 MAC 全填 MAC_C，先送進駭客電腦。</li>
+                <li><strong>竊聽、竄改或丟棄</strong>：駭客側錄／修改後，再以自己的 MAC_C 轉給真正的路由器；A 與伺服器都以為在跟對方通訊。</li>
+            </ol>
+
+            <h4>駭客能做什麼？</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>手法</th><th>英文</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>竊聽</strong></td><td>Sniffing</td><td>偷看未加密的帳號、密碼、Cookie 等內容。</td></tr>
+                        <tr><td><strong>竄改</strong></td><td>Modification</td><td>植入惡意程式、把網頁導向釣魚網站。</td></tr>
+                        <tr><td><strong>斷網</strong></td><td>DoS</td><td>直接丟棄封包，讓受害者無法上網。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>如何防禦？</h4>
+            <ul>
+                <li><strong>綁定靜態 ARP（Static ARP）</strong>：重要主機與閘道手動把 IP ↔ MAC 寫死，ARP 表就不會被假回應覆蓋。</li>
+                <li><strong>啟用交換器 DAI（Dynamic ARP Inspection）</strong>：交換器比對 ARP 封包與 DHCP Snooping 的紀錄，不符就丟棄。</li>
+                <li>其他輔助：ARP 監控工具、802.1X 身分驗證、VLAN 分段，以及 <strong>HTTPS／加密</strong>（就算被攔截也看不懂內容）。</li>
+            </ul>
+
+            <blockquote class="warn">
+                ARP 沒有身分驗證是<strong>設計上的信任漏洞</strong>，不是設定錯誤 —— 所以只能靠「靜態綁定」與「交換器檢查」來補。
+            </blockquote>
         </div>
     </section>
 
