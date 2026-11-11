@@ -2830,6 +2830,82 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li><strong>RARP</strong>（Reversed Address Resolution Protocol，反向位址解析協定）：<strong>實體位址 → IP 位址</strong></li>
                 <li>在資料連結層所屬的 EtherType 為 <code>0806</code>。</li>
             </ul>
+
+            <h4>圖解：ARP 與 RARP 的方向剛好相反</h4>
+            <div class="hs-wrap">
+                <svg class="hs-svg" viewBox="0 0 640 300" role="img"
+                     aria-label="ARP 與 RARP 方向比較：ARP 由 IP 位址查 MAC 位址，RARP 由 MAC 位址查 IP 位址">
+                    <defs>
+                        <linearGradient id="arpIpGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#c3e88d"></stop>
+                            <stop offset="100%" stop-color="#f9e96b"></stop>
+                        </linearGradient>
+                        <linearGradient id="arpMacGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#dceefb"></stop>
+                            <stop offset="100%" stop-color="#f8ddc9"></stop>
+                        </linearGradient>
+                        <marker id="arpArrow" viewBox="0 0 10 10" refX="9" refY="5"
+                                markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#2f80ed"></path>
+                        </marker>
+                    </defs>
+
+                    <!-- 外框與標題列 -->
+                    <rect x="8" y="8" width="624" height="284" fill="#ffffff" stroke="#8a8a8a" stroke-width="2"></rect>
+                    <rect x="8" y="8" width="624" height="40" fill="#000000"></rect>
+                    <text x="320" y="35" text-anchor="middle" font-size="19" font-weight="700" fill="#ffffff">ARP vs RARP</text>
+
+                    <!-- 左：IP 位址 -->
+                    <rect x="100" y="140" width="120" height="95" fill="url(#arpIpGrad)" stroke="#9aa79a" stroke-width="1.5"></rect>
+                    <text x="160" y="185" text-anchor="middle" font-size="21" font-weight="700" fill="#333333">IP</text>
+                    <text x="160" y="212" text-anchor="middle" font-size="21" font-weight="700" fill="#333333">Address</text>
+
+                    <!-- 右：MAC 位址 -->
+                    <rect x="420" y="140" width="120" height="95" fill="url(#arpMacGrad)" stroke="#b7a99c" stroke-width="1.5"></rect>
+                    <text x="480" y="185" text-anchor="middle" font-size="21" font-weight="700" fill="#333333">MAC</text>
+                    <text x="480" y="212" text-anchor="middle" font-size="21" font-weight="700" fill="#333333">Address</text>
+
+                    <!-- ARP：IP → MAC -->
+                    <line x1="228" y1="165" x2="410" y2="165" stroke="#2f80ed" stroke-width="3" marker-end="url(#arpArrow)"></line>
+                    <text x="320" y="155" text-anchor="middle" font-size="15" font-weight="700" fill="#111111">ARP</text>
+
+                    <!-- RARP：MAC → IP -->
+                    <line x1="412" y1="212" x2="230" y2="212" stroke="#2f80ed" stroke-width="3" marker-end="url(#arpArrow)"></line>
+                    <text x="320" y="232" text-anchor="middle" font-size="15" font-weight="700" fill="#111111">RARP</text>
+                </svg>
+            </div>
+            <div class="slide-cap">
+                圖：ARP 由 IP 位址查出 MAC 位址；RARP 反過來，由 MAC 位址查回 IP 位址。<br>
+                圖片來源：ipwithease.com — ARP vs RARP（<a href="https://ipwithease.com/arp-vs-rarp/" target="_blank" rel="noopener noreferrer"
+                             style="color: var(--primary);">https://ipwithease.com/arp-vs-rarp/</a>）
+            </div>
+
+            <h4>為什麼需要這兩種協定？</h4>
+            <p>
+                乙太網路框架在傳送時，<strong>目的位址欄位填的是 MAC</strong>，但應用程式平常只知道對方的 IP，
+                所以封包送出前必須先有一個「IP → MAC」的對照機制，這就是 <strong>ARP</strong>；
+                反過來，早期沒有硬碟的工作站開機時只有網卡上的 MAC、不知道自己的 IP，
+                於是向伺服器詢問「我這個 MAC 該用哪個 IP？」，這就是 <strong>RARP</strong>。
+            </p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>項目</th><th>ARP</th><th>RARP</th></tr></thead>
+                    <tbody>
+                        <tr><td>全名</td><td>Address Resolution Protocol</td><td>Reverse Address Resolution Protocol</td></tr>
+                        <tr><td>查詢方向</td><td><strong>IP 位址 → MAC 位址</strong></td><td><strong>MAC 位址 → IP 位址</strong></td></tr>
+                        <tr><td>已知／想知道</td><td>知道對方 IP，想知道 MAC</td><td>知道自己的 MAC，想知道 IP</td></tr>
+                        <tr><td>通訊方式</td><td>廣播請求（Request）＋ 單播回覆（Reply）</td><td>向 RARP 伺服器請求</td></tr>
+                        <tr><td>典型用途</td><td>同網段傳送前補上目的 MAC</td><td>無硬碟工作站開機取得 IP</td></tr>
+                        <tr><td>現況</td><td>IPv4 仍廣泛使用</td><td>已被 BOOTP／DHCP 取代</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <blockquote>
+                ARP 只在<strong>同一個網段</strong>內找 MAC；若目的端在其他網段，來源端查的是「預設閘道（Gateway）」的 MAC，
+                再由路由器逐跳轉送。查到的結果會放進 <strong>ARP 快取（ARP Cache／ARP Table）</strong>，下次直接查表不用再廣播。
+            </blockquote>
         </div>
 
         <div class="card">
