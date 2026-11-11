@@ -2906,6 +2906,11 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 ARP 只在<strong>同一個網段</strong>內找 MAC；若目的端在其他網段，來源端查的是「預設閘道（Gateway）」的 MAC，
                 再由路由器逐跳轉送。查到的結果會放進 <strong>ARP 快取（ARP Cache／ARP Table）</strong>，下次直接查表不用再廣播。
             </blockquote>
+
+            <blockquote class="ok">
+                <strong>口訣：</strong>ARP 是拿「<strong>對方的 IP</strong>」換「<strong>對方的 MAC</strong>」；
+                RARP 是拿「<strong>自己的 MAC</strong>」換「<strong>自己的 IP</strong>」。
+            </blockquote>
         </div>
 
         <div class="card">
