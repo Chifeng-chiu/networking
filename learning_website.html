@@ -520,6 +520,25 @@
             border-radius: 0 8px 8px 0; font-size: .88rem; color: #5c4300;
         }
 
+        /* ===== 圖解：ARP 運作流程（同網段／跨網段） ===== */
+        .arp-flow-wrap {
+            margin: .9rem 0 .4rem; padding: .5rem;
+            border: 1px solid var(--border); border-radius: 10px;
+            background: #fff;
+            overflow-x: auto;
+        }
+        .arp-flow-svg {
+            display: block; width: 100%; min-width: 680px; max-width: 760px;
+            height: auto; margin: 0 auto;
+        }
+        .arp-flow-svg text {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+        }
+        .arp-flow-hint { display: none; }
+        @media (max-width: 780px) {
+            .arp-flow-hint { display: inline; color: var(--primary); font-weight: 600; }
+        }
+
         /* ===== 9.2 延伸：TCP vs UDP 互動模擬 ===== */
         .tu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: .9rem 0 .75rem; }
         .tu-panel {
@@ -2922,6 +2941,186 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                 <li>之後直接以對方 MAC 傳送資料。</li>
             </ol>
             <blockquote>ARP 請求時 Target HA 欄位為 <code>00-00-00-00-00-00</code>。</blockquote>
+
+            <h4>圖解：同網段 vs 跨網段的 ARP 行為</h4>
+            <p>
+                ARP 只負責<strong>同一個網段</strong>內的 MAC 查詢；若目的端在其他網段，主機查的其實是「下一跳路由器」的 MAC。
+                下圖比較這兩種情況 —— 注意 <strong>IP 位址從頭到尾不變，MAC 位址則每過一個路由器就換一次</strong>。
+            </p>
+            <div class="arp-flow-wrap">
+                <svg class="arp-flow-svg" viewBox="0 0 760 950" role="img"
+                     aria-label="ARP 兩種情境：同網段時直接與目標交換 MAC；跨網段時逐跳與路由器交換 MAC，IP 始終不變">
+                    <defs>
+                        <marker id="afArrow" viewBox="0 0 10 10" refX="9" refY="5"
+                                markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#1c7ed6"></path>
+                        </marker>
+                        <g id="afLaptop">
+                            <rect x="-30" y="-26" width="60" height="40" rx="3" fill="#e7f5ff" stroke="#1c7ed6" stroke-width="2.5"></rect>
+                            <rect x="-25" y="-21" width="50" height="30" rx="1.5" fill="#fff" stroke="#a5d8ff" stroke-width="1.5"></rect>
+                            <rect x="-20" y="-15" width="20" height="3" rx="1.5" fill="#74c0fc"></rect>
+                            <rect x="-20" y="-8" width="32" height="3" rx="1.5" fill="#a5d8ff"></rect>
+                            <path d="M-38 14 H38 L31 24 H-31 Z" fill="#d0ebff" stroke="#1c7ed6" stroke-width="2.5" stroke-linejoin="round"></path>
+                        </g>
+                        <g id="afRouter">
+                            <ellipse cx="0" cy="-16" rx="28" ry="9" fill="#dbe4ff" stroke="#4263eb" stroke-width="2"></ellipse>
+                            <path d="M-28 -16 V16 A28 9 0 0 0 28 16 V-16" fill="#edf2ff" stroke="#4263eb" stroke-width="2"></path>
+                            <path d="M-12 -4 H12 M12 -4 L7 -9 M12 -4 L7 1" fill="none" stroke="#4263eb" stroke-width="2"></path>
+                            <path d="M12 7 H-12 M-12 7 L-7 2 M-12 7 L-7 12" fill="none" stroke="#4263eb" stroke-width="2"></path>
+                        </g>
+                        <g id="afSwitch">
+                            <rect x="-24" y="-15" width="48" height="30" rx="6" fill="#dbe4ff" stroke="#4263eb" stroke-width="2"></rect>
+                            <path d="M-13 -4 H9 M9 -4 L4 -9 M9 -4 L4 1" fill="none" stroke="#4263eb" stroke-width="2"></path>
+                            <path d="M13 6 H-9 M-9 6 L-4 1 M-9 6 L-4 11" fill="none" stroke="#4263eb" stroke-width="2"></path>
+                        </g>
+                    </defs>
+
+                    <!-- 標題 -->
+                    <text x="380" y="46" text-anchor="middle" font-size="26" font-weight="700" fill="#0b2a4a">ARP（Address Resolution Protocol）</text>
+
+                    <!-- 口訣膠囊 -->
+                    <rect x="146" y="66" width="186" height="34" rx="17" fill="#e7f5ff" stroke="#1c7ed6" stroke-width="1.5"></rect>
+                    <text x="239" y="89" text-anchor="middle" font-size="14" font-weight="700" fill="#0b2a4a">拿對方的 IP 位址</text>
+                    <circle cx="352" cy="83" r="17" fill="#1c7ed6"></circle>
+                    <text x="352" y="89" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">換</text>
+                    <rect x="379" y="66" width="186" height="34" rx="17" fill="#1b4f8a"></rect>
+                    <text x="472" y="89" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">對方的 MAC 位址</text>
+
+                    <text x="380" y="136" text-anchor="middle" font-size="17" font-weight="700" fill="#0b2a4a">交換的機器是否為同一台？ It depends!（看情況）</text>
+
+                    <!-- 情況① 標題帶 -->
+                    <rect x="8" y="154" width="744" height="36" fill="#1b3a5c"></rect>
+                    <text x="24" y="178" font-size="16" font-weight="700" fill="#ffffff">情況①　來源（src）＆目的（dst）在同一 LAN（同網段）</text>
+
+                    <!-- 情況① 內容 -->
+                    <text x="150" y="222" text-anchor="middle" font-size="14" font-weight="700" fill="#0b2a4a">來源（src）</text>
+                    <text x="630" y="222" text-anchor="middle" font-size="14" font-weight="700" fill="#0b2a4a">目的（dst）</text>
+
+                    <line x1="196" y1="252" x2="580" y2="252" stroke="#1c7ed6" stroke-width="3" marker-end="url(#afArrow)"></line>
+                    <text x="388" y="242" text-anchor="middle" font-size="13" font-weight="700" fill="#0b2a4a">發送 ARP 請求與回應</text>
+
+                    <line x1="196" y1="304" x2="566" y2="304" stroke="#74c0fc" stroke-width="4" stroke-dasharray="2 9" stroke-linecap="round"></line>
+                    <use href="#afLaptop" transform="translate(150,304)"></use>
+                    <use href="#afSwitch" transform="translate(390,304)"></use>
+                    <use href="#afLaptop" transform="translate(630,304)"></use>
+                    <text x="390" y="338" text-anchor="middle" font-size="12" fill="#495057">交換器</text>
+
+                    <text x="92" y="298" text-anchor="end" font-size="13" font-weight="700" fill="#0b2a4a">IP_A</text>
+                    <text x="92" y="318" text-anchor="end" font-size="13" font-weight="700" fill="#0b2a4a">MAC_A</text>
+                    <text x="690" y="298" font-size="13" font-weight="700" fill="#0b2a4a">IP_B</text>
+                    <text x="690" y="318" font-size="13" font-weight="700" fill="#0b2a4a">MAC_B</text>
+
+                    <text x="92" y="366" font-size="14" font-weight="700" fill="#0b2a4a">ping IP_B</text>
+
+                    <!-- 封包 -->
+                    <text x="210" y="424" text-anchor="end" font-size="15" font-weight="700" fill="#0b2a4a">封包</text>
+                    <g font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">
+                        <rect x="220" y="398" width="105" height="50" fill="#1b2a4a"></rect>
+                        <text x="272" y="419">目的</text><text x="272" y="437">MAC_B</text>
+                        <rect x="325" y="398" width="90" height="50" fill="#e8590c"></rect>
+                        <text x="370" y="419">來源</text><text x="370" y="437">MAC_A</text>
+                        <rect x="415" y="398" width="80" height="50" fill="#f08c00"></rect>
+                        <text x="455" y="419">來源</text><text x="455" y="437">IP_A</text>
+                        <rect x="495" y="398" width="75" height="50" fill="#1971c2"></rect>
+                        <text x="532" y="419">目的</text><text x="532" y="437">IP_B</text>
+                    </g>
+
+                    <text x="590" y="412" font-size="14" font-weight="700" fill="#2b8a3e">同一台機器 ✅</text>
+                    <text x="590" y="436" font-size="12" fill="#495057">（直接與目標交換）</text>
+
+                    <!-- 情況② 標題帶 -->
+                    <rect x="8" y="482" width="744" height="36" fill="#1b3a5c"></rect>
+                    <text x="24" y="506" font-size="16" font-weight="700" fill="#ffffff">情況②　若 src ＆ dst 在不同 LAN（跨網段）</text>
+
+                    <!-- 節點 -->
+                    <text x="70" y="558" text-anchor="middle" font-size="14" font-weight="700" fill="#0b2a4a">src</text>
+                    <text x="270" y="552" text-anchor="middle" font-size="13" font-weight="700" fill="#0b2a4a">R1</text>
+                    <text x="270" y="570" text-anchor="middle" font-size="11" fill="#495057">（路由器1）</text>
+                    <text x="470" y="552" text-anchor="middle" font-size="13" font-weight="700" fill="#0b2a4a">R2</text>
+                    <text x="470" y="570" text-anchor="middle" font-size="11" fill="#495057">（路由器2）</text>
+                    <text x="670" y="558" text-anchor="middle" font-size="14" font-weight="700" fill="#0b2a4a">dst</text>
+
+                    <line x1="106" y1="612" x2="234" y2="612" stroke="#1c7ed6" stroke-width="4" marker-end="url(#afArrow)"></line>
+                    <line x1="306" y1="612" x2="434" y2="612" stroke="#1c7ed6" stroke-width="4" marker-end="url(#afArrow)"></line>
+                    <line x1="506" y1="612" x2="634" y2="612" stroke="#1c7ed6" stroke-width="4" marker-end="url(#afArrow)"></line>
+
+                    <use href="#afLaptop" transform="translate(70,612) scale(0.9)"></use>
+                    <use href="#afRouter" transform="translate(270,612) scale(0.9)"></use>
+                    <use href="#afRouter" transform="translate(470,612) scale(0.9)"></use>
+                    <use href="#afLaptop" transform="translate(670,612) scale(0.9)"></use>
+
+                    <text x="70" y="668" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b2a4a">IP_A</text>
+                    <text x="70" y="686" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b2a4a">MAC_A</text>
+
+                    <line x1="270" y1="654" x2="270" y2="692" stroke="#adb5bd" stroke-width="1"></line>
+                    <text x="258" y="668" text-anchor="end" font-size="11" font-weight="700" fill="#0b2a4a">IP_1A</text>
+                    <text x="282" y="668" font-size="11" font-weight="700" fill="#0b2a4a">MAC_1A</text>
+                    <text x="258" y="686" text-anchor="end" font-size="11" font-weight="700" fill="#0b2a4a">IP_1B</text>
+                    <text x="282" y="686" font-size="11" font-weight="700" fill="#0b2a4a">MAC_1B</text>
+
+                    <line x1="470" y1="654" x2="470" y2="692" stroke="#adb5bd" stroke-width="1"></line>
+                    <text x="458" y="668" text-anchor="end" font-size="11" font-weight="700" fill="#0b2a4a">IP_2A</text>
+                    <text x="482" y="668" font-size="11" font-weight="700" fill="#0b2a4a">MAC_2A</text>
+                    <text x="458" y="686" text-anchor="end" font-size="11" font-weight="700" fill="#0b2a4a">IP_2B</text>
+                    <text x="482" y="686" font-size="11" font-weight="700" fill="#0b2a4a">MAC_2B</text>
+
+                    <text x="670" y="668" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b2a4a">IP_B</text>
+                    <text x="670" y="686" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b2a4a">MAC_B</text>
+
+                    <!-- 兩種位址的差異 -->
+                    <text x="30" y="748" font-size="14" font-weight="700" fill="#0b2a4a">IP：end to end 通訊</text>
+                    <text x="30" y="768" font-size="12" fill="#495057">（終端到終端，IP 始終不變）</text>
+
+                    <text x="420" y="748" font-size="14" font-weight="700" fill="#0b2a4a">MAC：hop by hop</text>
+                    <text x="420" y="768" font-size="12" fill="#495057">（逐跳傳遞，每過一躍就會更換）</text>
+
+                    <text x="380" y="806" text-anchor="middle" font-size="14" font-weight="700" fill="#0b2a4a">不同的機器（與下一跳 router 交換 MAC）</text>
+
+                    <!-- 三段的封包內容 -->
+                    <text x="18" y="836" font-size="14" font-weight="700" fill="#0b2a4a">a</text>
+                    <text x="268" y="836" font-size="14" font-weight="700" fill="#0b2a4a">b</text>
+                    <text x="518" y="836" font-size="14" font-weight="700" fill="#0b2a4a">c</text>
+
+                    <g font-size="9.5" font-weight="700" fill="#ffffff" text-anchor="middle">
+                        <rect x="14" y="844" width="88" height="46" fill="#1b2a4a"></rect>
+                        <text x="58" y="863">目的</text><text x="58" y="880">MAC_1A</text>
+                        <rect x="102" y="844" width="52" height="46" fill="#e8590c"></rect>
+                        <text x="128" y="863">來源</text><text x="128" y="880">MAC_A</text>
+                        <rect x="154" y="844" width="50" height="46" fill="#f08c00"></rect>
+                        <text x="179" y="863">來源</text><text x="179" y="880">IP_A</text>
+                        <rect x="204" y="844" width="50" height="46" fill="#1971c2"></rect>
+                        <text x="229" y="863">目的</text><text x="229" y="880">IP_B</text>
+
+                        <rect x="264" y="844" width="88" height="46" fill="#1b2a4a"></rect>
+                        <text x="308" y="863">目的</text><text x="308" y="880">MAC_2A</text>
+                        <rect x="352" y="844" width="52" height="46" fill="#e8590c"></rect>
+                        <text x="378" y="863">來源</text><text x="378" y="880">MAC_1B</text>
+                        <rect x="404" y="844" width="50" height="46" fill="#f08c00"></rect>
+                        <text x="429" y="863">來源</text><text x="429" y="880">IP_A</text>
+                        <rect x="454" y="844" width="50" height="46" fill="#1971c2"></rect>
+                        <text x="479" y="863">目的</text><text x="479" y="880">IP_B</text>
+
+                        <rect x="514" y="844" width="88" height="46" fill="#1b2a4a"></rect>
+                        <text x="558" y="863">目的</text><text x="558" y="880">MAC_B</text>
+                        <rect x="602" y="844" width="52" height="46" fill="#e8590c"></rect>
+                        <text x="628" y="863">來源</text><text x="628" y="880">MAC_2B</text>
+                        <rect x="654" y="844" width="50" height="46" fill="#f08c00"></rect>
+                        <text x="679" y="863">來源</text><text x="679" y="880">IP_A</text>
+                        <rect x="704" y="844" width="50" height="46" fill="#1971c2"></rect>
+                        <text x="729" y="863">目的</text><text x="729" y="880">IP_B</text>
+                    </g>
+
+                    <text x="134" y="916" text-anchor="middle" font-size="11" fill="#495057">MAC 逐跳更換</text>
+                    <text x="520" y="916" text-anchor="middle" font-size="11" font-weight="700" fill="#0b2a4a">IP 始終不變</text>
+                </svg>
+            </div>
+            <div class="slide-cap">
+                圖：ARP 的兩種情境 —— 同網段直接與目標交換 MAC；跨網段則逐跳與路由器交換 MAC，IP 始終不變。
+                <span class="arp-flow-hint">（可左右滑動查看完整圖）</span>
+            </div>
+            <blockquote class="ok">
+                重點：<strong>IP 從頭到尾不變（end to end）</strong>；<strong>MAC 每過一個路由器就換一次（hop by hop）</strong>。
+            </blockquote>
         </div>
 
         <div class="card">
