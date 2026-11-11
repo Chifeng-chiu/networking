@@ -500,10 +500,31 @@
         .pm-legend span { display: inline-flex; align-items: center; gap: .35rem; }
         .pm-swatch { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
 
+        /* ===== 圖解：TCP 三向交握 ===== */
+        .hs-wrap {
+            margin: .9rem 0 .4rem; padding: .5rem;
+            border: 1px solid var(--border); border-radius: 10px;
+            background: #fff;
+        }
+        .hs-svg { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto; }
+        .hs-svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif; }
+        .hs-steps { margin: .5rem 0 .3rem 1.2rem; }
+        .hs-steps li { margin-bottom: .35rem; }
+        @media (max-width: 620px) {
+            /* 手機上整張圖縮小，字級放大才看得清楚 */
+            .hs-svg text { font-size: 20px; }
+        }
+        .hs-note {
+            margin-top: .7rem; padding: .6rem .8rem;
+            border-left: 4px solid var(--accent); background: var(--accent-light);
+            border-radius: 0 8px 8px 0; font-size: .88rem; color: #5c4300;
+        }
+
         /* ===== 9.2 延伸：TCP vs UDP 互動模擬 ===== */
         .tu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: .9rem 0 .75rem; }
         .tu-panel {
             --tu-accent: #22d3ee;
+            display: block;
             background: radial-gradient(120% 130% at 0% 0%, #172554 0%, #0f172a 42%, #0b1220 100%);
             border: 1px solid #1e293b;
             border-radius: 12px;
@@ -512,7 +533,7 @@
             box-shadow: 0 10px 26px rgba(2, 6, 23, .28);
         }
         .tu-panel.tu-udp { --tu-accent: #a3e635; }
-        .tu-panel header { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .55rem; }
+        .tu-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .55rem; }
         .tu-panel h4 { margin: 0; font-size: .92rem; color: #f8fafc; }
         .tu-badge {
             font-size: .66rem; padding: .12rem .45rem; border-radius: 999px;
@@ -536,7 +557,7 @@
                 repeating-linear-gradient(90deg, rgba(148, 163, 184, .09) 0 1px, transparent 1px 26px),
                 linear-gradient(90deg, rgba(30, 41, 59, .6), rgba(15, 23, 42, .45));
         }
-        .tu-pkt { position: absolute; top: 0; left: 0; will-change: transform; }
+        .tu-pkt { position: absolute; top: 0; left: 0; line-height: 0; will-change: transform; }
         .tu-chip {
             display: inline-flex; align-items: center; justify-content: center;
             height: 22px; min-width: 46px; padding: 0 .45rem; border-radius: 6px;
@@ -2331,7 +2352,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
     <section id="ch09">
         <div class="sec-title">
             <h2>Ch9 傳輸層協定</h2>
-            <p>Transport Layer — TCP、UDP、埠編號、滑動視窗、TCP 標頭與三向交握</p>
+            <p>Transport Layer — TCP、UDP、埠編號、TCP 協定與序列號碼、滑動視窗、TCP 標頭與三向交握</p>
         </div>
 
         <div class="card">
@@ -2349,6 +2370,104 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- ===== 圖解：TCP 三向交握（置於 9.2 之前） ===== -->
+        <div class="card" id="tcp-handshake">
+            <h3>圖解：TCP 三向交握（Three-way Handshake）</h3>
+            <p>
+                TCP 是<strong>連接導向</strong>的協定：送出資料前，雙方必須先「打招呼」建立連線。
+                下圖是三個步驟的時序 —— 左邊是用戶端（Client）、右邊是伺服器（Server），
+                兩條垂直線代表各自在<strong>傳輸層（Transport Layer）</strong>的狀態。
+            </p>
+
+            <div class="hs-wrap">
+                <svg class="hs-svg" viewBox="0 0 640 400" role="img"
+                     aria-label="TCP 三向交握時序圖：用戶端送出 SYN，伺服器回 SYN 加 ACK，用戶端再回 ACK，雙方進入 Established">
+                    <defs>
+                        <pattern id="hsHatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                            <rect width="9" height="9" fill="#fffdf6"></rect>
+                            <line x1="0" y1="0" x2="0" y2="9" stroke="#f5e9c8" stroke-width="2"></line>
+                        </pattern>
+                        <marker id="hsArrowBlue" viewBox="0 0 10 10" refX="9" refY="5"
+                                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#2b6cb0"></path>
+                        </marker>
+                        <marker id="hsArrowRed" viewBox="0 0 10 10" refX="9" refY="5"
+                                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#c92a2a"></path>
+                        </marker>
+                    </defs>
+
+                    <!-- 裝置：用戶端筆電 -->
+                    <g>
+                        <rect x="146" y="20" width="68" height="46" rx="4" fill="#e7f5ff" stroke="#1c7ed6" stroke-width="2.5"></rect>
+                        <rect x="152" y="26" width="56" height="34" rx="2" fill="#fff" stroke="#a5d8ff" stroke-width="1.5"></rect>
+                        <rect x="158" y="33" width="26" height="3.5" rx="1.75" fill="#74c0fc"></rect>
+                        <rect x="158" y="41" width="40" height="3.5" rx="1.75" fill="#a5d8ff"></rect>
+                        <rect x="158" y="49" width="32" height="3.5" rx="1.75" fill="#a5d8ff"></rect>
+                        <path d="M134 66 H226 L216 78 H144 Z" fill="#d0ebff" stroke="#1c7ed6" stroke-width="2.5" stroke-linejoin="round"></path>
+                        <text x="180" y="96" text-anchor="middle" font-size="12" fill="#495057">Client（用戶端）</text>
+                    </g>
+
+                    <!-- 裝置：伺服器 -->
+                    <g>
+                        <rect x="458" y="16" width="44" height="64" rx="6" fill="#e7f5ff" stroke="#1c7ed6" stroke-width="2.5"></rect>
+                        <rect x="466" y="24" width="28" height="9" rx="2" fill="#a5d8ff"></rect>
+                        <rect x="466" y="38" width="28" height="9" rx="2" fill="#a5d8ff"></rect>
+                        <rect x="466" y="52" width="28" height="9" rx="2" fill="#a5d8ff"></rect>
+                        <circle cx="480" cy="71" r="3" fill="#1c7ed6"></circle>
+                        <text x="480" y="96" text-anchor="middle" font-size="12" fill="#495057">Server（伺服器）</text>
+                    </g>
+
+                    <!-- 傳輸層範圍 -->
+                    <rect x="18" y="118" width="604" height="248" fill="url(#hsHatch)" stroke="#e8b923" stroke-width="2.5"></rect>
+                    <rect x="20" y="118" width="62" height="30" fill="#fffdf6" stroke="#e8b923" stroke-width="2.5"></rect>
+                    <text x="51" y="138" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3d3200">TCP</text>
+                    <text x="30" y="352" font-size="12" fill="#5c4b1a">Transport Layer</text>
+
+                    <!-- 兩端狀態線 -->
+                    <line x1="180" y1="104" x2="180" y2="372" stroke="#3b7dd8" stroke-width="6" stroke-linecap="round"></line>
+                    <line x1="480" y1="104" x2="480" y2="372" stroke="#c0392b" stroke-width="6" stroke-linecap="round"></line>
+
+                    <!-- ① SYN -->
+                    <text x="172" y="168" text-anchor="end" font-size="11.5" fill="#495057">Send SYN</text>
+                    <text x="492" y="168" font-size="11.5" fill="#495057">SYN Received</text>
+                    <text x="330" y="178" text-anchor="middle" font-size="12.5" font-weight="700" fill="#2b6cb0">① SYN</text>
+                    <line x1="188" y1="186" x2="474" y2="186" stroke="#2b6cb0" stroke-width="2.5" marker-end="url(#hsArrowBlue)"></line>
+
+                    <!-- ② SYN + ACK -->
+                    <text x="492" y="232" font-size="11.5" fill="#495057">Send SYN, ACK</text>
+                    <text x="172" y="244" text-anchor="end" font-size="11.5" fill="#495057">SYN Received</text>
+                    <text x="330" y="242" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">② SYN / ACK</text>
+                    <line x1="474" y1="250" x2="186" y2="250" stroke="#c92a2a" stroke-width="2.5" marker-end="url(#hsArrowRed)"></line>
+
+                    <!-- ③ ACK -->
+                    <text x="172" y="310" text-anchor="end" font-size="11.5" fill="#495057">Established</text>
+                    <text x="492" y="310" font-size="11.5" fill="#495057">Established</text>
+                    <text x="330" y="308" text-anchor="middle" font-size="12.5" font-weight="700" fill="#2b6cb0">③ ACK</text>
+                    <line x1="188" y1="316" x2="474" y2="316" stroke="#2b6cb0" stroke-width="2.5" marker-end="url(#hsArrowBlue)"></line>
+                </svg>
+            </div>
+            <div class="slide-cap">圖：TCP 三向交握 —— SYN → SYN / ACK → ACK，完成後雙方都進入 Established</div>
+
+            <h4>三個步驟在說什麼？</h4>
+            <ol class="hs-steps">
+                <li><strong>① SYN</strong>：用戶端送出 <code>SYN</code>（Seq = x），意思是「我想和你建立連線」，同時把自己的初始序號 x 告訴對方；此時用戶端處於 SYN-SENT。</li>
+                <li><strong>② SYN + ACK</strong>：伺服器回 <code>SYN + ACK</code>（Seq = y、Ack = x+1），代表「同意連線」，附上自己的初始序號 y，並順便確認收到 x；伺服器進入 SYN-RECEIVED。</li>
+                <li><strong>③ ACK</strong>：用戶端再回 <code>ACK</code>（Ack = y+1），確認收到伺服器的 SYN；雙方都進入 <strong>Established</strong>，開始傳資料。</li>
+            </ol>
+
+            <div class="hs-note">
+                <strong>小提醒：</strong>第三步是 <strong>ACK</strong>，不是 SYN —— 正確口訣是「<strong>SYN → SYN+ACK → ACK</strong>」。
+                另外 SYN 與 FIN 都會佔用一個序號，所以回應號要 +1（Ack = x+1、y+1）。
+            </div>
+
+            <p style="margin-top:.6rem">
+                為什麼要三次？兩次只能確認「一方送得出、另一方收得到」，無法同時確認<strong>雙向</strong>都正常；
+                三次才能同步雙方的初始序號，也能避免網路上舊的、重複的連線請求被誤判成新連線。
+                序號與回應號的規則見 <strong>9.5</strong>，完整啟動／結束流程見 <strong>9.8</strong>。
+            </p>
         </div>
 
         <div class="card">
@@ -2503,11 +2622,11 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
 
             <div class="tu-grid">
                 <!-- ---------- TCP 面板 ---------- -->
-                <section class="tu-panel tu-tcp" aria-label="TCP 傳輸模擬">
-                    <header>
+                <div class="tu-panel tu-tcp" aria-label="TCP 傳輸模擬">
+                    <div class="tu-head">
                         <h4>TCP（可靠傳輸）</h4>
                         <span class="tu-badge">握手 + ACK + 重傳</span>
-                    </header>
+                    </div>
                     <div class="tu-stage">
                         <div class="tu-node"><b>Node A</b><span>發送端</span></div>
                         <div class="tu-track" id="tu-tcp-track"></div>
@@ -2520,14 +2639,14 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                         <span class="tu-state" id="tu-tcp-state">待命</span>
                     </div>
                     <div class="tu-log" id="tu-tcp-log" aria-live="polite"></div>
-                </section>
+                </div>
 
                 <!-- ---------- UDP 面板 ---------- -->
-                <section class="tu-panel tu-udp" aria-label="UDP 傳輸模擬">
-                    <header>
+                <div class="tu-panel tu-udp" aria-label="UDP 傳輸模擬">
+                    <div class="tu-head">
                         <h4>UDP（不可靠、求快）</h4>
                         <span class="tu-badge">無連線 + 無 ACK</span>
-                    </header>
+                    </div>
                     <div class="tu-stage">
                         <div class="tu-node"><b>Node A</b><span>發送端</span></div>
                         <div class="tu-track" id="tu-udp-track"></div>
@@ -2539,7 +2658,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
                         <span class="tu-state" id="tu-udp-state">待命</span>
                     </div>
                     <div class="tu-log" id="tu-udp-log" aria-live="polite"></div>
-                </section>
+                </div>
             </div>
 
             <div class="tu-controls">
@@ -2559,8 +2678,58 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
             </ul>
         </div>
 
+        <div class="card" id="tcp-protocol">
+            <h3>9.4 TCP 協定</h3>
+            <p>
+                對照 9.3 的 UDP，TCP 走的是另一條路線：<strong>先建立連線、再確保每一段資料都送達</strong>。
+                代價是標頭更大、狀態更多；好處是應用程式可以把它當成一條可靠的水管。
+            </p>
+
+            <h4>9.4-1 TCP 的定位與特性</h4>
+            <ul>
+                <li><strong>高可靠度的資料傳輸</strong>：靠序號、ACK 確認、逾時重傳與排序，把不可靠的 IP 封包變成可靠的位元組流。</li>
+                <li><strong>比 UDP 複雜的標頭格式與定義</strong>：UDP 標頭固定 8 位元組；TCP 基本標頭 20 位元組，含選擇項最多 60 位元組。</li>
+                <li><strong>提供豐富的通訊控制功能</strong>：三向交握／四段式結束、滑動視窗（流量控制）、壅塞控制、緊急資料（URG）、選擇性確認（SACK）等。</li>
+                <li><strong>在細看標頭各欄位之前</strong>，必須先弄懂兩個核心機制：<strong>序列號碼（Sequence Number）</strong> 與 <strong>滑動視窗（Sliding Window）</strong>。</li>
+            </ul>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>比較</th><th>TCP</th><th>UDP</th></tr></thead>
+                    <tbody>
+                        <tr><td>標頭長度</td><td>20 ~ 60 位元組</td><td>固定 8 位元組</td></tr>
+                        <tr><td>連線</td><td>需三向交握</td><td>無連線</td></tr>
+                        <tr><td>可靠性</td><td>確認、重傳、排序</td><td>不保證送達</td></tr>
+                        <tr><td>控制功能</td><td>流量控制、壅塞控制、選擇項</td><td>僅埠號與檢查和</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>9.4-2 序列號碼（Sequence Number）</h4>
+            <ul>
+                <li><strong>用途</strong>：記錄「傳送資料過程」的累積序號，讓接收端能依序重組、發現漏掉的片段。</li>
+                <li><strong>累加方式</strong>：隨<strong>傳送完成的位元組數</strong>循環累加 —— 送出 N 個位元組，序號就前進 N。</li>
+                <li><strong>單位演進</strong>：最初 TCP 以「<strong>封包數</strong>」為累進單位；目前則以「<strong>位元組數</strong>」為單位。</li>
+                <li><strong>循環時間</strong>：序號欄位 32 位元（2³² ≈ 42.9 億），對 100 Mbps 的系統而言，大約 <strong>328 秒</strong>才會循環一輪。</li>
+                <li><strong>與 IP TTL 比較</strong>：IP TTL 上限為 <strong>255 秒</strong>，比序號循環一輪的 328 秒短，所以舊封包幾乎不可能帶著同一個序號還存活在網路上。</li>
+                <li><strong>實際時程更長</strong>：因為傳輸延遲、等待 ACK、視窗塞滿等因素，實際吞吐量低於理論值，循環一輪通常超過 328 秒。</li>
+                <li><strong>更快的網路架構</strong>：序號循環時間會更短；但舊封包早已被 TTL 淘汰，<strong>遇上相同序號的機率仍相當微小</strong>。</li>
+            </ul>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>項目</th><th>數值／說明</th></tr></thead>
+                    <tbody>
+                        <tr><td>序號空間</td><td>2³² = 4,294,967,296（約 42.9 億）</td></tr>
+                        <tr><td>100 Mbps 循環一輪</td><td>約 328 秒（以 100 Mbps ≈ 13.1 MB/s 估算）</td></tr>
+                        <tr><td>IP TTL 上限</td><td>255 秒（TTL 上限 255，每經路由器遞減）</td></tr>
+                        <tr><td>結論</td><td>循環時間 &gt; 封包壽命 → 新舊封包不易撞號</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <blockquote>序列號碼只負責「編號」；真正判斷有沒有收到、要不要重傳，靠的是<strong>回應號碼（Acknowledge Number）</strong>與計時器 —— 詳見 <strong>9.5</strong>。</blockquote>
+        </div>
+
         <div class="card">
-            <h3>9.4 序列號碼與回應號碼</h3>
+            <h3>9.5 序列號碼與回應號碼</h3>
             <ul>
                 <li><strong>序列號碼（Sequence Number）</strong>：隨傳送完成的位元組數循環累加（早期以封包數為單位，目前以位元組數為單位）。</li>
                 <li><strong>回應號碼（Acknowledge Number）</strong>：與序列號碼一起運作，表示「期望下次收到對方資料」的序列號碼；收到回覆即代表資料順利送達。</li>
@@ -2572,7 +2741,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>9.5 緩衝區與滑動視窗（Sliding Window）</h3>
+            <h3>9.6 緩衝區與滑動視窗（Sliding Window）</h3>
             <ul>
                 <li>一般通訊「送一包等一回覆」效率差；緩衝區可讓接收端<strong>合併回應</strong>、連續傳送多個封包。</li>
                 <li>緩衝區又稱「訊窗（Window）」；HDLC/X.25 以封包數計、<strong>TCP 以位元組數計</strong>。</li>
@@ -2583,7 +2752,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>9.6 TCP 標頭欄位定義</h3>
+            <h3>9.7 TCP 標頭欄位定義</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>欄位</th><th>大小</th><th>說明</th></tr></thead>
@@ -2613,7 +2782,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>9.7 TCP 連線的啟動與結束</h3>
+            <h3>9.8 TCP 連線的啟動與結束</h3>
             <h4>啟動（三向交握）</h4>
             <ol>
                 <li>A → B：<code>Seq=x, SYN</code></li>
@@ -2631,7 +2800,7 @@ TPID (2B, 0x8100) | Priority (3b) | CFI (1b) | VLAN ID (12b)
         </div>
 
         <div class="card">
-            <h3>9.8 TCP 協定選擇項（Options）</h3>
+            <h3>9.9 TCP 協定選擇項（Options）</h3>
             <p>選擇性欄位，整體長度須為 32 位元整數倍，不足補 Padding；最早定義於 RFC793，後有 RFC1323、RFC2018 改良。</p>
             <div class="table-wrap">
                 <table>
@@ -4638,6 +4807,9 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
           舊的動畫流程發現世代不符就自行 return，避免殘影與重複播放。
        3. TCP：三次握手 → 4 個 DATA，第 2 個故意在 55% 處遺失 → 逾時重傳。
        4. UDP：連發 10 個，隨機掉 2~4 個，沒有任何 ACK 與重傳。
+       5. 修正：面板改用 <div>（原本用 <section> 會被全站 section{display:none} 藏起來）、
+          軌道寬度用 ResizeObserver 快取、車道改為「佔用制」避免封包重疊、
+          重置時會解除所有等待中的 sleep / rAF，不會留下卡死的流程。
      ========================================================== -->
 <script>
 (function () {
@@ -4663,27 +4835,79 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
     const resetBtn = $('tu-reset');
 
     /* ---------- 狀態 ---------- */
-    let gen = 0;                      // 世代編號
-    let running = false;              // 是否播放中
-    let rafs = [];                    // 進行中的 rAF handle
-    let timers = [];                  // 進行中的 setTimeout handle
+    let gen = 0;                        // 世代編號
+    let running = false;                // 是否播放中
+    const rafs = new Set();             // 進行中的 rAF handle
+    const timers = new Map();           // setTimeout id -> resolve（null = 單純延遲）
+    const activeFlights = new Set();    // 進行中的 fly()，重置時直接中止
     let tcpStats = { ok: 0, lost: 0, retx: 0 };
     let udpStats = { ok: 0, lost: 0 };
 
     // 五條水平線，避免同時飛行的封包互相重疊
-    const LANES = [6, 32, 58, 84, 110];
-    let laneIdx = 0;
-    const nextLane = () => LANES[laneIdx++ % LANES.length];
+    const LANES = [4, 30, 56, 82, 108];
+    const laneBusy = new WeakMap();     // track -> Set(已佔用的車道)
 
-    /* ---------- 小工具 ---------- */
-    const sleep = (ms) => new Promise((res) => {
-        const id = setTimeout(() => {
-            timers = timers.filter((t) => t !== id);
-            res();
-        }, ms);
-        timers.push(id);
+    /* ---------- 時間 / 動畫 ---------- */
+    const later = (fn, ms) => {
+        const id = setTimeout(() => { timers.delete(id); fn(); }, ms);
+        timers.set(id, null);
+    };
+
+    const sleep = (ms) => new Promise((resolve) => {
+        const id = setTimeout(() => { timers.delete(id); resolve(); }, ms);
+        timers.set(id, resolve);
     });
 
+    const raf = (fn) => {
+        const id = requestAnimationFrame((now) => { rafs.delete(id); fn(now); });
+        rafs.add(id);
+        return id;
+    };
+
+    function clearTimers() {
+        timers.forEach((resolve, id) => {
+            clearTimeout(id);
+            if (resolve) resolve();     // 叫醒等待中的流程，讓它靠 gen 檢查自行結束
+        });
+        timers.clear();
+    }
+
+    /* ---------- 軌道寬度：用 ResizeObserver 快取，避免每幀讀取造成重排 ---------- */
+    const trackWidth = new WeakMap();
+    const measure = (track) => trackWidth.set(track, track.clientWidth);
+    [tcpTrack, udpTrack].forEach(measure);
+    if (typeof ResizeObserver === 'function') {
+        const ro = new ResizeObserver((entries) => {
+            entries.forEach((e) => trackWidth.set(e.target, e.contentRect.width));
+        });
+        ro.observe(tcpTrack);
+        ro.observe(udpTrack);
+    }
+    window.addEventListener('resize', () => { [tcpTrack, udpTrack].forEach(measure); });
+
+    /* ---------- 車道：同一軌道最多 5 個封包並行，避免疊在一起 ---------- */
+    function takeLane(track) {
+        let used = laneBusy.get(track);
+        if (!used) { used = new Map(); laneBusy.set(track, used); }
+        let best = 0;
+        let bestCount = Infinity;
+        for (let i = 0; i < LANES.length; i++) {
+            const count = used.get(i) || 0;
+            if (count < bestCount) { bestCount = count; best = i; }
+            if (count === 0) break;
+        }
+        used.set(best, bestCount + 1);      // 真的客滿時，挑最空的一條疊上去
+        return best;
+    }
+    function freeLane(track, idx) {
+        const used = laneBusy.get(track);
+        if (!used) return;
+        const count = (used.get(idx) || 1) - 1;
+        if (count <= 0) used.delete(idx);
+        else used.set(idx, count);
+    }
+
+    /* ---------- 小工具 ---------- */
     function log(box, text, type) {
         const line = document.createElement('div');
         line.className = 'tu-log-line' + (type ? ' is-' + type : '');
@@ -4722,45 +4946,64 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
             pkt.appendChild(chip);
             track.appendChild(pkt);
 
-            const laneY = nextLane();
-            const travel = Math.max(track.clientWidth - chip.offsetWidth - 4, 40);
-            const fromX = o.dir === 'AB' ? 2 : travel;
-            const toX   = o.dir === 'AB' ? travel : 2;
-            pkt.style.transform = `translate(${fromX}px, ${laneY}px)`;
+            const laneIdx = takeLane(track);
+            const laneY = LANES[laneIdx];
+            const chipW = chip.offsetWidth || 60;
+
+            let done = false;
+            const finish = (result) => {
+                if (done) return;
+                done = true;
+                activeFlights.delete(finish);
+                if (result === 'abort') freeLane(track, laneIdx);   // 正常結束的車道等封包移除後才釋放
+                resolve(result);
+            };
+            activeFlights.add(finish);
+
+            // 依目前的軌道寬度換算 x 座標（每次都用快取，視窗縮放也會更新）
+            const positionAt = (t) => {
+                const width = trackWidth.get(track) || track.clientWidth || 300;
+                const travel = Math.max(width - chipW - 6, 24);
+                const fromX = o.dir === 'AB' ? 3 : travel;
+                const toX = o.dir === 'AB' ? travel : 3;
+                return fromX + (toX - fromX) * t;
+            };
 
             const t0 = performance.now();
+            pkt.style.transform = `translate(${positionAt(0)}px, ${laneY}px)`;
 
             const step = (now) => {
                 // 世代被換掉（使用者按了重置或重新開始）→ 直接收工
                 if (o.myGen !== gen) {
                     pkt.remove();
-                    resolve('abort');
+                    finish('abort');
                     return;
                 }
 
                 const t = Math.min((now - t0) / o.duration, 1);
 
-                // 到達「遺失點」：變成紅色虛線 ✕ 並淡出
+                // 到達「遺失點」：停在原地變成紅色虛線 ✕ 並淡出
                 if (o.dieAt != null && t >= o.dieAt) {
+                    pkt.style.transform = `translate(${positionAt(o.dieAt)}px, ${laneY}px)`;
                     chip.className = 'tu-chip tu-chip-drop is-lost';
                     chip.textContent = '✕ 遺失';
-                    setTimeout(() => pkt.remove(), 420);
-                    resolve('lost');
+                    later(() => { pkt.remove(); freeLane(track, laneIdx); }, 420);
+                    finish('lost');
                     return;
                 }
 
-                pkt.style.transform = `translate(${fromX + (toX - fromX) * t}px, ${laneY}px)`;
+                pkt.style.transform = `translate(${positionAt(t)}px, ${laneY}px)`;
 
                 if (t < 1) {
-                    rafs.push(requestAnimationFrame(step));
+                    raf(step);
                 } else {
                     chip.classList.add('is-ok');      // 抵達時閃一下
-                    setTimeout(() => pkt.remove(), 340);
-                    resolve('ok');
+                    later(() => { pkt.remove(); freeLane(track, laneIdx); }, 220);
+                    finish('ok');
                 }
             };
 
-            rafs.push(requestAnimationFrame(step));
+            raf(step);
         });
     }
 
@@ -4774,13 +5017,13 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
 
         /* --- 階段一：三次握手 --- */
         setState(tcpState, '三次握手', true);
-        log(tcpLog, '— 開始建立連線 —', 'info');
+        log(tcpLog, '— 開始建立連線（三向交握）—', 'info');
 
-        log(tcpLog, '① A → B：SYN（我想建立連線，序號 seq = x）');
+        log(tcpLog, '① A → B：SYN（seq = x，我想建立連線）');
         await fly({ ...base, label: 'SYN', kind: 'ctrl', dir: 'AB', duration: 780 });
         if (myGen !== gen) return;
 
-        log(tcpLog, '② B → A：SYN + ACK（同意，seq = y、ack = x+1）');
+        log(tcpLog, '② B → A：SYN + ACK（seq = y、ack = x+1，同意連線）');
         await fly({ ...base, label: 'SYN-ACK', kind: 'ctrl', dir: 'BA', duration: 780 });
         if (myGen !== gen) return;
 
@@ -4793,19 +5036,20 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
 
         for (let i = 1; i <= TOTAL; i++) {
             const label = 'DATA ' + i;
+            const seq = i * 100;
 
-            log(tcpLog, `A → B：送出 ${label}（seq = ${i * 100}）`);
+            log(tcpLog, `A → B：送出 ${label}（seq = ${seq}）`);
             let result = await fly({
                 ...base, label, kind: 'data', dir: 'AB', duration: 900,
                 dieAt: i === LOST_AT ? 0.55 : null,
             });
             if (myGen !== gen) return;
 
-            // 封包遺失 → 等待逾時 → 重傳
+            // 封包遺失 → 等待逾時 → 重傳（序號不變）
             if (result === 'lost') {
                 tcpStats.lost++;
                 tcpLostEl.textContent = tcpStats.lost;
-                log(tcpLog, `${label} 在半路消失了… A 等不到 ACK`, 'warn');
+                log(tcpLog, `${label} 在半路遺失… A 等不到 ACK`, 'warn');
                 setState(tcpState, '等待 ACK（逾時計時中）', true);
 
                 await sleep(1100);                 // 模擬逾時計時器
@@ -4813,14 +5057,14 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
 
                 tcpStats.retx++;
                 tcpRetxEl.textContent = tcpStats.retx;
-                log(tcpLog, `⏱ 逾時未收到 ACK → 重新傳送 ${label}`, 'warn');
+                log(tcpLog, `⏱ 逾時未收到 ACK → 重傳 ${label}（seq 不變，仍是 ${seq}）`, 'warn');
 
                 result = await fly({ ...base, label: label + ' 重傳', kind: 'data', dir: 'AB', duration: 900 });
-                if (myGen !== gen) return;
+                if (myGen !== gen || result !== 'ok') return;
             }
 
             // B 收到後回 ACK
-            log(tcpLog, `B 收到 ${label} → 回傳 ACK`, 'ok');
+            log(tcpLog, `B 收到 ${label} → 回傳 ACK（ack = ${seq + 100}）`, 'ok');
             await fly({ ...base, label: 'ACK', kind: 'ack', dir: 'BA', duration: 620 });
             if (myGen !== gen) return;
 
@@ -4832,7 +5076,7 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
         }
 
         setState(tcpState, '完成 ✅', false);
-        log(tcpLog, `— 完成：${TOTAL} 個封包全部送達（共送出 ${TOTAL + tcpStats.retx} 次）—`, 'ok');
+        log(tcpLog, `— 完成：${TOTAL} 個資料封包全部送達（共送出 ${TOTAL + tcpStats.retx} 次）—`, 'ok');
     }
 
     /* ======================================================
@@ -4842,11 +5086,14 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
         const base = { track: udpTrack, myGen };
         const TOTAL = 10;
 
-        // 隨機挑 2~4 個封包，讓它們在途中消失
+        // 隨機挑 2~4 個封包，讓它們在途中消失（Fisher–Yates 洗牌）
         const dropCount = 2 + Math.floor(Math.random() * 3);
-        const order = Array.from({ length: TOTAL }, (_, i) => i + 1)
-            .sort(() => Math.random() - 0.5);
-        const dropSet = new Set(order.slice(0, dropCount));
+        const ids = Array.from({ length: TOTAL }, (_, i) => i + 1);
+        for (let i = ids.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [ids[i], ids[j]] = [ids[j], ids[i]];
+        }
+        const dropSet = new Set(ids.slice(0, dropCount));
 
         setState(udpState, '傳送中（不等待回應）', true);
         log(udpLog, '不需要握手、不用確認，直接把資料往外丟 →', 'info');
@@ -4863,11 +5110,11 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
                     label: 'UDP ' + i,
                     kind: 'udp',
                     dir: 'AB',
-                    duration: 820,
+                    duration: 800,
                     // 遺失點隨機（30%~70% 處），看起來更自然
                     dieAt: willDrop ? 0.3 + Math.random() * 0.4 : null,
                 });
-                if (myGen !== gen) return;
+                if (myGen !== gen || result === 'abort') return;
 
                 if (result === 'lost') {
                     udpStats.lost++;
@@ -4879,7 +5126,7 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
                 }
             })());
 
-            await sleep(165);       // 極快連發（約 6 個/秒 × 多個並行）
+            await sleep(220);       // 極快連發（約 4~5 個同時在飛）
             if (myGen !== gen) return;
         }
 
@@ -4896,15 +5143,17 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
        ====================================================== */
     function resetAll(silent) {
         gen++;                              // 讓所有進行中的流程失效
+        activeFlights.forEach((finish) => finish('abort'));
+        activeFlights.clear();
         rafs.forEach(cancelAnimationFrame);
-        rafs = [];
-        timers.forEach(clearTimeout);
-        timers = [];
+        rafs.clear();
+        clearTimers();
+        laneBusy.delete(tcpTrack);
+        laneBusy.delete(udpTrack);
 
         running = false;
         tcpStats = { ok: 0, lost: 0, retx: 0 };
         udpStats = { ok: 0, lost: 0 };
-        laneIdx = 0;
 
         tcpOkEl.textContent = '0';
         tcpLostEl.textContent = '0';
@@ -4938,12 +5187,15 @@ const chapters = ['ch01','ch02','ch03','ch04','ch05','ch07','ch08','ch09','ch10'
         startBtn.textContent = '播放中…';
 
         const myGen = gen;                  // 記住本次播放的世代
-        await Promise.all([runTcp(myGen), runUdp(myGen)]);
-
-        if (myGen !== gen) return;           // 中途被重置就不用收尾
-        running = false;
-        startBtn.disabled = false;
-        startBtn.textContent = '▶ 再播一次';
+        try {
+            await Promise.all([runTcp(myGen), runUdp(myGen)]);
+        } finally {
+            if (myGen === gen) {             // 中途被重置就交給 resetAll 收尾
+                running = false;
+                startBtn.disabled = false;
+                startBtn.textContent = '▶ 再播一次';
+            }
+        }
     }
 
     startBtn.addEventListener('click', start);
