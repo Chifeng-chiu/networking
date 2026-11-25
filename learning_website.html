@@ -5040,7 +5040,7 @@ http://[::1]/                       ← 瀏覽本機 IPv6 網站</div>
     <section id="notes">
         <div class="sec-title">
             <h2>📝 隨堂筆記</h2>
-            <p>上課補充的實務筆記 — HTTP 方法、狀態碼，以及可程式化路由器與防火牆導流（Traffic Redirection）等重點</p>
+            <p>上課補充的實務筆記 — HTTP 方法、狀態碼、IP 尋徑表（Routing Table）與最長前綴匹配，以及可程式化路由器與防火牆導流（Traffic Redirection）等重點</p>
         </div>
 
         <div class="card">
@@ -5361,6 +5361,182 @@ http://[::1]/                       ← 瀏覽本機 IPv6 網站</div>
 
             <blockquote class="ok">
                 <strong>口訣：</strong>IP 不動、MAC 動 —— <strong>改 MAC 就能改路徑</strong>；導流靠改 MAC，檢查完再改回來。
+            </blockquote>
+        </div>
+
+        <div class="card">
+            <h3>IP 尋徑表（Routing Table）與最長前綴匹配</h3>
+            <p>
+                主機或路由器送出封包前，會拿目的 IP（<code>dst IP</code>）與尋徑表中每條規則的 <code>Genmask</code> 做位元 <strong>AND</strong> 運算。
+                結果若等於 <code>Destination</code> 就列入候選（Candidate）；有多個候選時，選 <strong>Mask 中 1 比較多</strong> 的規則。
+            </p>
+
+            <h4>1. 課堂終端機範例：<code>route -n</code>（Kernel IP routing table）</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>規則</th>
+                            <th>Destination</th>
+                            <th>Gateway</th>
+                            <th>Genmask</th>
+                            <th>Flags</th>
+                            <th>Metric</th>
+                            <th>Ref</th>
+                            <th>Use</th>
+                            <th>Iface</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>①</td>
+                            <td><code>0.0.0.0</code></td>
+                            <td><code>172.23.112.1</code></td>
+                            <td><code>0.0.0.0</code></td>
+                            <td><span class="tag tag-p">UG</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td><code>eth0</code></td>
+                        </tr>
+                        <tr>
+                            <td>②</td>
+                            <td><code>172.17.0.0</code></td>
+                            <td><code>0.0.0.0</code></td>
+                            <td><code>255.255.0.0</code></td>
+                            <td><span class="tag tag-p">U</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td><code>docker0</code></td>
+                        </tr>
+                        <tr>
+                            <td>③</td>
+                            <td><code>172.18.0.0</code></td>
+                            <td><code>0.0.0.0</code></td>
+                            <td><code>255.255.0.0</code></td>
+                            <td><span class="tag tag-p">U</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td><code>br-9ebcfc5e0c5c</code></td>
+                        </tr>
+                        <tr>
+                            <td>④</td>
+                            <td><code>172.23.112.0</code></td>
+                            <td><code>0.0.0.0</code></td>
+                            <td><code>255.255.240.0</code></td>
+                            <td><span class="tag tag-p">U</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td><code>eth0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>2. 白板演練：假設 <code>dst IP = 172.23.112.10</code></h4>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>規則</th>
+                            <th>Mask（1 的數量）</th>
+                            <th>dst IP AND Mask</th>
+                            <th>規則 Destination</th>
+                            <th>比對結果</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>①</td>
+                            <td><code>0.0.0.0</code>（0 個 1）</td>
+                            <td><code>0.0.0.0</code></td>
+                            <td><code>0.0.0.0</code></td>
+                            <td><span class="tag tag-p">符合 → Candidate</span></td>
+                        </tr>
+                        <tr>
+                            <td>②</td>
+                            <td><code>255.255.0.0</code>（16 個 1）</td>
+                            <td><code>172.23.0.0</code></td>
+                            <td><code>172.17.0.0</code></td>
+                            <td><span class="tag tag-d">不符合</span></td>
+                        </tr>
+                        <tr>
+                            <td>③</td>
+                            <td><code>255.255.0.0</code>（16 個 1）</td>
+                            <td><code>172.23.0.0</code></td>
+                            <td><code>172.18.0.0</code></td>
+                            <td><span class="tag tag-d">不符合</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>④</strong></td>
+                            <td><code>255.255.240.0</code>（20 個 1）</td>
+                            <td><code>172.23.112.0</code></td>
+                            <td><code>172.23.112.0</code></td>
+                            <td><span class="tag tag-s">符合 → Candidate（勝出 ✓）</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>3. 規則 ④ 第三組數字二進位 AND 拆解</h4>
+            <div class="table-wrap">
+                <table style="max-width:620px;text-align:center;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">項目</th>
+                            <th>128</th>
+                            <th>64</th>
+                            <th>32</th>
+                            <th>16</th>
+                            <th>8</th>
+                            <th>4</th>
+                            <th>2</th>
+                            <th>1</th>
+                            <th>十進位</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family:'Consolas',monospace;">
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">dst IP</td>
+                            <td>0</td><td>1</td><td>1</td><td>1</td>
+                            <td>0</td><td>0</td><td>0</td><td>0</td>
+                            <td style="font-weight:700;">112</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">AND Mask</td>
+                            <td style="color:var(--primary);">1</td>
+                            <td style="color:var(--primary);">1</td>
+                            <td style="color:var(--primary);">1</td>
+                            <td style="color:var(--primary);">1</td>
+                            <td style="color:var(--text3);">0</td>
+                            <td style="color:var(--text3);">0</td>
+                            <td style="color:var(--text3);">0</td>
+                            <td style="color:var(--text3);">0</td>
+                            <td style="font-weight:700;">240</td>
+                        </tr>
+                        <tr style="background:var(--success-light);font-weight:700;color:#1a5e2a;">
+                            <td style="text-align:left;">運算結果</td>
+                            <td>0</td><td>1</td><td>1</td><td>1</td>
+                            <td>0</td><td>0</td><td>0</td><td>0</td>
+                            <td>112</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>三個常考名詞與觀念</h4>
+            <ul>
+                <li><strong>Longest Prefix Match（最長前綴匹配）</strong>：有多個 Candidate 時，選 Mask 中 <code>1</code> 比較多的規則。規則 ④（20 個 1）比規則 ①（0 個 1）更精準，因此勝出。</li>
+                <li><strong>Linux vs Windows 指令</strong>：Linux 查表用 <code>route -n</code>（<code>-n</code> 表示不解析網域名稱、直接顯示 IP），Windows 才是 <code>route print</code>。</li>
+                <li><strong>Flags 與 Gateway</strong>：<code>U</code> 代表路由啟用；<code>G</code> 代表要透過 Gateway 轉送。若 Gateway 是 <code>0.0.0.0</code> 代表目標就在同網段，直接由 <code>Iface</code> 網卡送出。</li>
+            </ul>
+
+            <blockquote>
+                <strong>考試常見題：</strong>為什麼預設路由 <code>0.0.0.0/0</code> 每次比對都會符合，卻不會攔截所有封包？
+                因為它的 Mask 只有 0 個 1，在最長前綴匹配中優先權最低，只有其他規則都不符合時才會走預設閘道。
             </blockquote>
         </div>
     </section>
